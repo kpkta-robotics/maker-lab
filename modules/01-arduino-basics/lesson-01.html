@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Урок 01 — Твій перший сигнал | Адаптивна цифрова майстерня</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body data-lesson="m1-l01" data-root="../../">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="crumbs" id="crumbs"></div>
+    <h1>УРОК 01 · Твій перший сигнал</h1>
+    <p>Через 30 хвилин маленька плата подасть світлом сигнал SOS, і програму для неї напишеш ти.</p>
+    <div class="meta">
+      <span class="pill">⏱ ~45 хв основа + бонус</span>
+      <span class="pill">🧠 Нічого знати не треба</span>
+      <span class="pill">💻 Тільки браузер, плата не обов'язкова</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===== ГАЧОК ===== -->
+  <p class="lead">Уяви світну куртку для велосипедиста, яка сама блимає в темряві. Або лампу, що вмикається, коли ти заходиш у кімнату. Або горщик, який сам просить води.</p>
+  <p class="lead">Усе це роблять <strong>невеликі плати з мозком</strong>, такі як <strong>Arduino</strong>. У них немає екрана, зате вони відчувають світ (світло, дотик, тепло, відстань) і керують світлом, звуком, моторами. Сьогодні ти зробиш перший крок: навчиш плату <strong>говорити світлом</strong>.</p>
+
+  <div class="box ok">
+    <div class="box-title">🛡 Не бійся помилитися</div>
+    Усе, що ми робимо, відбувається у <strong>симуляторі</strong>, тобто у віртуальній майстерні в браузері. Зламати там нічого неможливо. Помилився? Просто натисни «Стоп» і спробуй ще раз.
+  </div>
+
+  <div class="step"><span class="num">0</span><h2>Спробуй зараз, нічого не встановлюючи</h2></div>
+  <p>Перед тобою <strong>віртуальний маяк</strong>. Покрути повзунки й подивися, що станеться. Праворуч видно <strong>програму</strong>, яка керує світлом: тепер ти бачиш, як вона працює.</p>
+
+  <div class="ledsim" id="ledsim">
+    <div class="ledsim-stage">
+      <div class="led" id="sim-led"></div>
+      <div class="ledsim-state" id="sim-state">не світиться</div>
+    </div>
+    <div class="ledsim-controls">
+      <label>Світиться: <b id="on-val">1000</b> мс
+        <input type="range" id="on-range" min="10" max="3000" step="10" value="1000"></label>
+      <label>Не світиться: <b id="off-val">1000</b> мс
+        <input type="range" id="off-range" min="10" max="3000" step="10" value="1000"></label>
+    </div>
+    <div class="row">
+      <button class="btn" id="sim-start">▶ Запустити блимання</button>
+      <button class="btn alt" id="sim-sos">🆘 Показати SOS</button>
+    </div>
+<pre id="sim-code"></pre>
+    <div class="note">1000 мілісекунд (мс) = 1 секунда. Спробуй поставити обидва повзунки на мінімум: що ти бачиш?</div>
+  </div>
+
+  <div class="box mission">
+    <div class="box-title">🎯 Твоя місія на сьогодні</div>
+    Зробити те саме, але вже <strong>на справжній платі Arduino</strong> у віртуальній лабораторії Wokwi, а потім навчити її подавати <strong>SOS</strong>, міжнародний сигнал біди. Для цього треба знати лише кілька слів:
+  </div>
+
+  <h3>📖 Слова, які ти почуєш</h3>
+  <dl class="glossary">
+    <dt>Arduino (Ардуїно)</dt><dd>Маленька плата, яка виконує твою програму. Це як мозок для пристрою.</dd>
+    <dt>Програма (код)</dt><dd>Інструкція для плати: «зроби це, потім оце». Ми пишемо її спеціальною мовою, схожою на англійську.</dd>
+    <dt>Пін</dt><dd>Один контакт-«рознімання» на платі. Через нього плата подає на пристрій сигнал.</dd>
+    <dt>Світлодіод (LED)</dt><dd>Маленька лампочка. Світиться, коли на нього подати струм.</dd>
+    <dt>Резистор</dt><dd>Маленька деталь-«обмежувач». Не пускає у світлодіод занадто багато струму.</dd>
+    <dt>Симулятор (Wokwi)</dt><dd>Віртуальна майстерня в браузері. Усе працює як насправді, але нічого не зламати.</dd>
+  </dl>
+
+  <!-- ===== КРОК 1 ===== -->
+  <div class="step"><span class="num">1</span><h2>Перший успіх: жодного дроту</h2></div>
+  <p>На самій платі Arduino вже є <strong>крихітний світлодіод із літерою L</strong>. Ми змусимо блимати саме його, тому збирати нічого не треба.</p>
+
+  <ol>
+    <li>Відкрий <a href="https://wokwi.com/projects/new/arduino-uno" target="_blank" rel="noopener">Wokwi: новий проєкт Arduino Uno</a> (відкриється в новій вкладці). Wokwi англійською, це нормально.</li>
+    <li>У лівій частині екрана знайди вкладку <code>sketch.ino</code>. Там уже є чужий код.</li>
+    <li>Клікни у вікно коду, натисни <code>Ctrl + A</code> (виділити все) і <code>Delete</code>.</li>
+    <li>Скопіюй код нижче (кнопка «Копіювати») і встав у порожнє вікно: <code>Ctrl + V</code>.</li>
+    <li>Натисни велику <strong>зелену кнопку ▶</strong> над схемою.</li>
+  </ol>
+
+  <div class="codewrap">
+    <button class="copy-btn" data-target="code-first">Копіювати</button>
+<pre id="code-first">void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(1000);
+}</pre>
+  </div>
+
+  <div class="win"><strong>🎉 Перший успіх!</strong><br>
+    Якщо на платі блимає маленький світлодіод, у тебе щойно вийшло запрограмувати свій перший пристрій. Серйозно: більшість людей ніколи цього не пробували.</div>
+
+  <h3>Що вийшло в коді? Читаємо його як речення</h3>
+  <table>
+    <tr><th>Рядок</th><th>Людською мовою</th></tr>
+    <tr><td><code>void setup()</code></td><td><strong>«Підготовка»</strong>. Виконується один раз, коли плату вмикають.</td></tr>
+    <tr><td><code>pinMode(LED_BUILTIN, OUTPUT)</code></td><td>«Пін, до якого підключений світлодіод L, буде <strong>видавати</strong> сигнал».</td></tr>
+    <tr><td><code>void loop()</code></td><td><strong>«Повторювати завжди»</strong>. Усе всередині крутиться по колу.</td></tr>
+    <tr><td><code>digitalWrite(..., HIGH)</code></td><td>«<strong>Увімкни</strong> світлодіод».</td></tr>
+    <tr><td><code>delay(1000)</code></td><td>«<strong>Чекай</strong> 1000 мілісекунд» (це 1 секунда).</td></tr>
+    <tr><td><code>digitalWrite(..., LOW)</code></td><td>«<strong>Вимкни</strong> світлодіод».</td></tr>
+  </table>
+
+  <details>
+    <summary>😕 Не виходить? Перевір це</summary>
+    <ul>
+      <li><strong>Світлодіод не блимає.</strong> Чи натиснуто зелену кнопку ▶? Чи не залишилася кнопка «Стоп» червоною?</li>
+      <li><strong>Червоний текст помилки внизу.</strong> Часто це забута крапка з комою <code>;</code> в кінці рядка або зайва/відсутня дужка <code>{ }</code>. Скопіюй код ще раз повністю.</li>
+      <li><strong>Код не вставився.</strong> Спочатку клікни у вікно коду, потім <code>Ctrl + A</code>, <code>Delete</code>, <code>Ctrl + V</code>.</li>
+      <li><strong>Нічого не змінюється.</strong> Онови сторінку Wokwi й почни спочатку. Втрачати немає чого.</li>
+    </ul>
+  </details>
+
+  <!-- ===== КРОК 2 ===== -->
+  <div class="step"><span class="num">2</span><h2>Додаємо власний світлодіод</h2></div>
+  <p>Світлодіод L на платі маленький. Додамо <strong>свій, великий червоний</strong>, який видно добре. Тепер уже треба трохи «зібрати», але нічого складного: <strong>три деталі й три дроти</strong>.</p>
+
+  <figure class="figure">
+    <svg viewBox="0 0 680 230" role="img" aria-label="Схема: пін 13, резистор 220 Ом, світлодіод, земля GND" style="max-width:680px;background:#f8fafc;border-radius:10px;padding:8px">
+      <!-- Плата Arduino -->
+      <rect x="15" y="25" width="165" height="175" rx="12" fill="#0d5c75" stroke="#083344" stroke-width="2"/>
+      
+      <!-- Заголовок плати зверху (без накладок) -->
+      <text x="97" y="55" fill="#38bdf8" font-size="14" text-anchor="middle" font-weight="800" letter-spacing="1">ARDUINO UNO</text>
+      <text x="97" y="73" fill="#bae6fd" font-size="11" text-anchor="middle">плата мікроконтролера</text>
+      
+      <!-- Колодка роз'ємів праворуч на платі -->
+      <rect x="152" y="85" width="22" height="105" rx="4" fill="#091e3a"/>
+      
+      <!-- Пін 13 -->
+      <text x="142" y="114" fill="#f8fafc" font-size="12" text-anchor="end" font-weight="700">пін 13</text>
+      <circle cx="163" cy="110" r="5" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/>
+
+      <!-- Пін GND -->
+      <text x="142" y="169" fill="#f8fafc" font-size="12" text-anchor="end" font-weight="700">GND</text>
+      <circle cx="163" cy="165" r="5" fill="#64748b" stroke="#334155" stroke-width="1.5"/>
+
+      <!-- Верхній дріт (зелений: сигнал від піна 13) -->
+      <path d="M168 110 H240" stroke="#16a34a" stroke-width="4" fill="none"/>
+      
+      <!-- Резистор 220 Ом -->
+      <rect x="240" y="94" width="85" height="32" rx="6" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
+      <!-- Кольорові смужки резистора: червона, червона, коричнева -->
+      <rect x="256" y="94" width="7" height="32" fill="#dc2626"/>
+      <rect x="272" y="94" width="7" height="32" fill="#dc2626"/>
+      <rect x="288" y="94" width="7" height="32" fill="#78350f"/>
+      <rect x="306" y="94" width="7" height="32" fill="#d97706"/>
+      <text x="282" y="145" text-anchor="middle" font-size="12" font-weight="700" fill="#78350f">резистор 220 Ом</text>
+
+      <!-- Дріт від резистора до світлодіода -->
+      <path d="M325 110 H415" stroke="#16a34a" stroke-width="4" fill="none"/>
+
+      <!-- Світлодіод (LED) -->
+      <polygon points="415,80 415,140 465,110" fill="#ef4444" stroke="#7f1d1d" stroke-width="2"/>
+      <line x1="465" y1="78" x2="465" y2="142" stroke="#7f1d1d" stroke-width="4"/>
+      
+      <!-- Позначення полярності ніжок -->
+      <text x="405" y="68" text-anchor="middle" font-size="11" fill="#15803d" font-weight="700">+ анод (довга ніжка)</text>
+      <text x="495" y="68" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="700">− катод (коротка)</text>
+      <text x="440" y="160" text-anchor="middle" font-size="13" font-weight="700" fill="#7f1d1d">світлодіод (LED)</text>
+
+      <!-- Нижній дріт (чорний: замкнення кола на GND) -->
+      <path d="M465 110 H540 V165 H168" stroke="#1e293b" stroke-width="4" fill="none"/>
+      <text x="350" y="185" text-anchor="middle" font-size="11" fill="#475569">зворотний струм у «землю» (GND)</text>
+    </svg>
+    <figcaption>Струм іде замкненим колом: пін 13 → резистор → світлодіод (довгою ніжкою до резистора) → назад у GND.</figcaption>
+  </figure>
+
+  <ol>
+    <li>У Wokwi натисни синю кнопку <strong>«+»</strong> (Add a new part) над схемою. Вибери <strong>LED</strong> і постав на екран. Потім так само додай <strong>Resistor</strong>.</li>
+    <li>Клікни на резистор і встанови значення <code>220</code> (Ом).</li>
+    <li>Щоб з'єднати: <strong>клікни на один контакт</strong>, потім <strong>на другий</strong>. З'явиться дріт. Зроби так:
+      <ul>
+        <li>пін <strong>13</strong> плати → один бік резистора;</li>
+        <li>інший бік резистора → <strong>A</strong> (анод, довга ніжка) світлодіода;</li>
+        <li><strong>C</strong> (катод, коротка ніжка) світлодіода → <strong>GND</strong> плати.</li>
+      </ul>
+    </li>
+    <li>У коді замість <code>LED_BUILTIN</code> напиши <code>13</code>, або встав готовий код нижче.</li>
+  </ol>
+
+  <div class="codewrap">
+    <button class="copy-btn" data-target="code-blink">Копіювати</button>
+<pre id="code-blink">const int LED_PIN = 13;        // номер піна, до якого підключений світлодіод
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);    // цей пін видає сигнал
+}
+
+void loop() {
+  digitalWrite(LED_PIN, HIGH); // увімкнути
+  delay(1000);                 // чекати 1 секунду
+  digitalWrite(LED_PIN, LOW);  // вимкнути
+  delay(1000);                 // чекати 1 секунду
+}</pre>
+  </div>
+
+  <div class="box mission">
+    <div class="box-title">💬 Навіщо потрібен резистор?</div>
+    Уяви, що струм це вода в трубі, а світлодіод це крихкий скляний кухоль. Якщо направити в нього воду з повної сили, він трісне. Резистор, це вузьке місце в трубі: він пускає рівно стільки води, скільки кухоль витримає. <strong>Правило майстерні: світлодіод завжди ставимо через резистор 220 Ом.</strong>
+  </div>
+
+  <details>
+    <summary>🧮 Для цікавих: як вирахувати цей резистор (можна пропустити)</summary>
+    <p>Живлення дає 5 В. Червоний світлодіод «забирає» близько 2 В. Решта 3 В мають лишитися на резисторі. Безпечний струм для світлодіода близько 15 мА (0,015 А).</p>
+    <p>Закон Ома: <strong>R = U / I = 3 В / 0,015 А = 200 Ом</strong>. Найближчий стандартний резистор у наборі ТЕКО: <strong>220 Ом</strong>, струм при цьому ≈ 13,6 мА.</p>
+  </details>
+
+  <details>
+    <summary>🛠 Швидкий варіант: вставити готову схему замість ручного збирання</summary>
+    <p>У Wokwi відкрий вкладку <code>diagram.json</code>, виділи все (<code>Ctrl + A</code>) і заміни вмістом нижче. <strong>Якщо з'єднання не збереться, збирай вручну за кроками вище.</strong></p>
+    <div class="codewrap">
+      <button class="copy-btn" data-target="code-diagram">Копіювати</button>
+<pre id="code-diagram">{
+  "version": 1,
+  "author": "KPKTA",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-led", "id": "led1", "top": -90, "left": 200, "attrs": { "color": "red" } },
+    { "type": "wokwi-resistor", "id": "r1", "top": -20, "left": 120, "attrs": { "value": "220" } }
+  ],
+  "connections": [
+    [ "uno:13", "r1:1", "green", [ "v0" ] ],
+    [ "r1:2", "led1:A", "green", [ "v0" ] ],
+    [ "led1:C", "uno:GND.1", "black", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}</pre>
+    </div>
+  </details>
+
+  <div class="win"><strong>🎉 Свій пристрій працює!</strong><br>
+    Тепер блимає <strong>твій</strong> світлодіод, а не вбудований. У тебе вийшло зібрати справжнє електричне коло.</div>
+
+  <!-- ===== КРОК 3 ===== -->
+  <div class="step"><span class="num">3</span><h2>Пограй із часом</h2></div>
+  <p><strong>Завдання:</strong> зроби так, щоб світлодіод <strong>світився 2 секунди</strong> і <strong>не світився півсекунди</strong>.</p>
+  <p class="hint">Підказка: змінюються лише числа в дужках <code>delay( )</code>. Півсекунди це 500 мілісекунд. Можеш потренуватися на віртуальному маяку вгорі сторінки.</p>
+
+  <!-- ===== КРОК 4 ===== -->
+  <div class="step"><span class="num">4</span><h2>Зламай його (це частина навчання!)</h2></div>
+  <p>Справжні інженери знають: <strong>розумієш річ тоді, коли знаєш, як вона ламається</strong>. Зроби по черзі три зміни. Дивись, що відбувається, і <strong>запиши одним реченням для себе, чому</strong>.</p>
+  <table>
+    <tr><th>№</th><th>Що змінити</th><th>Подумай</th></tr>
+    <tr><td>1</td><td>У обох <code>digitalWrite</code> заміни <code>HIGH</code> на <code>LOW</code></td><td>Що змінилося? Чому?</td></tr>
+    <tr><td>2</td><td>Заміни обидва <code>delay(1000)</code> на <code>delay(20)</code></td><td>Світлодіод блимає чи світиться постійно? Чому очі так бачать?</td></tr>
+    <tr><td>3</td><td>Прибери <code>;</code> наприкінці одного рядка</td><td>Що пише Wokwi внизу? Спробуй зрозуміти повідомлення, потім поверни крапку з комою.</td></tr>
+  </table>
+  <details>
+    <summary>🔬 Ще дві ідеї (за бажанням)</summary>
+    <ul>
+      <li>Видали рядок <code>pinMode(...)</code> і запусти. Що відбувається? <em>Результат у симуляторі й на справжній платі може відрізнятися, тож запиши, що бачиш саме ти.</em></li>
+      <li>Поміняй місцями анод і катод світлодіода у Wokwi. Чому він не світиться? (Світлодіод пропускає струм лише в один бік.)</li>
+    </ul>
+  </details>
+
+  <div class="box ai">
+    <div class="box-title">🤖 Спитай ШІ як помічника, а не як виконавця</div>
+    Опиши, що бачиш, і додай свою здогадку. Наприклад:<br>
+    <em>«У мене після зміни delay(1000) на delay(20) світлодіод наче світиться постійно, хоча в коді налаштовано блимання. Здається, що око не встигає помітити. Чи правильно? Поясни простими словами.»</em><br>
+    Не бери відповідь на віру: перевір її у Wokwi.
+  </div>
+
+  <!-- ===== КРОК 5 ===== -->
+  <div class="step"><span class="num">5</span><h2>Виклик: сигнал SOS</h2></div>
+  <p>SOS в азбуці Морзе це <strong>три короткі, три довгі, три короткі</strong> спалахи (<code>· · ·  — — —  · · ·</code>). Натисни «Показати SOS» на віртуальному маяку вгорі, щоб побачити, як це виглядає. Обери <strong>свій рівень</strong>:</p>
+
+  <div data-tabs>
+    <div class="tabs">
+      <button data-tab="e">🌱 Explorer</button>
+      <button data-tab="b">🔧 Builder</button>
+      <button data-tab="m">🚀 Maker</button>
+      <button data-tab="x">🧠 Master</button>
+    </div>
+    <div class="panel" data-panel="e">
+      <strong>Explorer: «Я досліджую».</strong> Почни з готового рішення нижче (відкрий блок «Рішення»). Запусти його у Wokwi, потім зміни швидкість: число <code>UNIT</code> (спробуй 100 і 400). Поясни своїми словами, що робить кожен рядок.
+    </div>
+    <div class="panel" data-panel="b">
+      <strong>Builder: «Я доповнюю».</strong> Напиши SOS сама(сам) через дві функції: <code>dot()</code> (короткий спалах) і <code>dash()</code> (довгий). Додай паузу 2 секунди між повтореннями сигналу.
+    </div>
+    <div class="panel" data-panel="m">
+      <strong>Maker: «Я проєктую».</strong> Додай <strong>другий світлодіод</strong> (інший колір) на пін 12: він має світитися лише в паузі між сигналами SOS. Підключи його так само, через резистор 220 Ом.
+    </div>
+    <div class="panel" data-panel="x">
+      <strong>Master: «Я оптимізую».</strong> Перепиши SOS <strong>без <code>delay()</code></strong>: використай <code>millis()</code> і масив тривалостей. Мета: щоб плата могла «одночасно» робити щось інше.
+    </div>
+  </div>
+
+  <details>
+    <summary>👀 Рішення SOS (відкривай після власної спроби!)</summary>
+    <div class="codewrap">
+      <button class="copy-btn" data-target="code-sos">Копіювати</button>
+<pre id="code-sos">const int LED_PIN = 13;
+const int UNIT = 200;          // одна «одиниця часу» в мс: крапка = 1, тире = 3
+
+void dot()  {                  // короткий спалах
+  digitalWrite(LED_PIN, HIGH); delay(UNIT);
+  digitalWrite(LED_PIN, LOW);  delay(UNIT);
+}
+
+void dash() {                  // довгий спалах
+  digitalWrite(LED_PIN, HIGH); delay(UNIT * 3);
+  digitalWrite(LED_PIN, LOW);  delay(UNIT);
+}
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  for (int i = 0; i &lt; 3; i++) dot();   // S: · · ·
+  delay(UNIT * 2);                      // пауза між літерами
+  for (int i = 0; i &lt; 3; i++) dash();  // O: — — —
+  delay(UNIT * 2);
+  for (int i = 0; i &lt; 3; i++) dot();   // S: · · ·
+  delay(UNIT * 7);                      // пауза перед повторенням
+}</pre>
+    </div>
+    <p><strong>Що тут хитрого:</strong> одні й ті самі дії винесені у <code>dot()</code> і <code>dash()</code>, а цикл <code>for</code> повторює їх тричі, і не треба писати три однакові рядки. Це перший крок до охайного коду.</p>
+  </details>
+
+  <!-- ===== САМОПЕРЕВІРКА ===== -->
+  <div class="step"><span class="num">6</span><h2>Перевір себе (спочатку подумай, потім відкривай)</h2></div>
+  <details><summary>1. Що робить <code>delay(1000)</code>?</summary>
+    <p>Змушує плату чекати 1000 мілісекунд, тобто 1 секунду, перш ніж виконувати наступний рядок.</p></details>
+  <details><summary>2. Чим відрізняється <code>HIGH</code> від <code>LOW</code>?</summary>
+    <p><code>HIGH</code> означає «увімкнено» (пін подає струм), <code>LOW</code> означає «вимкнено».</p></details>
+  <details><summary>3. Чим <code>setup()</code> відрізняється від <code>loop()</code>?</summary>
+    <p><code>setup()</code> виконується один раз на початку, <code>loop()</code> повторюється безкінечно.</p></details>
+  <details><summary>4. Навіщо світлодіоду резистор?</summary>
+    <p>Щоб обмежити струм і не спалити світлодіод (як вузьке місце в трубі, що не пускає забагато води).</p></details>
+
+  <!-- ===== БОНУС ===== -->
+  <div class="step bonus"><span class="num">★</span><h2>Бонус: на справжній платі ТЕКО <span class="badge-bonus">за бажанням</span></h2></div>
+  <div class="box ok" style="margin-bottom:14px">
+    <div class="box-title">🔌 Працюєш зі справжньою платою ТЕКО вперше?</div>
+    Плати ТЕКО мають USB-UART міст <strong>CH340</strong>, який потребує системного драйвера. Якщо плата не з'являється у списку портів або Arduino IDE видає помилку, скористайся нашою інструкцією: <a href="../00-diagnostic/lesson-setup.html" target="_blank"><strong>Посібник із налаштування Arduino IDE та драйвера CH340 &rarr;</strong></a>
+  </div>
+  <p>Якщо у тебе є набір ТЕКО, можна повторити все «по-справжньому»:</p>
+  <ol>
+    <li>Підключи Arduino Uno до комп'ютера USB-кабелем.</li>
+    <li>Відкрий програму Arduino IDE. У меню <em>Tools → Board</em> вибери <strong>Arduino Uno</strong>, а в <em>Port</em> вибери порт плати.</li>
+    <li><strong>Спочатку відключи USB</strong>, збери схему з дротів так само, як у Wokwi, потім підключи кабель.</li>
+    <li>Встав код і натисни кнопку → «Завантажити» (Upload).</li>
+  </ol>
+  <div class="box danger"><div class="box-title">⚡ Безпека</div>
+    Ніколи не підключай світлодіод без резистора. Не міняй дроти, коли плата підключена до USB. Якщо щось гріється чи пахне, одразу відключи кабель і покажи викладачу.</div>
+
+  <!-- ===== ЗАВЕРШЕННЯ ===== -->
+  <div class="step"><span class="num">✓</span><h2>Завершення: збережи свій успіх</h2></div>
+  <p><strong>Обов'язково для проходження уроку:</strong></p>
+  <ul class="checklist">
+    <li><label><input type="checkbox" class="check" data-key="builtin"> Вдалося змусити блимати вбудований світлодіод (Крок 1)</label></li>
+    <li><label><input type="checkbox" class="check" data-key="own"> Підключено власний світлодіод із резистором і він блимає (Крок 2)</label></li>
+    <li><label><input type="checkbox" class="check" data-key="time"> Налаштовано таймінг: «2 секунди світиться, півсекунди ні» (Крок 3)</label></li>
+    <li><label><input type="checkbox" class="check" data-key="break"> Виконано 3 зміни з «Зламай його» та є висновок чому (Крок 4)</label></li>
+    <li><label><input type="checkbox" class="check" data-key="sos"> Сигнал SOS успішно працює на обраному рівні (Крок 5)</label></li>
+  </ul>
+  <p><strong>Додатково (не обов'язково):</strong></p>
+  <ul class="checklist">
+    <li><label><input type="checkbox" class="check" data-key="quiz" data-bonus> Є відповіді на питання самоперевірки</label></li>
+    <li><label><input type="checkbox" class="check" data-key="real" data-bonus> Схему запущено на справжній платі</label></li>
+  </ul>
+
+  <div class="box mission">
+    <div class="box-title">📸 Як зберегти доказ</div>
+    Зроби скріншот Wokwi з працюючою схемою (на Windows: <code>Win + Shift + S</code>) і збережи його в папку «Портфоліо» разом з кодом SOS і двома-трьома реченнями: <em>що вийшло, що було зламано та як вдалося це виправити</em>. Щоб зберегти проєкт у Wokwi, потрібен безкоштовний акаунт, але для скріншота він не потрібен.
+  </div>
+
+  <div id="lesson-footer"></div>
+
+  <div class="box ai">
+    <div class="box-title">👀 У наступному уроці</div>
+    Досі плата тільки <strong>командувала</strong>. А що, якщо вона навчиться <strong>відчувати</strong>? В Уроці 02 ти під'єднаєш кнопку, і світлодіод вмикатиметься тільки коли ти натиснеш її. Це вже схоже на справжню сигналізацію.
+  </div>
+</main>
+
+<footer>КПКТА імені Бадрі Лолашвілі · Курс «Arduino + 3D CAD + 3D Друк + AI + Maker»</footer>
+
+<script src="../../assets/course.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/ledsim.js"></script>
+</body>
+</html>

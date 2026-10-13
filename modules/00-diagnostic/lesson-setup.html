@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Підготовка робочого місця: Arduino IDE та драйвер CH340 для плати ТЕКО | Адаптивна цифрова майстерня</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body data-lesson="m0-l03" data-root="../../">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="crumbs" id="crumbs"></div>
+    <h1>БЛОК 0 · Налаштування Arduino IDE та драйвера CH340</h1>
+    <p>Повний посібник із підготовки комп'ютера до роботи зі справжнім обладнанням із набору ТЕКО: встановлення середовища розробки, системного драйвера USB-UART та перевірка першого зв'язку.</p>
+    <div class="meta">
+      <span class="pill">⏱ ~30 хв</span>
+      <span class="pill">📦 Обладнання ТЕКО: плата Arduino Uno + кабель USB</span>
+      <span class="pill">💻 ОС: Windows 10 / 11</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===== ВСТУП ===== -->
+  <p class="lead">Симулятори в браузері (Wokwi та Tinkercad) чудові для швидкого старту. Але справжній інженерний кайф починається тоді, коли твоя програма оживає на <strong>реальній фізичній платі</strong>, в яку встромлені справжні дроти та світяться живі діоди.</p>
+  <p class="lead">У наборах ТЕКО використовується доступна та надійна копія плати <strong>Arduino Uno R3</strong>. Вона має одну важливу технічну особливість: за передачу даних через USB у ній відповідає мікросхема <strong>WCH CH340</strong>. Без спеціального драйвера комп'ютер просто не побачить плату. Нижче — вичерпна покрокова інструкція, як налаштувати все за 15 хвилин.</p>
+
+  <div class="box ok">
+    <div class="box-title">🛡 Це робиться лише один раз!</div>
+    Після того, як драйвер та Arduino IDE встановлені й перевірені, твій комп'ютер у майстерні чи вдома буде миттєво впізнавати будь-які плати з набору ТЕКО без додаткових налаштувань.
+  </div>
+
+  <!-- ===== КРОК 1 ===== -->
+  <div class="step"><span class="num">1</span><h2>Встановлення програми Arduino IDE</h2></div>
+  <p><strong>Arduino IDE</strong> — це безкоштовна офіційна програма, де пишуть код, знаходять помилки та завантажують прошивку в пам'ять мікроконтролера через USB-кабель.</p>
+
+  <ol>
+    <li>Перейди на офіційний сайт завантаження: <a href="https://www.arduino.cc/en/software" target="_blank" rel="noopener">arduino.cc/en/software</a>.</li>
+    <li>Для Windows обери версію <strong>Windows Win 10 and newer, 64 bits</strong> (рекомендовано Arduino IDE 2.3.x) або <em>Windows ZIP file</em> (портативна версія, яка не вимагає прав адміністратора на комп'ютерах у коледжі).</li>
+    <li>На сторінці подяки завантаження натисни кнопку <strong>«JUST DOWNLOAD»</strong> (це безкоштовно).</li>
+    <li>Запусти завантажений файл (наприклад, <code>arduino-ide_..._Windows_64bit.exe</code>), погодься з ліцензійною угодою та натискай <em>Next → Install</em>.</li>
+  </ol>
+
+  <!-- ===== КРОК 2 ===== -->
+  <div class="step"><span class="num">2</span><h2>Встановлення драйвера CH340 для плати ТЕКО</h2></div>
+  <p>Поглянь на свою плату Arduino з набору ТЕКО біля металевого роз'єму USB-B. Там розташована невелика прямокутна мікросхема з маркуванням <strong>CH340G</strong> (або <strong>CH340C</strong>). Це міст, який перекладає команди з USB на зрозумілу процесору послідовну мову UART.</p>
+
+  <div class="figure">
+    <svg viewBox="0 0 620 180" width="100%" height="auto" style="max-width:620px;background:#f8fafc;border-radius:10px;padding:8px">
+      <!-- Computer Box -->
+      <rect x="20" y="30" width="140" height="120" rx="8" fill="#1e293b"/>
+      <text x="90" y="75" fill="#38bdf8" font-size="13" font-weight="700" text-anchor="middle">Комп'ютер</text>
+      <text x="90" y="95" fill="#94a3b8" font-size="11" text-anchor="middle">Arduino IDE</text>
+      <rect x="145" y="75" width="25" height="30" rx="3" fill="#475569"/>
+
+      <!-- Cable -->
+      <path d="M165 90 H260" stroke="#0284c7" stroke-width="6" fill="none"/>
+      <text x="212" y="80" fill="#0284c7" font-size="11" font-weight="700" text-anchor="middle">Кабель USB-B</text>
+
+      <!-- Arduino Board -->
+      <rect x="260" y="20" width="340" height="140" rx="12" fill="#0d5c75" stroke="#083344" stroke-width="2"/>
+      <text x="430" y="48" fill="#fff" font-size="14" font-weight="800" text-anchor="middle">ПЛАТА ТЕКО (Arduino Uno)</text>
+
+      <!-- CH340 Chip -->
+      <rect x="290" y="65" width="70" height="50" rx="4" fill="#091e3a" stroke="#f59e0b" stroke-width="2"/>
+      <text x="325" y="88" fill="#f59e0b" font-size="11" font-weight="800" text-anchor="middle">CH340G</text>
+      <text x="325" y="103" fill="#94a3b8" font-size="9" text-anchor="middle">USB-UART міст</text>
+
+      <!-- Arrow -->
+      <line x1="365" y1="90" x2="425" y2="90" stroke="#facc15" stroke-width="3" stroke-dasharray="4,3"/>
+
+      <!-- Main MCU -->
+      <rect x="430" y="60" width="140" height="60" rx="4" fill="#1e293b"/>
+      <text x="500" y="88" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="middle">ATmega328P</text>
+      <text x="500" y="105" fill="#cbd5e1" font-size="10" text-anchor="middle">Головний мікроконтролер</text>
+    </svg>
+    <figcaption>Роль мікросхеми CH340: вона приймає код із комп'ютера та передає його в пам'ять головного процесора ATmega328P</figcaption>
+  </div>
+
+  <p><strong>Покрокова інструкція зі встановлення драйвера:</strong></p>
+  <ol>
+    <li>Завантаж офіційний інсталятор драйвера: <a href="http://www.wch-ic.com/downloads/CH341SER_EXE.html" target="_blank" rel="noopener">WCH CH341SER.EXE (офіційний сайт виробника)</a>.</li>
+    <li>Запусти завантажений файл <code>CH341SER.EXE</code>. Якщо система запитає дозвіл — обери «Так» (запуск від імені адміністратора).</li>
+    <li>У вікні інсталятора натисни одну кнопку: <strong>INSTALL</strong>.</li>
+    <li>Зачекай 5–10 секунд, доки з'явиться вікно: <strong>«Driver install success!»</strong>. Натисни <em>OK</em> і закрий інсталятор.</li>
+  </ol>
+
+  <!-- ===== КРОК 3 ===== -->
+  <div class="step"><span class="num">3</span><h2>Перевірка зв'язку в Диспетчері пристроїв Windows</h2></div>
+  <p>Тепер перевіримо, чи бачить Windows твою плату:</p>
+
+  <ol>
+    <li>Підключи плату Arduino Uno до комп'ютера синім кабелем USB. На платі має засвітитися <strong>зелений світлодіод ON</strong>.</li>
+    <li>Натисни на клавіатурі комбінацію <code>Win + X</code> і в меню обери <strong>Диспетчер пристроїв</strong> (або натисни <code>Win + R</code>, введи <code>devmgmt.msc</code> і натисни <em>Enter</em>).</li>
+    <li>Знайди розділ <strong>«Порти (COM і LPT)»</strong> і розкрий його.</li>
+  </ol>
+
+  <div class="box ok">
+    <div class="box-title">✅ Ознака успішного підключення</div>
+    У списку має з'явитися рядок: <strong><code>USB-SERIAL CH340 (COM3)</code></strong> (номер порту може бути іншим: <code>COM4</code>, <code>COM5</code> тощо).<br>
+    Запам'ятай цей номер <strong>COM-порту</strong> — саме його ми вкажемо в середовищі розробки!
+  </div>
+
+  <!-- ===== КРОК 4 ===== -->
+  <div class="step"><span class="num">4</span><h2>Налаштування в самій Arduino IDE</h2></div>
+  <p>Відкрий встановлену програму <strong>Arduino IDE</strong> та налаштуй два обов'язкові параметри:</p>
+
+  <ol>
+    <li><strong>Обери модель плати:</strong>
+      <ul>
+        <li>У верхньому меню обери <em>Tools (Інструменти) → Board (Плата) → Arduino AVR Boards → <strong>Arduino Uno</strong></em>.</li>
+      </ul>
+    </li>
+    <li><strong>Обери COM-порт підключення:</strong>
+      <ul>
+        <li>У меню обери <em>Tools (Інструменти) → Port (Порт)</em> → обери порт із написом <strong>COMx</strong> (який ти бачив у Диспетчері пристроїв).</li>
+      </ul>
+    </li>
+  </ol>
+
+  <!-- ===== КРОК 5 ===== -->
+  <div class="step"><span class="num">5</span><h2>Тест за 60 секунд: Завантажуємо перший Blink</h2></div>
+  <p>Переконайся, що зв'язок працює і плата слухається твоїх команд:</p>
+
+  <ol>
+    <li>У меню Arduino IDE обери: <em>File (Файл) → Examples (Приклади) → 01.Basics → <strong>Blink</strong></em>.</li>
+    <li>Натисни круглу кнопку зі стрілкою <strong>➜ Upload (Завантажити)</strong> у верхньому лівому кутку.</li>
+    <li>Подивися на плату ТЕКО: в момент завантаження на ній почнуть дуже швидко блимати два крихітні світлодіоди з літерами <strong>TX</strong> та <strong>RX</strong> (це йде передача байтів коду).</li>
+    <li>Внизу екрана в чорному вікні з'явиться зелений напис: <strong>«Done uploading» (Завантаження завершено)</strong>.</li>
+  </ol>
+
+  <div class="win">
+    <strong>🎉 Вітаємо, робоче місце повністю готове!</strong><br>
+    На платі ТЕКО ритмічно блимає вбудований світлодіод <strong>L</strong> раз на секунду. Зв'язок налаштовано бездоганно.
+  </div>
+
+  <!-- ===== ШВИДКА ДОПОМОГА ===== -->
+  <div class="step"><span class="num">!</span><h2>Швидка допомога: типові проблеми та як їх вирішити</h2></div>
+
+  <details>
+    <summary>🔴 Плата світиться (зелений ON горить), але в списку Портів (COM) нічого немає</summary>
+    <p><strong>Причина:</strong> У 90% випадків винен кабель USB. Багато тонких кабелів від телефонів є <em>«тільки для зарядки»</em> і не мають внутрішніх ліній передачі даних (D+ та D-).</p>
+    <p><strong>Рішення:</strong> Візьми товстий синій кабель із набору ТЕКО або спробуй вставити його в інший USB-порт на задній панелі комп'ютера.</p>
+  </details>
+
+  <details>
+    <summary>🟡 У Диспетчері пристроїв є «USB2.0-Serial» із жовтим знаком оклику</summary>
+    <p><strong>Причина:</strong> Драйвер CH340 не встановився або Windows заблокувала його встановлення.</p>
+    <p><strong>Рішення:</strong> Запусти <code>CH341SER.EXE</code> ще раз, спочатку натисни <strong>UNINSTALL</strong> (видалити старий), а потім <strong>INSTALL</strong> (встановити наново).</p>
+  </details>
+
+  <details>
+    <summary>🟠 Помилка в Arduino IDE: «avrdude: stk500_recv(): programmer is not responding»</summary>
+    <p><strong>Причина:</strong> Обрано неправильний COM-порт, або порт зайнятий іншою програмою (наприклад, слайсером Cura, Pronterface для 3D-принтера чи стороннім монітором порту).</p>
+    <p><strong>Рішення:</strong> Закрий інші програми для 3D-принтерів, перевір номер COM-порту в меню <em>Tools → Port</em> і спробуй завантажити скетч ще раз.</p>
+  </details>
+
+  <details>
+    <summary>🔵 На комп'ютері в коледжі немає прав адміністратора для встановлення</summary>
+    <p><strong>Рішення:</strong> Завантаж з офіційного сайту <strong>Arduino IDE у форматі ZIP</strong> (Portable). Її не треба встановлювати: розпакуй архів у свою робочу папку на диску <code>D:\</code> та запускай <code>arduino-ide.exe</code> напряму.</p>
+  </details>
+
+  <!-- ===== ЧЕК-ЛІСТ ===== -->
+  <div class="step"><span class="num">✓</span><h2>Чек-ліст готовності до реальних залізяк</h2></div>
+  <ul class="checklist">
+    <li><label><input type="checkbox" class="check" data-key="m0-ide"> Встановлено середовище розробки Arduino IDE</label></li>
+    <li><label><input type="checkbox" class="check" data-key="m0-ch340"> Встановлено системний драйвер WCH CH340</label></li>
+    <li><label><input type="checkbox" class="check" data-key="m0-com"> У Диспетчері пристроїв визначився порт USB-SERIAL CH340 (COMx)</label></li>
+    <li><label><input type="checkbox" class="check" data-key="m0-blink"> Успішно завантажено тестовий скетч Blink на фізичну плату ТЕКО</label></li>
+  </ul>
+
+  <div id="lesson-footer"></div>
+
+  <div class="box mission">
+    <div class="box-title">🚀 Що тепер?</div>
+    Тепер ти можеш відкривати будь-який урок нашого курсу:
+    <ul>
+      <li>[Урок 01: Твій перший сигнал і код SOS](../../modules/01-arduino-basics/lesson-01.html)</li>
+      <li>[Урок 02: Тактова кнопка та INPUT_PULLUP](../../modules/01-arduino-basics/lesson-02.html)</li>
+      <li>[Урок 03: Розумний світлофор і масиви пінів](../../modules/01-arduino-basics/lesson-03.html)</li>
+    </ul>
+    ...і сміливо збирати їх не лише у віртуальному Wokwi, а й на справжній платі у лабораторії!
+  </div>
+
+</main>
+
+<footer>КПКТА імені Бадрі Лолашвілі · Курс «Arduino + 3D CAD + 3D Друк + AI + Maker»</footer>
+
+<script src="../../assets/course.js"></script>
+<script src="../../assets/app.js"></script>
+</body>
+</html>

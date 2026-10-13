@@ -1,0 +1,166 @@
+:root{
+  --primary:#0284c7;--primary-dark:#0369a1;--ink:#0f172a;--text:#1e293b;--muted:#64748b;
+  --bg:#f8fafc;--card:#fff;--border:#e2e8f0;--ok:#059669;--warn:#d97706;--bad:#dc2626;--purple:#7c3aed;
+}
+*,*:before,*:after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;font-size:16px}
+a{color:var(--primary-dark)}
+code{background:#e2e8f0;padding:1px 6px;border-radius:4px;font-family:Consolas,"Courier New",monospace;font-size:.92em}
+
+/* Header */
+.site-header{background:linear-gradient(135deg,#091e3a,#1e3a5f 55%,#0d5c75);color:#fff;padding:22px 20px}
+.wrap{max-width:960px;margin:0 auto}
+.site-header .inst{font-size:.78rem;letter-spacing:1.4px;text-transform:uppercase;color:#38bdf8;font-weight:700}
+.site-header h1{margin:6px 0 4px;font-size:1.7rem;line-height:1.25}
+.site-header p{margin:0;color:#cbd5e1}
+.crumbs{font-size:.85rem;margin-bottom:6px}
+.crumbs a{color:#7dd3fc;text-decoration:none}
+.crumbs a:hover{text-decoration:underline}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:3px 12px;border-radius:20px;font-size:.82rem;font-weight:600}
+
+main{max-width:960px;margin:24px auto;padding:0 18px}
+h2{font-size:1.35rem;color:var(--ink);border-bottom:2px solid var(--primary);padding-bottom:4px;margin:34px 0 14px}
+h3{font-size:1.1rem;color:var(--primary-dark);margin:20px 0 8px}
+
+/* Boxes */
+.box{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:4px solid}
+.box>:first-child{margin-top:0}.box>:last-child{margin-bottom:0}
+.box-title{font-weight:700;margin-bottom:4px}
+.mission{background:#f0f9ff;border-color:var(--primary);color:#0c4a6e}
+.warn{background:#fffbeb;border-color:var(--warn);color:#78350f}
+.danger{background:#fef2f2;border-color:var(--bad);color:#7f1d1d}
+.ok{background:#f0fdf4;border-color:var(--ok);color:#14532d}
+.ai{background:#faf5ff;border-color:var(--purple);color:#4c1d95}
+
+/* Cards / grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.card h4{margin:0 0 4px;color:var(--primary-dark)}
+.card p{margin:0;font-size:.92rem;color:var(--muted)}
+
+/* Code */
+.codewrap{position:relative;margin:12px 0}
+pre{background:#0f172a;color:#e2e8f0;padding:14px 16px;border-radius:8px;overflow-x:auto;
+  font-family:Consolas,"Courier New",monospace;font-size:.88rem;line-height:1.5;margin:0}
+.copy-btn{position:absolute;top:8px;right:8px;background:#334155;color:#fff;border:0;border-radius:6px;
+  padding:4px 10px;font-size:.78rem;cursor:pointer}
+.copy-btn:hover{background:var(--primary)}
+
+/* Buttons */
+.btn{display:inline-block;background:var(--primary);color:#fff;border:0;border-radius:8px;padding:9px 18px;
+  font-weight:600;font-size:.95rem;text-decoration:none;cursor:pointer}
+.btn:hover{background:var(--primary-dark)}
+.btn.alt{background:#fff;color:var(--ink);border:1px solid var(--border)}
+.btn.alt:hover{background:#f1f5f9}
+.btn.ok-btn{background:var(--ok)}
+.btn[disabled],.btn.disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+
+/* Tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+.tabs button{background:#fff;border:1px solid var(--border);border-bottom:0;border-radius:8px 8px 0 0;
+  padding:8px 14px;font-weight:600;cursor:pointer;color:var(--muted)}
+.tabs button.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.panel{display:none;background:#fff;border:1px solid var(--border);border-radius:0 8px 8px 8px;padding:14px 16px}
+.panel.active{display:block}
+
+/* Details */
+details{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+summary{font-weight:700;cursor:pointer;color:var(--primary-dark)}
+details[open] summary{margin-bottom:8px}
+
+/* Checklist */
+.checklist{list-style:none;padding:0;margin:10px 0}
+.checklist li{margin:6px 0}
+.checklist label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.checklist input{margin-top:6px;width:18px;height:18px;accent-color:var(--ok)}
+
+/* Tables */
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:.93rem}
+th{background:var(--ink);color:#fff;text-align:left;padding:7px 10px}
+td{border:1px solid var(--border);padding:7px 10px;vertical-align:top;background:#fff}
+
+/* Lesson footer nav */
+.lesson-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:36px 0 10px;
+  padding-top:18px;border-top:2px solid var(--border)}
+.done-row{text-align:center;margin:26px 0}
+.hint{font-size:.88rem;color:var(--muted);margin-top:6px}
+
+/* Course map */
+.progress{height:12px;background:#e2e8f0;border-radius:10px;overflow:hidden;margin:8px 0}
+.progress>div{height:100%;background:linear-gradient(90deg,#0284c7,#10b981);width:0;transition:width .4s}
+.module{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin:16px 0}
+.module h3{margin:0;color:var(--ink)}
+.module>p{margin:2px 0 10px;color:var(--muted);font-size:.93rem}
+.lesson-row{display:flex;align-items:center;gap:12px;padding:9px 12px;border:1px solid var(--border);
+  border-radius:8px;margin:7px 0;text-decoration:none;color:var(--text);background:#fff}
+a.lesson-row:hover{border-color:var(--primary);background:#f0f9ff}
+.lesson-row .st{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:700;background:#e2e8f0;color:var(--muted);flex:none}
+.lesson-row.done .st{background:var(--ok);color:#fff}
+.lesson-row.open .st{background:var(--primary);color:#fff}
+.lesson-row .t{flex:1;font-weight:600}
+.lesson-row .tm{font-size:.82rem;color:var(--muted);white-space:nowrap}
+.lesson-row.locked{opacity:.55;cursor:not-allowed}
+.tag{font-size:.72rem;font-weight:700;border-radius:4px;padding:2px 7px;text-transform:uppercase}
+.tag.soon{background:#fef3c7;color:#b45309}.tag.lock{background:#e2e8f0;color:#475569}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:26px 16px;border-top:1px solid var(--border);margin-top:40px}
+.link-btn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.85rem}
+/* Кроки уроку */
+.step{display:flex;align-items:center;gap:12px;margin:34px 0 14px;border-bottom:2px solid var(--primary);padding-bottom:6px}
+.step .num{flex:none;width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:flex;
+  align-items:center;justify-content:center;font-weight:800}
+.step h2{margin:0;border:0;padding:0}
+.step.bonus .num{background:var(--purple)}
+.badge-bonus{background:#f3e8ff;color:#7e22ce;font-size:.72rem;font-weight:700;border-radius:4px;padding:2px 8px;
+  text-transform:uppercase;margin-left:8px;vertical-align:middle}
+.win{background:#f0fdf4;border:2px dashed var(--ok);border-radius:10px;padding:12px 16px;margin:16px 0;color:#14532d}
+.win strong:first-child{font-size:1.05rem}
+.lead{font-size:1.1rem;color:var(--text)}
+.glossary dt{font-weight:700;color:var(--primary-dark);margin-top:8px}
+.glossary dd{margin:2px 0 0 0;color:var(--muted)}
+.figure{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px;margin:14px 0;text-align:center}
+.figure svg{max-width:100%;height:auto}
+.figure figcaption{font-size:.85rem;color:var(--muted);margin-top:4px}
+
+/* Віртуальний маяк */
+.ledsim{background:#0f172a;color:#e2e8f0;border-radius:14px;padding:18px;margin:16px 0}
+.ledsim-stage{display:flex;align-items:center;gap:18px;justify-content:center;padding:10px 0 16px}
+.ledsim .led{width:74px;height:74px;border-radius:50%;background:#3b0a0a;border:4px solid #475569;
+  transition:background .05s,box-shadow .05s}
+.ledsim .led.on{background:#ff3b3b;box-shadow:0 0 18px 8px rgba(255,59,59,.65),0 0 60px 24px rgba(255,59,59,.35)}
+.ledsim-state{font-size:1.1rem;font-weight:700;min-width:130px}
+.ledsim-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:12px}
+.ledsim label{display:block;font-size:.92rem}
+.ledsim input[type=range]{width:100%;accent-color:#38bdf8}
+.ledsim .row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
+.ledsim pre{background:#020617;font-size:.85rem}
+.ledsim .btn.alt{background:#1e293b;color:#e2e8f0;border-color:#334155}
+/* Віртуальна кнопка */
+.buttonsim{background:#0f172a;color:#e2e8f0;border-radius:14px;padding:18px;margin:16px 0}
+.buttonsim-stage{display:flex;align-items:center;justify-content:space-around;gap:20px;padding:14px 0 18px;flex-wrap:wrap}
+.push-btn-box{display:flex;flex-direction:column;align-items:center;gap:8px}
+.push-btn{width:90px;height:90px;border-radius:18px;background:linear-gradient(145deg,#334155,#1e293b);
+  border:4px solid #475569;box-shadow:0 8px 0 #0f172a,0 12px 16px rgba(0,0,0,.4);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-weight:700;color:#f8fafc;font-size:.95rem;user-select:none;transition:transform .06s,box-shadow .06s;
+  outline:none;-webkit-tap-highlight-color:transparent}
+.push-btn:active,.push-btn.pressed{transform:translateY(6px);box-shadow:0 2px 0 #0f172a,0 4px 8px rgba(0,0,0,.4);
+  background:linear-gradient(145deg,#0284c7,#0369a1);border-color:#38bdf8}
+.push-btn .btn-cap{width:54px;height:54px;border-radius:50%;background:#e11d48;box-shadow:inset 0 3px 6px rgba(255,255,255,.4),0 2px 4px rgba(0,0,0,.3);transition:background .06s}
+.push-btn:active .btn-cap,.push-btn.pressed .btn-cap{background:#be123c}
+.pin-monitor{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px 18px;font-family:Consolas,monospace;font-size:.92rem;min-width:210px}
+.pin-monitor .val{font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block}
+/* Віртуальний світлофор */
+.trafficsim{background:#0f172a;color:#e2e8f0;border-radius:14px;padding:18px;margin:16px 0}
+.trafficsim-stage{display:flex;align-items:center;justify-content:center;gap:30px;padding:16px 0;flex-wrap:wrap}
+.traffic-housing{background:#1e293b;border:4px solid #334155;border-radius:24px;padding:16px 14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 10px 25px rgba(0,0,0,.5);align-items:center}
+.traffic-lamp{width:56px;height:56px;border-radius:50%;background:#1e1e24;border:3px solid #0f172a;transition:background .1s,box-shadow .1s}
+.traffic-lamp.red.on{background:#ef4444;box-shadow:0 0 20px 8px rgba(239,68,68,.7)}
+.traffic-lamp.yellow.on{background:#eab308;box-shadow:0 0 20px 8px rgba(234,179,8,.7)}
+.traffic-lamp.green.on{background:#22c55e;box-shadow:0 0 20px 8px rgba(34,197,94,.7)}
+.traffic-phase-desc{font-size:1.05rem;font-weight:700;color:#38bdf8;margin-bottom:8px}
+
+@media(max-width:600px){.site-header h1{font-size:1.35rem}.lesson-row .tm{display:none}.ledsim-stage,.buttonsim-stage,.trafficsim-stage{flex-direction:column;gap:12px}}
