@@ -3,87 +3,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Урок 01 — Твій перший сигнал | Адаптивна цифрова майстерня</title>
-<link rel="stylesheet" href="../../assets/style.css">
+<title>Урок 1. Твій перший сигнал</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Унікальні стилі цього уроку. Спільні — у ../../assets/lesson.css */
+.hero { max-width: 1240px; margin: 0 auto; padding: 24px 24px 56px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.hero .kicker { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+.hero h1 { font-size: clamp(38px, 6vw, 68px); font-weight: 700; margin: 0 0 20px; }
+.hero .promise { font-size: 21px; line-height: 1.5; max-width: 30ch; margin: 0 0 28px; }
+.hero-board svg.board { width: 100%; height: auto; filter: drop-shadow(0 18px 28px rgba(12, 42, 49, .22)); }
+.morse { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 22px; }
+.morse i { display: block; height: 10px; border-radius: 5px; background: var(--line); transition: background .08s; }
+.morse i.dot { width: 10px; }
+.morse i.dash { width: 30px; }
+.morse i.gap { width: 14px; background: none; }
+.morse.inline { display: inline-flex; gap: 5px; margin: 0 4px; vertical-align: middle; }
+.morse.inline i { background: var(--signal); height: 8px; }
+.morse.inline i.dot { width: 8px; }
+.morse.inline i.dash { width: 24px; }
+.morse.inline i.gap { width: 6px; background: none; }
+.morse i.lit { background: var(--signal); box-shadow: 0 0 10px rgba(229, 56, 59, .6); }
+.hero-board figcaption { text-align: center; color: var(--muted); font-size: 14px; margin-top: 10px; }
+/* ---------- board svg ---------- */
+.board { --l-led: #5B2C2C; --l-glow: 0; }
+.board.on { --l-led: #FF5A5C; --l-glow: 1; }
+ol.how { counter-reset: how; list-style: none; padding: 0; margin: 18px 0; }
+.read-as td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+figure.fig .canvas { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-m); padding: 12px; }
+.flow { stroke-dasharray: 6 12; animation: flow 0.9s linear infinite; }
+@keyframes flow { to { stroke-dashoffset: -18; } }
+.blink-1s { animation: blink 2s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.board.blink-1s { animation: none; }
+.board-blink { animation: boardblink 2s steps(1) infinite; }
+@keyframes boardblink { 0% { --l-led: #FF5A5C; --l-glow: 1; } 50% { --l-led: #5B2C2C; --l-glow: 0; } }
+/* ---------- lab ---------- */
+.btn-run svg { width: 12px; height: 12px; }
+.btn-run[aria-pressed="true"] { background: #33545C; }
+.lab-body { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+.gutter .err { color: #fff; background: var(--signal); border-radius: 3px; padding: 0 3px; margin-right: -3px; }
+.stage { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.leds { display: flex; gap: 28px; justify-content: center; padding: 18px 0 6px; min-height: 150px; align-items: flex-end; }
+.ledbox { display: flex; flex-direction: column; align-items: center; gap: 8px; font: 13px var(--mono); color: #8FB0B4; }
+.ledbox svg { width: 56px; height: 104px; overflow: visible; }
+.ledbox .dome { fill: var(--off); transition: fill .04s; }
+.ledbox .glow { fill: var(--on); opacity: 0; transition: opacity .04s; }
+.ledbox.on .dome { fill: var(--on); }
+.ledbox.on .glow { opacity: .55; }
+.ledbox.dim .dome { fill: color-mix(in srgb, var(--on) 45%, var(--off)); }
+.ledbox.dim .glow { opacity: .12; }
+.ledbox .st { font-size: 12px; color: #DCEAE8; min-height: 1.3em; }
+.timing { background: var(--pcb-panel); border-radius: 10px; padding: 10px 12px 8px; }
+.timing svg { width: 100%; height: auto; display: block; }
+.timing p { margin: 4px 0 0; font-size: 13px; color: #8FB0B4; }
+.sliders { display: grid; gap: 12px; }
+.sliders label { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-size: 14px; }
+.sliders label b { font: 600 14px var(--mono); color: #F2A65A; }
+@media (max-width: 1000px) {
+  .hero-board { max-width: 520px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow, .blink-1s, .board-blink { animation: none; }
+}
+</style>
+<link rel="stylesheet" href="../../assets/lesson.css">
 </head>
 <body data-lesson="m1-l01" data-root="../../">
 
-<header class="site-header">
-  <div class="wrap">
-    <div class="crumbs" id="crumbs"></div>
-    <h1>УРОК 01 · Твій перший сигнал</h1>
-    <p>Через 30 хвилин маленька плата подасть світлом сигнал SOS, і програму для неї напишеш ти.</p>
-    <div class="meta">
-      <span class="pill">⏱ ~45 хв основа + бонус</span>
-      <span class="pill">🧠 Нічого знати не треба</span>
-      <span class="pill">💻 Тільки браузер, плата не обов'язкова</span>
-    </div>
+<!-- Arduino Uno, top view. LED «L» colour comes from --l-led on the host svg. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="lglow"><stop offset="0" stop-color="#FF6B6D" stop-opacity=".9"/><stop offset="1" stop-color="#FF6B6D" stop-opacity="0"/></radialGradient>
+    <symbol id="uno" viewBox="0 0 320 220">
+      <rect x="14" y="10" width="300" height="200" rx="12" fill="#0E6673" stroke="#0A4A54" stroke-width="2"/>
+      <g fill="#F2F5F4" stroke="#0A4A54"><circle cx="34" cy="190" r="6"/><circle cx="294" cy="30" r="6"/><circle cx="294" cy="190" r="6"/><circle cx="110" cy="30" r="6"/></g>
+      <!-- USB + power jack -->
+      <rect x="0" y="40" width="56" height="48" rx="3" fill="#C9D3D8" stroke="#7F8E96" stroke-width="2"/>
+      <rect x="6" y="50" width="44" height="28" rx="2" fill="#AEB9BF"/>
+      <rect x="0" y="146" width="48" height="40" rx="4" fill="#20282D"/>
+      <circle cx="22" cy="166" r="9" fill="#11171A"/>
+      <!-- reset -->
+      <rect x="66" y="18" width="22" height="22" rx="3" fill="#D9E1E4"/><circle cx="77" cy="29" r="6" fill="#C23A3A"/>
+      <!-- digital header -->
+      <rect x="128" y="18" width="176" height="16" rx="2" fill="#1B2226"/>
+      <g fill="#3B464C"><rect x="133" y="22" width="7" height="8"/><rect x="143" y="22" width="7" height="8"/><rect x="153" y="22" width="7" height="8"/><rect x="163" y="22" width="7" height="8"/><rect x="183" y="22" width="7" height="8"/><rect x="193" y="22" width="7" height="8"/><rect x="203" y="22" width="7" height="8"/><rect x="213" y="22" width="7" height="8"/><rect x="223" y="22" width="7" height="8"/><rect x="233" y="22" width="7" height="8"/><rect x="243" y="22" width="7" height="8"/><rect x="253" y="22" width="7" height="8"/><rect x="263" y="22" width="7" height="8"/><rect x="273" y="22" width="7" height="8"/><rect x="283" y="22" width="7" height="8"/><rect x="293" y="22" width="7" height="8"/></g>
+      <rect x="173" y="22" width="7" height="8" fill="#E9B949"/>
+      <g font-family="JetBrains Mono, monospace" font-size="8" fill="#CFE6E5"><text x="170" y="45" text-anchor="end">GND</text><text x="174" y="45" fill="#E9B949" font-weight="600">13</text></g>
+      <!-- status LEDs -->
+      <circle cx="152" cy="68" r="16" fill="url(#lglow)" style="opacity:var(--l-glow,0)"/>
+      <rect x="146" y="64" width="12" height="7" rx="1.5" style="fill:var(--l-led,#5B2C2C)"/>
+      <text x="166" y="71" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600" fill="#fff">L</text>
+      <rect x="146" y="80" width="12" height="7" rx="1.5" fill="#4E5C33"/><text x="166" y="87" font-family="JetBrains Mono, monospace" font-size="7" fill="#CFE6E5">TX</text>
+      <rect x="146" y="92" width="12" height="7" rx="1.5" fill="#4E5C33"/><text x="166" y="99" font-family="JetBrains Mono, monospace" font-size="7" fill="#CFE6E5">RX</text>
+      <rect x="262" y="62" width="12" height="7" rx="1.5" fill="#5CF08A"/><text x="280" y="69" font-family="JetBrains Mono, monospace" font-size="7" fill="#CFE6E5">ON</text>
+      <!-- label -->
+      <text x="200" y="98" font-family="Unbounded, sans-serif" font-size="24" font-weight="700" fill="#E8F3F2" font-style="italic">UNO</text>
+      <!-- chip -->
+      <g fill="#B8C2C6"><rect x="160" y="124" width="4" height="6"/><rect x="172" y="124" width="4" height="6"/><rect x="184" y="124" width="4" height="6"/><rect x="196" y="124" width="4" height="6"/><rect x="208" y="124" width="4" height="6"/><rect x="220" y="124" width="4" height="6"/><rect x="232" y="124" width="4" height="6"/><rect x="244" y="124" width="4" height="6"/><rect x="256" y="124" width="4" height="6"/><rect x="268" y="124" width="4" height="6"/><rect x="160" y="164" width="4" height="6"/><rect x="172" y="164" width="4" height="6"/><rect x="184" y="164" width="4" height="6"/><rect x="196" y="164" width="4" height="6"/><rect x="208" y="164" width="4" height="6"/><rect x="220" y="164" width="4" height="6"/><rect x="232" y="164" width="4" height="6"/><rect x="244" y="164" width="4" height="6"/><rect x="256" y="164" width="4" height="6"/><rect x="268" y="164" width="4" height="6"/></g>
+      <rect x="154" y="130" width="124" height="34" rx="3" fill="#1B2226"/>
+      <circle cx="164" cy="147" r="3" fill="#2C363B"/>
+      <!-- crystal + caps -->
+      <rect x="88" y="120" width="34" height="14" rx="7" fill="#C9D3D8"/>
+      <circle cx="80" cy="102" r="10" fill="#2E3A40"/><circle cx="80" cy="102" r="7" fill="#46555C"/>
+      <!-- power/analog header -->
+      <rect x="140" y="188" width="160" height="16" rx="2" fill="#1B2226"/>
+      <g fill="#3B464C"><rect x="146" y="192" width="7" height="8"/><rect x="156" y="192" width="7" height="8"/><rect x="166" y="192" width="7" height="8"/><rect x="176" y="192" width="7" height="8"/><rect x="186" y="192" width="7" height="8"/><rect x="196" y="192" width="7" height="8"/><rect x="216" y="192" width="7" height="8"/><rect x="226" y="192" width="7" height="8"/><rect x="236" y="192" width="7" height="8"/><rect x="246" y="192" width="7" height="8"/><rect x="256" y="192" width="7" height="8"/><rect x="266" y="192" width="7" height="8"/></g>
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="topbar" aria-label="Навігація курсом">
+  <div class="crumbs">
+    <a href="../../index.html">Карта курсу</a>
+    <span aria-hidden="true">/</span><span>Модуль 1. Основи Arduino</span>
   </div>
+  <a href="lesson-02.html">Урок 2 →</a>
+</nav>
+
+<header class="hero">
+  <div>
+    <p class="kicker">Модуль 1, урок 1</p>
+    <h1>Твій перший сигнал</h1>
+    <p class="promise">Через 30 хвилин маленька плата подасть світлом сигнал SOS, і програму для неї напишеш ти.</p>
+    <ul class="facts">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>45 хв основа і бонус</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>Знати нічого не треба</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Тільки браузер, плата не обов'язкова</li>
+    </ul>
+  </div>
+  <figure class="hero-board" style="margin:0">
+    <svg class="board" id="hero-board" viewBox="0 0 320 220" role="img" aria-label="Плата Arduino Uno, вбудований світлодіод L блимає сигналом SOS"><use href="#uno"/></svg>
+    <div class="morse" id="hero-morse" aria-hidden="true"></div>
+    <figcaption>Так виглядатиме твій результат: світлодіод L передає SOS</figcaption>
+  </figure>
 </header>
 
-<main>
+<div class="layout">
+  <aside class="toc" aria-label="Зміст уроку">
+    <ol>
+      <li><a href="#s0"><b>0</b>Спробуй зараз</a></li>
+      <li><a href="#s1"><b>1</b>Перший успіх</a></li>
+      <li><a href="#s2"><b>2</b>Свій світлодіод</a></li>
+      <li><a href="#s3"><b>3</b>Пограй із часом</a></li>
+      <li><a href="#s4"><b>4</b>Зламай його</a></li>
+      <li><a href="#s5"><b>5</b>Сигнал SOS</a></li>
+      <li><a href="#s6"><b>6</b>Перевір себе</a></li>
+      <li><a href="#s7"><b>★</b>Справжня плата</a></li>
+      <li><a href="#s8"><b>✓</b>Завершення</a></li>
+    </ol>
+    <div class="meter"><p>Чек-лист: <b id="meter-text">0 з 5</b></p><div class="bar"><span id="meter-bar"></span></div></div>
+  </aside>
 
-  <!-- ===== ГАЧОК ===== -->
-  <p class="lead">Уяви світну куртку для велосипедиста, яка сама блимає в темряві. Або лампу, що вмикається, коли ти заходиш у кімнату. Або горщик, який сам просить води.</p>
-  <p class="lead">Усе це роблять <strong>невеликі плати з мозком</strong>, такі як <strong>Arduino</strong>. У них немає екрана, зате вони відчувають світ (світло, дотик, тепло, відстань) і керують світлом, звуком, моторами. Сьогодні ти зробиш перший крок: навчиш плату <strong>говорити світлом</strong>.</p>
-
-  <div class="box ok">
-    <div class="box-title">🛡 Не бійся помилитися</div>
-    Усе, що ми робимо, відбувається у <strong>симуляторі</strong>, тобто у віртуальній майстерні в браузері. Зламати там нічого неможливо. Помилився? Просто натисни «Стоп» і спробуй ще раз.
-  </div>
-
-  <div class="step"><span class="num">0</span><h2>Спробуй зараз, нічого не встановлюючи</h2></div>
-  <p>Перед тобою <strong>віртуальний маяк</strong>. Покрути повзунки й подивися, що станеться. Праворуч видно <strong>програму</strong>, яка керує світлом: тепер ти бачиш, як вона працює.</p>
-
-  <div class="ledsim" id="ledsim">
-    <div class="ledsim-stage">
-      <div class="led" id="sim-led"></div>
-      <div class="ledsim-state" id="sim-state">не світиться</div>
+  <main>
+    <div class="prose">
+      <p class="lead">Уяви світну куртку для велосипедиста, яка сама блимає в темряві. Або лампу, що вмикається, коли ти заходиш у кімнату. Або горщик, який сам просить води.</p>
+      <p class="lead">Усе це роблять <strong>невеликі плати з мозком</strong>, такі як <strong>Arduino</strong>. У них немає екрана, зате вони відчувають світ (світло, дотик, тепло, відстань) і керують світлом, звуком, моторами. Сьогодні ти зробиш перший крок: навчиш плату <strong>говорити світлом</strong>.</p>
     </div>
-    <div class="ledsim-controls">
-      <label>Світиться: <b id="on-val">1000</b> мс
-        <input type="range" id="on-range" min="10" max="3000" step="10" value="1000"></label>
-      <label>Не світиться: <b id="off-val">1000</b> мс
-        <input type="range" id="off-range" min="10" max="3000" step="10" value="1000"></label>
-    </div>
-    <div class="row">
-      <button class="btn" id="sim-start">▶ Запустити блимання</button>
-      <button class="btn alt" id="sim-sos">🆘 Показати SOS</button>
-    </div>
-<pre id="sim-code"></pre>
-    <div class="note">1000 мілісекунд (мс) = 1 секунда. Спробуй поставити обидва повзунки на мінімум: що ти бачиш?</div>
-  </div>
+    <div class="callout safe"><b>Не бійся помилитися</b>Усе, що ми робимо, відбувається у <strong>симуляторі</strong>, тобто у віртуальній майстерні в браузері. Зламати там нічого неможливо. Щось пішло не так? Натисни «Стоп» і спробуй ще раз.</div>
 
-  <div class="box mission">
-    <div class="box-title">🎯 Твоя місія на сьогодні</div>
-    Зробити те саме, але вже <strong>на справжній платі Arduino</strong> у віртуальній лабораторії Wokwi, а потім навчити її подавати <strong>SOS</strong>, міжнародний сигнал біди. Для цього треба знати лише кілька слів:
-  </div>
+    <!-- ===== 0 ===== -->
+    <section class="step" id="s0">
+      <div class="step-head"><span class="step-num">0</span><h2>Спробуй зараз, нічого не встановлюючи</h2></div>
+      <div class="prose">
+        <p>Нижче справжня програма для Arduino і віртуальний світлодіод. Натисни <strong>«Запустити»</strong>, а потім покрути повзунки: числа в коді зміняться разом із ними. Можна й просто клацнути в код і переписати число руками.</p>
+      </div>
 
-  <h3>📖 Слова, які ти почуєш</h3>
-  <dl class="glossary">
-    <dt>Arduino (Ардуїно)</dt><dd>Маленька плата, яка виконує твою програму. Це як мозок для пристрою.</dd>
-    <dt>Програма (код)</dt><dd>Інструкція для плати: «зроби це, потім оце». Ми пишемо її спеціальною мовою, схожою на англійську.</dd>
-    <dt>Пін</dt><dd>Один контакт-«рознімання» на платі. Через нього плата подає на пристрій сигнал.</dd>
-    <dt>Світлодіод (LED)</dt><dd>Маленька лампочка. Світиться, коли на нього подати струм.</dd>
-    <dt>Резистор</dt><dd>Маленька деталь-«обмежувач». Не пускає у світлодіод занадто багато струму.</dd>
-    <dt>Симулятор (Wokwi)</dt><dd>Віртуальна майстерня в браузері. Усе працює як насправді, але нічого не зламати.</dd>
-  </dl>
+      <div class="lab" data-lab="play" data-sliders>
+        <div class="lab-head"><span class="title">sketch.ino</span><div class="acts">
+          <button class="btn-ghost" data-load="sos">Показати SOS</button>
+          <button class="btn-ghost" data-reset>Скинути</button>
+          <button class="btn-run" data-run aria-pressed="false"></button>
+        </div></div>
+        <textarea hidden data-code>void setup() {
+  pinMode(13, OUTPUT);
+}
 
-  <!-- ===== КРОК 1 ===== -->
-  <div class="step"><span class="num">1</span><h2>Перший успіх: жодного дроту</h2></div>
-  <p>На самій платі Arduino вже є <strong>крихітний світлодіод із літерою L</strong>. Ми змусимо блимати саме його, тому збирати нічого не треба.</p>
+void loop() {
+  digitalWrite(13, HIGH);  // світлодіод УВІМКНЕНО
+  delay(1000);             // чекаємо, мілісекунди
+  digitalWrite(13, LOW);   // світлодіод ВИМКНЕНО
+  delay(1000);
+}</textarea>
+      </div>
+      <p class="prose" style="color:var(--muted);font-size:15px">1000 мілісекунд (мс) = 1 секунда. Постав обидва повзунки на мінімум: що ти бачиш?</p>
 
-  <ol>
-    <li>Відкрий <a href="https://wokwi.com/projects/new/arduino-uno" target="_blank" rel="noopener">Wokwi: новий проєкт Arduino Uno</a> (відкриється в новій вкладці). Wokwi англійською, це нормально.</li>
-    <li>У лівій частині екрана знайди вкладку <code>sketch.ino</code>. Там уже є чужий код.</li>
-    <li>Клікни у вікно коду, натисни <code>Ctrl + A</code> (виділити все) і <code>Delete</code>.</li>
-    <li>Скопіюй код нижче (кнопка «Копіювати») і встав у порожнє вікно: <code>Ctrl + V</code>.</li>
-    <li>Натисни велику <strong>зелену кнопку ▶</strong> над схемою.</li>
-  </ol>
+      <div class="callout"><b>Твоя місія на сьогодні</b>Зробити те саме, але вже <strong>на справжній платі Arduino</strong> у віртуальній лабораторії Wokwi, а потім навчити її подавати <strong>SOS</strong>, міжнародний сигнал біди. Для цього треба знати лише кілька слів.</div>
 
-  <div class="codewrap">
-    <button class="copy-btn" data-target="code-first">Копіювати</button>
-<pre id="code-first">void setup() {
+      <h3>Слова, які ти почуєш</h3>
+      <dl class="parts">
+        <div><svg viewBox="0 0 44 44" fill="none"><rect x="3" y="8" width="38" height="28" rx="4" fill="#0E6673"/><rect x="16" y="17" width="14" height="10" rx="1" fill="#1B2226"/><rect x="7" y="11" width="22" height="3" fill="#1B2226"/><circle cx="35" cy="14" r="2" fill="#5CF08A"/></svg><dt>Arduino</dt><dd>Маленька плата, яка виконує твою програму. Це як мозок для пристрою.</dd></div>
+        <div><svg viewBox="0 0 44 44" fill="none" stroke="#0E6673" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12l-9 10 9 10M29 12l9 10-9 10M25 8l-6 28"/></svg><dt>Програма (код)</dt><dd>Інструкція для плати: «зроби це, потім оце». Пишемо мовою, схожою на англійську.</dd></div>
+        <div><svg viewBox="0 0 44 44"><rect x="4" y="16" width="36" height="12" rx="2" fill="#1B2226"/><g fill="#3B464C"><rect x="8" y="19" width="5" height="6"/><rect x="15" y="19" width="5" height="6"/><rect x="29" y="19" width="5" height="6"/></g><rect x="22" y="19" width="5" height="6" fill="#E9B949"/><path d="M24.5 16V5" stroke="#16A34A" stroke-width="3"/></svg><dt>Пін</dt><dd>Один контакт-«рознімання» на платі. Через нього плата подає на пристрій сигнал.</dd></div>
+        <div><svg viewBox="0 0 44 44"><path d="M13 22v-6a9 9 0 0118 0v6z" fill="#E5383B"/><rect x="11" y="22" width="22" height="4" rx="1" fill="#B42324"/><path d="M17 26v15M27 26v10" stroke="#8A979E" stroke-width="2.5"/></svg><dt>Світлодіод (LED)</dt><dd>Маленька лампочка. Світиться, коли через неї йде струм.</dd></div>
+        <div><svg viewBox="0 0 44 44"><path d="M2 22h8M34 22h8" stroke="#8A979E" stroke-width="2.5"/><rect x="10" y="15" width="24" height="14" rx="6" fill="#E8D3A9"/><rect x="14" y="15" width="3" height="14" fill="#D7262A"/><rect x="20" y="15" width="3" height="14" fill="#D7262A"/><rect x="26" y="15" width="3" height="14" fill="#7A4318"/></svg><dt>Резистор</dt><dd>Деталь-«обмежувач». Не пускає у світлодіод занадто багато струму.</dd></div>
+        <div><svg viewBox="0 0 44 44"><rect x="3" y="7" width="38" height="30" rx="4" fill="none" stroke="#0E6673" stroke-width="3"/><path d="M3 15h38" stroke="#0E6673" stroke-width="3"/><path d="M18 21v11l9-5.5z" fill="#E5383B"/></svg><dt>Симулятор (Wokwi)</dt><dd>Віртуальна майстерня в браузері. Усе працює як насправді, але нічого не зламати.</dd></div>
+      </dl>
+    </section>
+
+    <!-- ===== 1 ===== -->
+    <section class="step" id="s1">
+      <div class="step-head"><span class="step-num">1</span><h2>Перший успіх: жодного дроту</h2></div>
+      <div class="prose"><p>На самій платі Arduino вже є <strong>крихітний світлодіод із літерою L</strong>. Ми змусимо блимати саме його, тому збирати нічого не треба.</p></div>
+
+      <figure class="fig">
+        <div class="canvas">
+          <svg viewBox="0 0 640 270" role="img" aria-label="Де на платі світлодіод L: поруч із піном 13">
+            <svg x="150" y="20" width="340" height="234" viewBox="0 0 320 220" class="board board-blink"><use href="#uno"/></svg>
+            <g font-family="Golos Text, sans-serif" font-size="14" fill="#14232B">
+              <path d="M308 90 C 280 50, 220 34, 140 34" fill="none" stroke="#E5383B" stroke-width="2"/><circle cx="310" cy="92" r="4" fill="#E5383B"/>
+              <text x="18" y="30" font-weight="600">Світлодіод L</text><text x="18" y="48" fill="#55666E" font-size="13">він і блиматиме</text>
+              <path d="M338 45 C 360 10, 470 10, 500 20" fill="none" stroke="#B9761C" stroke-width="2"/><circle cx="338" cy="45" r="4" fill="#B9761C"/>
+              <text x="506" y="22" font-weight="600">Пін 13</text><text x="506" y="40" fill="#55666E" font-size="13">L з'єднаний з ним</text>
+              <path d="M160 100 L 120 136" fill="none" stroke="#8A979E" stroke-width="2"/><circle cx="160" cy="100" r="4" fill="#8A979E"/>
+              <text x="18" y="152" font-weight="600">USB</text><text x="18" y="170" fill="#55666E" font-size="13">живлення і програма</text>
+            </g>
+          </svg>
+        </div>
+      </figure>
+
+      <ol class="how">
+        <li>Відкрий <a href="https://wokwi.com/projects/new/arduino-uno" target="_blank" rel="noopener">Wokwi: новий проєкт Arduino Uno</a>. Він відкриється в новій вкладці англійською, це нормально.</li>
+        <li>Ліворуч знайди вкладку <code>sketch.ino</code>. Там уже є чужий код.</li>
+        <li>Клікни у вікно коду, натисни <kbd>Ctrl</kbd> + <kbd>A</kbd> (виділити все) і <kbd>Delete</kbd>.</li>
+        <li>Скопіюй код нижче кнопкою «Копіювати» і встав у порожнє вікно: <kbd>Ctrl</kbd> + <kbd>V</kbd>.</li>
+        <li>Натисни велику <strong>зелену кнопку ▶</strong> над схемою.</li>
+      </ol>
+
+      <div class="code" data-static><div class="bar-top"><span>sketch.ino</span><div><button class="btn-ghost" data-try="play">Спробувати тут</button><button class="btn-ghost" data-copy>Копіювати</button></div></div><pre>void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 }
 
@@ -92,104 +240,92 @@ void loop() {
   delay(1000);
   digitalWrite(LED_BUILTIN, LOW);
   delay(1000);
-}</pre>
-  </div>
+}</pre></div>
 
-  <div class="win"><strong>🎉 Перший успіх!</strong><br>
-    Якщо на платі блимає маленький світлодіод, у тебе щойно вийшло запрограмувати свій перший пристрій. Серйозно: більшість людей ніколи цього не пробували.</div>
+      <div class="win"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><div><b>Перший успіх!</b>Якщо на платі блимає маленький світлодіод, у тебе щойно вийшло запрограмувати свій перший пристрій. Серйозно: більшість людей ніколи цього не пробували.</div></div>
 
-  <h3>Що вийшло в коді? Читаємо його як речення</h3>
-  <table>
-    <tr><th>Рядок</th><th>Людською мовою</th></tr>
-    <tr><td><code>void setup()</code></td><td><strong>«Підготовка»</strong>. Виконується один раз, коли плату вмикають.</td></tr>
-    <tr><td><code>pinMode(LED_BUILTIN, OUTPUT)</code></td><td>«Пін, до якого підключений світлодіод L, буде <strong>видавати</strong> сигнал».</td></tr>
-    <tr><td><code>void loop()</code></td><td><strong>«Повторювати завжди»</strong>. Усе всередині крутиться по колу.</td></tr>
-    <tr><td><code>digitalWrite(..., HIGH)</code></td><td>«<strong>Увімкни</strong> світлодіод».</td></tr>
-    <tr><td><code>delay(1000)</code></td><td>«<strong>Чекай</strong> 1000 мілісекунд» (це 1 секунда).</td></tr>
-    <tr><td><code>digitalWrite(..., LOW)</code></td><td>«<strong>Вимкни</strong> світлодіод».</td></tr>
-  </table>
+      <h3>Що вийшло в коді? Читаємо його як речення</h3>
+      <div class="scroll-x"><table class="read-as">
+        <tr><td><code>void setup()</code></td><td><strong>«Підготовка».</strong> Виконується один раз, коли плату вмикають.</td></tr>
+        <tr><td><code>pinMode(LED_BUILTIN, OUTPUT)</code></td><td>«Пін, до якого підключений світлодіод L, буде <strong>видавати</strong> сигнал».</td></tr>
+        <tr><td><code>void loop()</code></td><td><strong>«Повторювати завжди».</strong> Усе всередині крутиться по колу.</td></tr>
+        <tr><td><code>digitalWrite(..., HIGH)</code></td><td>«<strong>Увімкни</strong> світлодіод».</td></tr>
+        <tr><td><code>delay(1000)</code></td><td>«<strong>Чекай</strong> 1000 мілісекунд», тобто 1 секунду.</td></tr>
+        <tr><td><code>digitalWrite(..., LOW)</code></td><td>«<strong>Вимкни</strong> світлодіод».</td></tr>
+      </table></div>
 
-  <details>
-    <summary>😕 Не виходить? Перевір це</summary>
-    <ul>
-      <li><strong>Світлодіод не блимає.</strong> Чи натиснуто зелену кнопку ▶? Чи не залишилася кнопка «Стоп» червоною?</li>
-      <li><strong>Червоний текст помилки внизу.</strong> Часто це забута крапка з комою <code>;</code> в кінці рядка або зайва/відсутня дужка <code>{ }</code>. Скопіюй код ще раз повністю.</li>
-      <li><strong>Код не вставився.</strong> Спочатку клікни у вікно коду, потім <code>Ctrl + A</code>, <code>Delete</code>, <code>Ctrl + V</code>.</li>
-      <li><strong>Нічого не змінюється.</strong> Онови сторінку Wokwi й почни спочатку. Втрачати немає чого.</li>
-    </ul>
-  </details>
+      <details class="more">
+        <summary>Не виходить? Перевір це</summary>
+        <ul>
+          <li><strong>Світлодіод не блимає.</strong> Чи натиснуто зелену кнопку ▶? Чи не залишилася кнопка «Стоп» червоною?</li>
+          <li><strong>Червоний текст помилки внизу.</strong> Часто це забута крапка з комою <code>;</code> в кінці рядка або зайва чи відсутня дужка <code>{ }</code>. Скопіюй код ще раз повністю.</li>
+          <li><strong>Код не вставився.</strong> Спочатку клікни у вікно коду, потім <kbd>Ctrl</kbd> + <kbd>A</kbd>, <kbd>Delete</kbd>, <kbd>Ctrl</kbd> + <kbd>V</kbd>.</li>
+          <li><strong>Нічого не змінюється.</strong> Онови сторінку Wokwi й почни спочатку. Втрачати немає чого.</li>
+        </ul>
+      </details>
+    </section>
 
-  <!-- ===== КРОК 2 ===== -->
-  <div class="step"><span class="num">2</span><h2>Додаємо власний світлодіод</h2></div>
-  <p>Світлодіод L на платі маленький. Додамо <strong>свій, великий червоний</strong>, який видно добре. Тепер уже треба трохи «зібрати», але нічого складного: <strong>три деталі й три дроти</strong>.</p>
+    <!-- ===== 2 ===== -->
+    <section class="step" id="s2">
+      <div class="step-head"><span class="step-num">2</span><h2>Додаємо власний світлодіод</h2></div>
+      <div class="prose"><p>Світлодіод L маленький. Додамо <strong>свій, великий червоний</strong>, який добре видно. Тепер треба трохи «зібрати», але нічого складного: <strong>три деталі й три дроти</strong>.</p></div>
 
-  <figure class="figure">
-    <svg viewBox="0 0 680 230" role="img" aria-label="Схема: пін 13, резистор 220 Ом, світлодіод, земля GND" style="max-width:680px;background:#f8fafc;border-radius:10px;padding:8px">
-      <!-- Плата Arduino -->
-      <rect x="15" y="25" width="165" height="175" rx="12" fill="#0d5c75" stroke="#083344" stroke-width="2"/>
-      
-      <!-- Заголовок плати зверху (без накладок) -->
-      <text x="97" y="55" fill="#38bdf8" font-size="14" text-anchor="middle" font-weight="800" letter-spacing="1">ARDUINO UNO</text>
-      <text x="97" y="73" fill="#bae6fd" font-size="11" text-anchor="middle">плата мікроконтролера</text>
-      
-      <!-- Колодка роз'ємів праворуч на платі -->
-      <rect x="152" y="85" width="22" height="105" rx="4" fill="#091e3a"/>
-      
-      <!-- Пін 13 -->
-      <text x="142" y="114" fill="#f8fafc" font-size="12" text-anchor="end" font-weight="700">пін 13</text>
-      <circle cx="163" cy="110" r="5" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/>
+      <figure class="fig">
+        <div class="canvas">
+          <svg viewBox="0 0 760 330" role="img" aria-label="Схема: пін 13, резистор 220 Ом, анод світлодіода; катод світлодіода до GND">
+            <defs><radialGradient id="ledglow"><stop offset="0" stop-color="#FF5A5C" stop-opacity=".7"/><stop offset="1" stop-color="#FF5A5C" stop-opacity="0"/></radialGradient></defs>
+            <!-- board edge -->
+            <rect x="0" y="30" width="170" height="270" rx="12" fill="#0E6673"/>
+            <rect x="140" y="60" width="22" height="210" rx="3" fill="#1B2226"/>
+            <rect x="146" y="84" width="10" height="12" fill="#E9B949"/>
+            <rect x="146" y="234" width="10" height="12" fill="#3B464C"/>
+            <g font-family="JetBrains Mono, monospace" font-size="15" font-weight="600" fill="#fff" text-anchor="end"><text x="130" y="95">пін 13</text><text x="130" y="245">GND</text></g>
+            <text x="22" y="60" font-family="Unbounded, sans-serif" font-size="13" font-weight="700" fill="#CFE6E5">UNO</text>
+            <!-- wires -->
+            <path id="w1" d="M156 90 H250" stroke="#16A34A" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <path d="M370 90 H440 V230 H470" stroke="#16A34A" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M530 210 V270 H460 V240 H156" stroke="#1E293B" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- current flow overlay, blinks with the LED -->
+            <path class="flow blink-1s" d="M156 90 H250 M370 90 H440 V230 H470 M530 210 V270 H460 V240 H156" stroke="#FDE68A" stroke-width="2.5" fill="none"/>
+            <!-- resistor -->
+            <path d="M250 90 H268 M352 90 H370" stroke="#8A979E" stroke-width="3"/>
+            <rect x="268" y="74" width="84" height="32" rx="12" fill="#E8D3A9" stroke="#B9976A" stroke-width="1.5"/>
+            <rect x="282" y="74" width="7" height="32" fill="#D7262A"/><rect x="297" y="74" width="7" height="32" fill="#D7262A"/><rect x="312" y="74" width="7" height="32" fill="#7A4318"/><rect x="333" y="74" width="7" height="32" fill="#C9A23A"/>
+            <!-- LED: dome + legs (anode long, left) -->
+            <circle cx="500" cy="95" r="70" fill="url(#ledglow)" class="blink-1s"/>
+            <path d="M478 230 V150" stroke="#8A979E" stroke-width="4"/>
+            <path d="M522 150 V190 L530 200 V210" stroke="#8A979E" stroke-width="4" fill="none"/>
+            <path d="M470 150 V100 a30 30 0 0 1 60 0 V150 z" fill="#E5383B" opacity=".92"/>
+            <path d="M466 146 h68 v8 h-64 z" fill="#B42324"/>
+            <path d="M530 100 V154" stroke="#7F1D1D" stroke-width="3"/>
+            <!-- labels -->
+            <g font-family="Golos Text, sans-serif" font-size="14">
+              <text x="310" y="132" text-anchor="middle" font-weight="600" fill="#14232B">резистор 220 Ом</text>
+              <text x="310" y="150" text-anchor="middle" fill="#55666E" font-size="13">червоний, червоний, коричневий</text>
+              <text x="560" y="62" font-weight="600" fill="#14232B">світлодіод</text>
+              <path d="M474 186 H400" stroke="#1F8A5B" stroke-width="1.5"/><text x="300" y="190" font-weight="600" fill="#1F8A5B">+ анод</text><text x="300" y="207" fill="#55666E" font-size="13">довга ніжка</text>
+              <path d="M538 176 H600" stroke="#B42324" stroke-width="1.5"/><text x="606" y="172" font-weight="600" fill="#B42324">− катод</text><text x="606" y="189" fill="#55666E" font-size="13">коротка ніжка,</text><text x="606" y="205" fill="#55666E" font-size="13">плоский бік</text>
+              <text x="310" y="292" text-anchor="middle" fill="#55666E" font-size="13">повернення у «землю» (GND)</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Струм іде замкненим колом: пін 13, резистор, світлодіод (довгою ніжкою до резистора) і назад у GND. Жовті риски показують, куди тече струм, коли світлодіод світиться.</figcaption>
+      </figure>
 
-      <!-- Пін GND -->
-      <text x="142" y="169" fill="#f8fafc" font-size="12" text-anchor="end" font-weight="700">GND</text>
-      <circle cx="163" cy="165" r="5" fill="#64748b" stroke="#334155" stroke-width="1.5"/>
+      <ol class="how">
+        <li>У Wokwi натисни синю кнопку <strong>«+»</strong> (Add a new part) над схемою. Вибери <strong>LED</strong> і постав на екран. Так само додай <strong>Resistor</strong>.</li>
+        <li>Клікни на резистор і встанови значення <code>220</code> (Ом).</li>
+        <li>Щоб з'єднати, <strong>клікни на один контакт</strong>, потім <strong>на другий</strong>. З'явиться дріт. Потрібні три дроти:
+          <ul>
+            <li>пін <strong>13</strong> плати до одного боку резистора;</li>
+            <li>інший бік резистора до <strong>A</strong> (анод, довга ніжка) світлодіода;</li>
+            <li><strong>C</strong> (катод, коротка ніжка) світлодіода до <strong>GND</strong> плати.</li>
+          </ul>
+        </li>
+        <li>У коді замість <code>LED_BUILTIN</code> напиши <code>13</code> або встав готовий код нижче.</li>
+      </ol>
 
-      <!-- Верхній дріт (зелений: сигнал від піна 13) -->
-      <path d="M168 110 H240" stroke="#16a34a" stroke-width="4" fill="none"/>
-      
-      <!-- Резистор 220 Ом -->
-      <rect x="240" y="94" width="85" height="32" rx="6" fill="#fde68a" stroke="#b45309" stroke-width="2"/>
-      <!-- Кольорові смужки резистора: червона, червона, коричнева -->
-      <rect x="256" y="94" width="7" height="32" fill="#dc2626"/>
-      <rect x="272" y="94" width="7" height="32" fill="#dc2626"/>
-      <rect x="288" y="94" width="7" height="32" fill="#78350f"/>
-      <rect x="306" y="94" width="7" height="32" fill="#d97706"/>
-      <text x="282" y="145" text-anchor="middle" font-size="12" font-weight="700" fill="#78350f">резистор 220 Ом</text>
-
-      <!-- Дріт від резистора до світлодіода -->
-      <path d="M325 110 H415" stroke="#16a34a" stroke-width="4" fill="none"/>
-
-      <!-- Світлодіод (LED) -->
-      <polygon points="415,80 415,140 465,110" fill="#ef4444" stroke="#7f1d1d" stroke-width="2"/>
-      <line x1="465" y1="78" x2="465" y2="142" stroke="#7f1d1d" stroke-width="4"/>
-      
-      <!-- Позначення полярності ніжок -->
-      <text x="405" y="68" text-anchor="middle" font-size="11" fill="#15803d" font-weight="700">+ анод (довга ніжка)</text>
-      <text x="495" y="68" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="700">− катод (коротка)</text>
-      <text x="440" y="160" text-anchor="middle" font-size="13" font-weight="700" fill="#7f1d1d">світлодіод (LED)</text>
-
-      <!-- Нижній дріт (чорний: замкнення кола на GND) -->
-      <path d="M465 110 H540 V165 H168" stroke="#1e293b" stroke-width="4" fill="none"/>
-      <text x="350" y="185" text-anchor="middle" font-size="11" fill="#475569">зворотний струм у «землю» (GND)</text>
-    </svg>
-    <figcaption>Струм іде замкненим колом: пін 13 → резистор → світлодіод (довгою ніжкою до резистора) → назад у GND.</figcaption>
-  </figure>
-
-  <ol>
-    <li>У Wokwi натисни синю кнопку <strong>«+»</strong> (Add a new part) над схемою. Вибери <strong>LED</strong> і постав на екран. Потім так само додай <strong>Resistor</strong>.</li>
-    <li>Клікни на резистор і встанови значення <code>220</code> (Ом).</li>
-    <li>Щоб з'єднати: <strong>клікни на один контакт</strong>, потім <strong>на другий</strong>. З'явиться дріт. Зроби так:
-      <ul>
-        <li>пін <strong>13</strong> плати → один бік резистора;</li>
-        <li>інший бік резистора → <strong>A</strong> (анод, довга ніжка) світлодіода;</li>
-        <li><strong>C</strong> (катод, коротка ніжка) світлодіода → <strong>GND</strong> плати.</li>
-      </ul>
-    </li>
-    <li>У коді замість <code>LED_BUILTIN</code> напиши <code>13</code>, або встав готовий код нижче.</li>
-  </ol>
-
-  <div class="codewrap">
-    <button class="copy-btn" data-target="code-blink">Копіювати</button>
-<pre id="code-blink">const int LED_PIN = 13;        // номер піна, до якого підключений світлодіод
+      <div class="code" data-static><div class="bar-top"><span>sketch.ino</span><div><button class="btn-ghost" data-try="play">Спробувати тут</button><button class="btn-ghost" data-copy>Копіювати</button></div></div><pre>const int LED_PIN = 13;        // номер піна, до якого підключений світлодіод
 
 void setup() {
   pinMode(LED_PIN, OUTPUT);    // цей пін видає сигнал
@@ -200,26 +336,19 @@ void loop() {
   delay(1000);                 // чекати 1 секунду
   digitalWrite(LED_PIN, LOW);  // вимкнути
   delay(1000);                 // чекати 1 секунду
-}</pre>
-  </div>
+}</pre></div>
 
-  <div class="box mission">
-    <div class="box-title">💬 Навіщо потрібен резистор?</div>
-    Уяви, що струм це вода в трубі, а світлодіод це крихкий скляний кухоль. Якщо направити в нього воду з повної сили, він трісне. Резистор, це вузьке місце в трубі: він пускає рівно стільки води, скільки кухоль витримає. <strong>Правило майстерні: світлодіод завжди ставимо через резистор 220 Ом.</strong>
-  </div>
+      <div class="callout"><b>Навіщо потрібен резистор?</b>Уяви, що струм це вода в трубі, а світлодіод це крихкий скляний кухоль. Якщо направити в нього воду з повної сили, він трісне. Резистор це вузьке місце в трубі: він пускає рівно стільки води, скільки кухоль витримає. <p><strong>Правило майстерні: світлодіод завжди ставимо через резистор 220 Ом.</strong></p></div>
 
-  <details>
-    <summary>🧮 Для цікавих: як вирахувати цей резистор (можна пропустити)</summary>
-    <p>Живлення дає 5 В. Червоний світлодіод «забирає» близько 2 В. Решта 3 В мають лишитися на резисторі. Безпечний струм для світлодіода близько 15 мА (0,015 А).</p>
-    <p>Закон Ома: <strong>R = U / I = 3 В / 0,015 А = 200 Ом</strong>. Найближчий стандартний резистор у наборі ТЕКО: <strong>220 Ом</strong>, струм при цьому ≈ 13,6 мА.</p>
-  </details>
-
-  <details>
-    <summary>🛠 Швидкий варіант: вставити готову схему замість ручного збирання</summary>
-    <p>У Wokwi відкрий вкладку <code>diagram.json</code>, виділи все (<code>Ctrl + A</code>) і заміни вмістом нижче. <strong>Якщо з'єднання не збереться, збирай вручну за кроками вище.</strong></p>
-    <div class="codewrap">
-      <button class="copy-btn" data-target="code-diagram">Копіювати</button>
-<pre id="code-diagram">{
+      <details class="more">
+        <summary>Для цікавих: як вирахувати цей резистор</summary>
+        <p>Живлення дає 5 В. Червоний світлодіод «забирає» близько 2 В. Решта 3 В мають лишитися на резисторі. Безпечний струм для світлодіода близько 15 мА (0,015 А).</p>
+        <p>Закон Ома: <strong>R = U / I = 3 В / 0,015 А = 200 Ом</strong>. Найближчий стандартний резистор у наборі ТЕКО: <strong>220 Ом</strong>, струм при цьому близько 13,6 мА.</p>
+      </details>
+      <details class="more">
+        <summary>Швидкий варіант: вставити готову схему</summary>
+        <p>У Wokwi відкрий вкладку <code>diagram.json</code>, виділи все (<kbd>Ctrl</kbd> + <kbd>A</kbd>) і заміни вмістом нижче. Якщо з'єднання не збереться, збирай вручну за кроками вище.</p>
+        <div class="code" data-static><div class="bar-top"><span>diagram.json</span><div><button class="btn-ghost" data-copy>Копіювати</button></div></div><pre>{
   "version": 1,
   "author": "KPKTA",
   "editor": "wokwi",
@@ -234,72 +363,93 @@ void loop() {
     [ "led1:C", "uno:GND.1", "black", [ "v0" ] ]
   ],
   "dependencies": {}
-}</pre>
-    </div>
-  </details>
+}</pre></div>
+      </details>
 
-  <div class="win"><strong>🎉 Свій пристрій працює!</strong><br>
-    Тепер блимає <strong>твій</strong> світлодіод, а не вбудований. У тебе вийшло зібрати справжнє електричне коло.</div>
+      <div class="win"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><div><b>Свій пристрій працює!</b>Тепер блимає <strong>твій</strong> світлодіод, а не вбудований. У тебе вийшло зібрати справжнє електричне коло.</div></div>
+    </section>
 
-  <!-- ===== КРОК 3 ===== -->
-  <div class="step"><span class="num">3</span><h2>Пограй із часом</h2></div>
-  <p><strong>Завдання:</strong> зроби так, щоб світлодіод <strong>світився 2 секунди</strong> і <strong>не світився півсекунди</strong>.</p>
-  <p class="hint">Підказка: змінюються лише числа в дужках <code>delay( )</code>. Півсекунди це 500 мілісекунд. Можеш потренуватися на віртуальному маяку вгорі сторінки.</p>
+    <!-- ===== 3 ===== -->
+    <section class="step" id="s3">
+      <div class="step-head"><span class="step-num">3</span><h2>Пограй із часом</h2></div>
+      <div class="prose"><p><strong>Завдання:</strong> зроби так, щоб світлодіод <strong>світився 2 секунди</strong> і <strong>не світився півсекунди</strong>. Зміни код просто тут. Коли вийде, редактор сам це помітить.</p></div>
 
-  <!-- ===== КРОК 4 ===== -->
-  <div class="step"><span class="num">4</span><h2>Зламай його (це частина навчання!)</h2></div>
-  <p>Справжні інженери знають: <strong>розумієш річ тоді, коли знаєш, як вона ламається</strong>. Зроби по черзі три зміни. Дивись, що відбувається, і <strong>запиши одним реченням для себе, чому</strong>.</p>
-  <table>
-    <tr><th>№</th><th>Що змінити</th><th>Подумай</th></tr>
-    <tr><td>1</td><td>У обох <code>digitalWrite</code> заміни <code>HIGH</code> на <code>LOW</code></td><td>Що змінилося? Чому?</td></tr>
-    <tr><td>2</td><td>Заміни обидва <code>delay(1000)</code> на <code>delay(20)</code></td><td>Світлодіод блимає чи світиться постійно? Чому очі так бачать?</td></tr>
-    <tr><td>3</td><td>Прибери <code>;</code> наприкінці одного рядка</td><td>Що пише Wokwi внизу? Спробуй зрозуміти повідомлення, потім поверни крапку з комою.</td></tr>
-  </table>
-  <details>
-    <summary>🔬 Ще дві ідеї (за бажанням)</summary>
-    <ul>
-      <li>Видали рядок <code>pinMode(...)</code> і запусти. Що відбувається? <em>Результат у симуляторі й на справжній платі може відрізнятися, тож запиши, що бачиш саме ти.</em></li>
-      <li>Поміняй місцями анод і катод світлодіода у Wokwi. Чому він не світиться? (Світлодіод пропускає струм лише в один бік.)</li>
-    </ul>
-  </details>
+      <div class="lab" data-lab="time" data-check="time">
+        <div class="lab-head"><span class="title">Завдання 3</span><div class="acts">
+          <button class="btn-ghost" data-reset>Скинути</button>
+          <button class="btn-ghost" data-copy-lab>Копіювати для Wokwi</button>
+          <button class="btn-run" data-run aria-pressed="false"></button>
+        </div></div>
+        <textarea hidden data-code>const int LED_PIN = 13;
 
-  <div class="box ai">
-    <div class="box-title">🤖 Спитай ШІ як помічника, а не як виконавця</div>
-    Опиши, що бачиш, і додай свою здогадку. Наприклад:<br>
-    <em>«У мене після зміни delay(1000) на delay(20) світлодіод наче світиться постійно, хоча в коді налаштовано блимання. Здається, що око не встигає помітити. Чи правильно? Поясни простими словами.»</em><br>
-    Не бери відповідь на віру: перевір її у Wokwi.
-  </div>
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
 
-  <!-- ===== КРОК 5 ===== -->
-  <div class="step"><span class="num">5</span><h2>Виклик: сигнал SOS</h2></div>
-  <p>SOS в азбуці Морзе це <strong>три короткі, три довгі, три короткі</strong> спалахи (<code>· · ·  — — —  · · ·</code>). Натисни «Показати SOS» на віртуальному маяку вгорі, щоб побачити, як це виглядає. Обери <strong>свій рівень</strong>:</p>
+void loop() {
+  digitalWrite(LED_PIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_PIN, LOW);
+  delay(1000);
+}</textarea>
+        <div class="hints" data-hints>
+          <p hidden><span>Підказка 1.</span>Змінювати треба лише числа в дужках <code>delay( )</code>.</p>
+          <p hidden><span>Підказка 2.</span>Перший <code>delay</code> стоїть після <code>HIGH</code>: це час, коли світиться. Другий стоїть після <code>LOW</code>: коли не світиться.</p>
+          <p hidden><span>Підказка 3.</span>2 секунди це <code>2000</code> мс, а півсекунди це <code>500</code> мс.</p>
+        </div>
+      </div>
+    </section>
 
-  <div data-tabs>
-    <div class="tabs">
-      <button data-tab="e">🌱 Explorer</button>
-      <button data-tab="b">🔧 Builder</button>
-      <button data-tab="m">🚀 Maker</button>
-      <button data-tab="x">🧠 Master</button>
-    </div>
-    <div class="panel" data-panel="e">
-      <strong>Explorer: «Я досліджую».</strong> Почни з готового рішення нижче (відкрий блок «Рішення»). Запусти його у Wokwi, потім зміни швидкість: число <code>UNIT</code> (спробуй 100 і 400). Поясни своїми словами, що робить кожен рядок.
-    </div>
-    <div class="panel" data-panel="b">
-      <strong>Builder: «Я доповнюю».</strong> Напиши SOS сама(сам) через дві функції: <code>dot()</code> (короткий спалах) і <code>dash()</code> (довгий). Додай паузу 2 секунди між повтореннями сигналу.
-    </div>
-    <div class="panel" data-panel="m">
-      <strong>Maker: «Я проєктую».</strong> Додай <strong>другий світлодіод</strong> (інший колір) на пін 12: він має світитися лише в паузі між сигналами SOS. Підключи його так само, через резистор 220 Ом.
-    </div>
-    <div class="panel" data-panel="x">
-      <strong>Master: «Я оптимізую».</strong> Перепиши SOS <strong>без <code>delay()</code></strong>: використай <code>millis()</code> і масив тривалостей. Мета: щоб плата могла «одночасно» робити щось інше.
-    </div>
-  </div>
+    <!-- ===== 4 ===== -->
+    <section class="step" id="s4">
+      <div class="step-head"><span class="step-num">4</span><h2>Зламай його (це частина навчання)</h2></div>
+      <div class="prose"><p>Справжні інженери знають: <strong>розумієш річ тоді, коли знаєш, як вона ламається</strong>. Зроби по черзі три зміни, подивись, що відбувається, і <strong>запиши одним реченням для себе, чому</strong>. Кнопка «Зламати» внесе зміну в редактор нижче.</p></div>
 
-  <details>
-    <summary>👀 Рішення SOS (відкривай після власної спроби!)</summary>
-    <div class="codewrap">
-      <button class="copy-btn" data-target="code-sos">Копіювати</button>
-<pre id="code-sos">const int LED_PIN = 13;
+      <div class="breaks">
+        <div class="brk"><span class="n">1</span><div><p>В обох <code>digitalWrite</code> заміни <code>HIGH</code> на <code>LOW</code>.</p><p class="think">Що змінилося? Чому?</p></div><button class="btn-line" data-break="1">Зламати</button>
+          <details><summary>Перевір свою думку</summary><p>Обидві команди тепер вимикають світлодіод. Вмикати його нікому, тож він увесь час темний.</p></details></div>
+        <div class="brk"><span class="n">2</span><div><p>Заміни обидва <code>delay(1000)</code> на <code>delay(20)</code>.</p><p class="think">Світлодіод блимає чи світиться постійно? Чому очі так бачать?</p></div><button class="btn-line" data-break="2">Зламати</button>
+          <details><summary>Перевір свою думку</summary><p>Світлодіод перемикається 25 разів на секунду. Око не встигає побачити окремі спалахи й «склеює» їх. Так само працює кіно: це окремі кадри, які ми бачимо як рух.</p></details></div>
+        <div class="brk"><span class="n">3</span><div><p>Прибери <code>;</code> наприкінці одного рядка.</p><p class="think">Що пише редактор внизу? Спробуй зрозуміти повідомлення, потім поверни крапку з комою.</p></div><button class="btn-line" data-break="3">Зламати</button>
+          <details><summary>Перевір свою думку</summary><p>Без <code>;</code> компілятор не розуміє, де закінчується команда, і відмовляється запускати програму. Wokwi пише схожу помилку англійською: <code>expected ';'</code>.</p></details></div>
+      </div>
+
+      <div class="lab" data-lab="break">
+        <div class="lab-head"><span class="title">Майстерня поломок</span><div class="acts">
+          <button class="btn-ghost" data-reset>Повернути як було</button>
+          <button class="btn-run" data-run aria-pressed="false"></button>
+        </div></div>
+        <textarea hidden data-code>void setup() {
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(13, HIGH);
+  delay(1000);
+  digitalWrite(13, LOW);
+  delay(1000);
+}</textarea>
+      </div>
+
+      <details class="more">
+        <summary>Ще дві ідеї (за бажанням)</summary>
+        <ul>
+          <li>Видали рядок <code>pinMode(...)</code> і запусти. Що відбувається? Результат у симуляторі й на справжній платі може відрізнятися, тож запиши, що бачиш саме ти.</li>
+          <li>Поміняй місцями анод і катод світлодіода у Wokwi. Чому він не світиться? (Світлодіод пропускає струм лише в один бік.)</li>
+        </ul>
+      </details>
+
+      <div class="callout ai"><b>Спитай ШІ як помічника, а не як виконавця</b>Опиши, що бачиш, і додай свою здогадку. Наприклад:
+        <p><em>«Після зміни delay(1000) на delay(20) світлодіод наче світиться постійно, хоча в коді налаштовано блимання. Здається, що око не встигає помітити. Чи правильно? Поясни простими словами.»</em></p>
+        <p>Не бери відповідь на віру: перевір її в редакторі або у Wokwi.</p></div>
+    </section>
+
+    <!-- ===== 5 ===== -->
+    <section class="step" id="s5">
+      <div class="step-head"><span class="step-num">5</span><h2>Виклик: сигнал SOS</h2></div>
+      <div class="prose"><p>SOS в азбуці Морзе це <strong>три короткі, три довгі, три короткі</strong> спалахи: <span class="morse inline" role="img" aria-label="крапка, крапка, крапка, тире, тире, тире, крапка, крапка, крапка"><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="gap"></i><i class="dash"></i><i class="dash"></i><i class="dash"></i><i class="gap"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i></span>. Довгий спалах утричі довший за короткий. Обери <strong>свій рівень</strong>, відкрий заготовку і доведи її до робочого SOS.</p></div>
+
+      <textarea hidden id="sos-solution">const int LED_PIN = 13;
 const int UNIT = 200;          // одна «одиниця часу» в мс: крапка = 1, тире = 3
 
 void dot()  {                  // короткий спалах
@@ -317,77 +467,493 @@ void setup() {
 }
 
 void loop() {
-  for (int i = 0; i &lt; 3; i++) dot();   // S: · · ·
+  for (int i = 0; i < 3; i++) dot();   // S: · · ·
   delay(UNIT * 2);                      // пауза між літерами
-  for (int i = 0; i &lt; 3; i++) dash();  // O: — — —
+  for (int i = 0; i < 3; i++) dash();  // O: — — —
   delay(UNIT * 2);
-  for (int i = 0; i &lt; 3; i++) dot();   // S: · · ·
+  for (int i = 0; i < 3; i++) dot();   // S: · · ·
   delay(UNIT * 7);                      // пауза перед повторенням
-}</pre>
-    </div>
-    <p><strong>Що тут хитрого:</strong> одні й ті самі дії винесені у <code>dot()</code> і <code>dash()</code>, а цикл <code>for</code> повторює їх тричі, і не треба писати три однакові рядки. Це перший крок до охайного коду.</p>
-  </details>
+}</textarea>
+      <div class="levels" id="levels">
+        <button role="tab" aria-selected="true" data-level="e"><b>Explorer</b><small>Я досліджую</small></button>
+        <button role="tab" aria-selected="false" data-level="b"><b>Builder</b><small>Я доповнюю</small></button>
+        <button role="tab" aria-selected="false" data-level="m"><b>Maker</b><small>Я проєктую</small></button>
+        <button role="tab" aria-selected="false" data-level="x"><b>Master</b><small>Я оптимізую</small></button>
+        <div role="tabpanel" data-panel="e"><p>Почни з готового рішення: кнопка нижче відкриє його в редакторі. Запусти його, потім зміни швидкість: число <code>UNIT</code> (спробуй 100 і 400). Поясни своїми словами, що робить кожен рядок.</p><button class="btn-line" data-starter="e">Відкрити готове рішення</button></div>
+        <div role="tabpanel" data-panel="b" hidden><p>Заготовка вже в редакторі. Напиши SOS самостійно через дві функції: <code>dot()</code> (короткий спалах) і <code>dash()</code> (довгий). Додай паузу 2 секунди між повтореннями сигналу.</p><button class="btn-line" data-starter="b">Повернути заготовку</button></div>
+        <div role="tabpanel" data-panel="m" hidden><p>Додай <strong>другий світлодіод</strong> іншого кольору на пін 12: він має світитися лише в паузі між сигналами SOS. Підключи його так само, через резистор 220 Ом. Редактор покаже другий світлодіод, щойно в коді з'явиться пін 12.</p><button class="btn-line" data-starter="m">Відкрити заготовку</button></div>
+        <div role="tabpanel" data-panel="x" hidden><p>Перепиши SOS <strong>без <code>delay()</code></strong>: використай <code>millis()</code> і масив тривалостей. Мета: щоб плата могла «одночасно» робити щось інше. Цей рівень перевіряй у Wokwi: мініредактор тут розуміє лише <code>delay()</code>.</p></div>
+      </div>
 
-  <!-- ===== САМОПЕРЕВІРКА ===== -->
-  <div class="step"><span class="num">6</span><h2>Перевір себе (спочатку подумай, потім відкривай)</h2></div>
-  <details><summary>1. Що робить <code>delay(1000)</code>?</summary>
-    <p>Змушує плату чекати 1000 мілісекунд, тобто 1 секунду, перш ніж виконувати наступний рядок.</p></details>
-  <details><summary>2. Чим відрізняється <code>HIGH</code> від <code>LOW</code>?</summary>
-    <p><code>HIGH</code> означає «увімкнено» (пін подає струм), <code>LOW</code> означає «вимкнено».</p></details>
-  <details><summary>3. Чим <code>setup()</code> відрізняється від <code>loop()</code>?</summary>
-    <p><code>setup()</code> виконується один раз на початку, <code>loop()</code> повторюється безкінечно.</p></details>
-  <details><summary>4. Навіщо світлодіоду резистор?</summary>
-    <p>Щоб обмежити струм і не спалити світлодіод (як вузьке місце в трубі, що не пускає забагато води).</p></details>
+      <div class="lab" data-lab="sos" data-check="sos">
+        <div class="lab-head"><span class="title">sos.ino</span><div class="acts">
+          <button class="btn-ghost" data-reset>Скинути</button>
+          <button class="btn-ghost" data-copy-lab>Копіювати для Wokwi</button>
+          <button class="btn-run" data-run aria-pressed="false"></button>
+        </div></div>
+        <textarea hidden data-code>const int LED_PIN = 13;
+const int UNIT = 200;
 
-  <!-- ===== БОНУС ===== -->
-  <div class="step bonus"><span class="num">★</span><h2>Бонус: на справжній платі ТЕКО <span class="badge-bonus">за бажанням</span></h2></div>
-  <div class="box ok" style="margin-bottom:14px">
-    <div class="box-title">🔌 Працюєш зі справжньою платою ТЕКО вперше?</div>
-    Плати ТЕКО мають USB-UART міст <strong>CH340</strong>, який потребує системного драйвера. Якщо плата не з'являється у списку портів або Arduino IDE видає помилку, скористайся нашою інструкцією: <a href="../00-diagnostic/lesson-setup.html" target="_blank"><strong>Посібник із налаштування Arduino IDE та драйвера CH340 &rarr;</strong></a>
-  </div>
-  <p>Якщо у тебе є набір ТЕКО, можна повторити все «по-справжньому»:</p>
-  <ol>
-    <li>Підключи Arduino Uno до комп'ютера USB-кабелем.</li>
-    <li>Відкрий програму Arduino IDE. У меню <em>Tools → Board</em> вибери <strong>Arduino Uno</strong>, а в <em>Port</em> вибери порт плати.</li>
-    <li><strong>Спочатку відключи USB</strong>, збери схему з дротів так само, як у Wokwi, потім підключи кабель.</li>
-    <li>Встав код і натисни кнопку → «Завантажити» (Upload).</li>
-  </ol>
-  <div class="box danger"><div class="box-title">⚡ Безпека</div>
-    Ніколи не підключай світлодіод без резистора. Не міняй дроти, коли плата підключена до USB. Якщо щось гріється чи пахне, одразу відключи кабель і покажи викладачу.</div>
+void dot() {
+  // короткий спалах: увімкни, почекай UNIT, вимкни, почекай UNIT
+}
 
-  <!-- ===== ЗАВЕРШЕННЯ ===== -->
-  <div class="step"><span class="num">✓</span><h2>Завершення: збережи свій успіх</h2></div>
-  <p><strong>Обов'язково для проходження уроку:</strong></p>
-  <ul class="checklist">
-    <li><label><input type="checkbox" class="check" data-key="builtin"> Вдалося змусити блимати вбудований світлодіод (Крок 1)</label></li>
-    <li><label><input type="checkbox" class="check" data-key="own"> Підключено власний світлодіод із резистором і він блимає (Крок 2)</label></li>
-    <li><label><input type="checkbox" class="check" data-key="time"> Налаштовано таймінг: «2 секунди світиться, півсекунди ні» (Крок 3)</label></li>
-    <li><label><input type="checkbox" class="check" data-key="break"> Виконано 3 зміни з «Зламай його» та є висновок чому (Крок 4)</label></li>
-    <li><label><input type="checkbox" class="check" data-key="sos"> Сигнал SOS успішно працює на обраному рівні (Крок 5)</label></li>
-  </ul>
-  <p><strong>Додатково (не обов'язково):</strong></p>
-  <ul class="checklist">
-    <li><label><input type="checkbox" class="check" data-key="quiz" data-bonus> Є відповіді на питання самоперевірки</label></li>
-    <li><label><input type="checkbox" class="check" data-key="real" data-bonus> Схему запущено на справжній платі</label></li>
-  </ul>
+void dash() {
+  // довгий спалах: як dot(), але світиться UNIT * 3
+}
 
-  <div class="box mission">
-    <div class="box-title">📸 Як зберегти доказ</div>
-    Зроби скріншот Wokwi з працюючою схемою (на Windows: <code>Win + Shift + S</code>) і збережи його в папку «Портфоліо» разом з кодом SOS і двома-трьома реченнями: <em>що вийшло, що було зламано та як вдалося це виправити</em>. Щоб зберегти проєкт у Wokwi, потрібен безкоштовний акаунт, але для скріншота він не потрібен.
-  </div>
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
 
-  <div id="lesson-footer"></div>
+void loop() {
+  // S: три рази dot()
+  // O: три рази dash()
+  // S: три рази dot()
+  delay(2000);                 // пауза між повтореннями
+}</textarea>
+        <div class="hints" data-hints>
+          <p hidden><span>Підказка 1.</span>Короткий спалах: <code>HIGH</code>, почекати <code>UNIT</code>, <code>LOW</code>, почекати <code>UNIT</code>. Довгий такий самий, але світиться <code>UNIT * 3</code>.</p>
+          <p hidden><span>Підказка 2.</span>Щоб не писати одне й те саме тричі, використай цикл: <code>for (int i = 0; i &lt; 3; i++) dot();</code></p>
+          <p hidden><span>Підказка 3.</span>Дивись на діаграму сигналу праворуч: там має бути три вузькі «сходинки», три широкі й знову три вузькі.</p>
+        </div>
+      </div>
+      <div class="prose"><p><strong>Що тут хитрого:</strong> однакові дії винесені у функції <code>dot()</code> і <code>dash()</code>, а цикл <code>for</code> повторює їх тричі. Не треба писати три однакові рядки. Це перший крок до охайного коду.</p></div>
+    </section>
 
-  <div class="box ai">
-    <div class="box-title">👀 У наступному уроці</div>
-    Досі плата тільки <strong>командувала</strong>. А що, якщо вона навчиться <strong>відчувати</strong>? В Уроці 02 ти під'єднаєш кнопку, і світлодіод вмикатиметься тільки коли ти натиснеш її. Це вже схоже на справжню сигналізацію.
-  </div>
-</main>
+    <!-- ===== 6 ===== -->
+    <section class="step" id="s6">
+      <div class="step-head"><span class="step-num">6</span><h2>Перевір себе</h2></div>
+      <div class="prose"><p>Спочатку подумай, потім відкривай.</p></div>
+      <div class="cards">
+        <details><summary>Що робить <code>delay(1000)</code>?</summary><p>Змушує плату чекати 1000 мілісекунд, тобто 1 секунду, перш ніж виконувати наступний рядок.</p></details>
+        <details><summary>Чим відрізняється <code>HIGH</code> від <code>LOW</code>?</summary><p><code>HIGH</code> означає «увімкнено» (пін подає струм), <code>LOW</code> означає «вимкнено».</p></details>
+        <details><summary>Чим <code>setup()</code> відрізняється від <code>loop()</code>?</summary><p><code>setup()</code> виконується один раз на початку, <code>loop()</code> повторюється безкінечно.</p></details>
+        <details><summary>Навіщо світлодіоду резистор?</summary><p>Щоб обмежити струм і не спалити світлодіод, як вузьке місце в трубі, що не пускає забагато води.</p></details>
+      </div>
+    </section>
 
-<footer>КПКТА імені Бадрі Лолашвілі · Курс «Arduino + 3D CAD + 3D Друк + AI + Maker»</footer>
+    <!-- ===== bonus ===== -->
+    <section class="step" id="s7">
+      <div class="step-head"><span class="step-num bonus">★</span><h2>Бонус: на справжній платі ТЕКО <span class="tag">за бажанням</span></h2></div>
+      <div class="callout safe"><b>Працюєш зі справжньою платою ТЕКО вперше?</b>Плати ТЕКО мають USB-UART міст <strong>CH340</strong>, якому потрібен драйвер. Якщо плата не з'являється у списку портів або Arduino IDE видає помилку, відкрий <a href="../00-diagnostic/lesson-setup.html" target="_blank" rel="noopener">посібник із налаштування Arduino IDE та драйвера CH340</a>.</div>
+      <ol class="how">
+        <li>Підключи Arduino Uno до комп'ютера USB-кабелем.</li>
+        <li>Відкрий Arduino IDE. У меню <em>Tools, Board</em> вибери <strong>Arduino Uno</strong>, а в <em>Port</em> вибери порт плати.</li>
+        <li><strong>Спочатку відключи USB</strong>, збери схему з дротів так само, як у Wokwi, потім підключи кабель.</li>
+        <li>Встав код і натисни «Завантажити» (Upload).</li>
+      </ol>
+      <div class="callout danger"><b>Безпека</b>Ніколи не підключай світлодіод без резистора. Не міняй дроти, коли плата підключена до USB. Якщо щось гріється чи пахне, одразу відключи кабель і покажи викладачу.</div>
+    </section>
 
-<script src="../../assets/course.js"></script>
-<script src="../../assets/app.js"></script>
-<script src="../../assets/ledsim.js"></script>
+    <!-- ===== finish ===== -->
+    <section class="step" id="s8">
+      <div class="step-head"><span class="step-num final">✓</span><h2>Завершення: збережи свій успіх</h2></div>
+      <p><strong>Обов'язково для проходження уроку</strong></p>
+      <ul class="checklist">
+        <li><label><input type="checkbox" class="check" data-key="builtin"><span>Вдалося змусити блимати вбудований світлодіод<small>Крок 1</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="own"><span>Підключено власний світлодіод із резистором, і він блимає<small>Крок 2</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="time"><span>Налаштовано таймінг «2 секунди світиться, півсекунди ні»<small>Крок 3, позначиться сам, коли редактор побачить правильний код</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="break"><span>Виконано 3 зміни з «Зламай його», є висновок чому<small>Крок 4</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="sos"><span>Сигнал SOS працює на обраному рівні<small>Крок 5, позначиться сам</small></span></label></li>
+      </ul>
+      <p><strong>Додатково</strong></p>
+      <ul class="checklist">
+        <li><label><input type="checkbox" class="check" data-key="quiz" data-bonus><span>Є відповіді на питання самоперевірки</span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="real" data-bonus><span>Схему запущено на справжній платі</span></label></li>
+      </ul>
+
+      <div class="callout"><b>Як зберегти доказ</b>Зроби скріншот Wokwi з працюючою схемою (на Windows <kbd>Win</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>) і збережи його в папку «Портфоліо» разом із кодом SOS і двома-трьома реченнями: <em>що вийшло, що було зламано та як вдалося це виправити</em>. Щоб зберегти проєкт у Wokwi, потрібен безкоштовний акаунт, але для скріншота він не потрібен.</div>
+
+      <div class="done-row"><button class="btn-done" id="done-btn">Позначити урок пройденим</button><span id="done-hint"></span></div>
+
+      <div class="callout next"><b>У наступному уроці</b>Досі плата тільки <strong>командувала</strong>. А що, якщо вона навчиться <strong>відчувати</strong>? В уроці 2 ти під'єднаєш кнопку, і світлодіод вмикатиметься тільки коли ти її натиснеш. Це вже схоже на справжню сигналізацію. <p><a href="lesson-02.html">Перейти до уроку 2 →</a></p></div>
+    </section>
+  </main>
+</div>
+
+<footer>КПКТА імені Бадрі Лолашвілі. Курс «Arduino + 3D CAD + 3D Друк + AI + Maker»</footer>
+
+<script src="../../assets/lesson.js"></script>
+<script>
+(function () {
+"use strict";
+var LESSON = "m1-l01", KEY = "arduino-course-v1"; // same storage as the course site, so progress carries over
+var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- tiny C highlighter ---------- */
+var TOK = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\\n]|\\.)*")|\b(void|int|long|unsigned|const|byte|bool|for|if|else|while|return|true|false)\b|\b(pinMode|digitalWrite|digitalRead|delay|millis|analogWrite|Serial)\b|\b(HIGH|LOW|OUTPUT|INPUT|INPUT_PULLUP|LED_BUILTIN)\b|\b(\d+)\b/g;
+var CLS = [null, "c", "s", "k", "f", "x", "n"];
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function hl(code) {
+  var out = "", last = 0, m;
+  TOK.lastIndex = 0;
+  while ((m = TOK.exec(code))) {
+    out += esc(code.slice(last, m.index));
+    for (var g = 1; g < 7; g++) if (m[g] !== undefined) break;
+    out += '<span class="tk-' + CLS[g] + '">' + esc(m[0]) + "</span>";
+    last = TOK.lastIndex;
+  }
+  return out + esc(code.slice(last));
+}
+
+/* ---------- mini Arduino: runs setup()/loop() on paper, returns a timeline ---------- */
+// ponytail: supports digitalWrite/pinMode/delay, int consts, for-loops and void f() calls. No if/while/millis; Wokwi covers those.
+function compile(code) {
+  var src = code.replace(/\/\*[\s\S]*?\*\//g, function (m) { return m.replace(/[^\n]/g, " "); })
+                .replace(/\/\/[^\n]*/g, function (m) { return " ".repeat(m.length); });
+  var lines = src.split("\n");
+  // syntax: braces and semicolons, reported like a compiler would
+  var depth = 0, lastOpen = 0;
+  for (var ln = 0; ln < lines.length; ln++) {
+    var t = lines[ln].trim();
+    for (var c = 0; c < t.length; c++) { if (t[c] === "{") { depth++; lastOpen = ln; } if (t[c] === "}") depth--; }
+    if (depth < 0) return fail(ln, "зайва дужка }", "Тут закривається більше дужок «}», ніж відкривалось.");
+    if (t && !/[;{}]$/.test(t) && !/^(void|for|if|else|while)\b/.test(t) && t[0] !== "#")
+      return fail(ln, "expected ';'", "Компілятор чекав крапку з комою ; у кінці рядка " + (ln + 1) + ".");
+  }
+  if (depth > 0) return fail(lastOpen, "expected '}'", "Не вистачає закривної дужки «}». Перевір, чи кожна «{» має пару.");
+
+  var K = { HIGH: 1, LOW: 0, OUTPUT: 1, INPUT: 0, INPUT_PULLUP: 2, LED_BUILTIN: 13, true: 1, false: 0 };
+  var vars = {}, fns = {}, top = src, re = /void\s+(\w+)\s*\(\s*\)\s*\{/g, m;
+  while ((m = re.exec(src))) {
+    var i = re.lastIndex, d = 1;
+    while (i < src.length && d) { if (src[i] === "{") d++; else if (src[i] === "}") d--; i++; }
+    fns[m[1]] = src.slice(re.lastIndex, i - 1);
+    top = top.replace(src.slice(m.index, i), "");
+    re.lastIndex = i;
+  }
+  if (fns.setup === undefined) return fail(null, "no setup()", "Немає функції setup(). Вона потрібна, навіть якщо порожня.");
+  if (fns.loop === undefined) return fail(null, "no loop()", "Немає функції loop(). Без неї плата нічого не повторює.");
+
+  var ctx;
+  function ev(x) {
+    var js = x.replace(/[A-Za-z_]\w*/g, function (id) {
+      if (id === "millis") throw new Error("millis() у цьому редакторі не працює. Перевір цей код у Wokwi.");
+      if (id in vars) return vars[id];
+      if (id in K) return K[id];
+      throw new Error("Невідоме слово «" + id + "». Можливо, помилка в назві?");
+    });
+    if (!/^[\d\s+\-*/%().<>=!&|]*$/.test(js)) throw new Error("Не вдалося порахувати «" + x.trim() + "».");
+    return Number(Function('"use strict";return (' + js + ")")());
+  }
+  function exec(t) {
+    t = t.trim(); if (!t) return;
+    if (++ctx.ops > 50000) throw new Error("Програма робить забагато кроків. Можливо, цикл ніколи не закінчується?");
+    var d;
+    if ((d = /^(?:const\s+)?(?:unsigned\s+)?(?:int|long|byte|bool)\s+(\w+)\s*(?:=\s*([\s\S]+))?$/.exec(t))) { vars[d[1]] = d[2] ? ev(d[2]) : 0; return; }
+    if ((d = /^(\w+)\s*(\+\+|--)$/.exec(t))) { vars[d[1]] += d[2] === "++" ? 1 : -1; return; }
+    if ((d = /^(\w+)\s*([+\-*/]?)=\s*([\s\S]+)$/.exec(t))) { var v = ev(d[3]); vars[d[1]] = d[2] ? ev(vars[d[1]] + d[2] + v) : v; return; }
+    if (/^Serial\./.test(t)) return;
+    if (/^(if|while|else)\b/.test(t)) throw new Error("«" + t.split(/\W/)[0] + "» тут ще не підтримується. Перевір цей код у Wokwi.");
+    if (!(d = /^(\w+)\s*\(([\s\S]*)\)$/.exec(t))) throw new Error("Не розумію рядок «" + t + "».");
+    var name = d[1], a = d[2].trim() ? d[2].split(",") : [];
+    if (name === "pinMode") { ctx.modes[ev(a[0])] = ev(a[1]); return; }
+    if (name === "digitalWrite") { ctx.ev.push({ t: ctx.t, pin: ev(a[0]), v: ev(a[1]) ? 1 : 0 }); return; }
+    if (name === "delay") { ctx.t += Math.max(0, ev(a[0])); if (ctx.t > 120000) throw new Error("Один оберт loop() довший за 2 хвилини. Зменш числа в delay()."); return; }
+    if (name === "delayMicroseconds") { ctx.t += ev(a[0]) / 1000; return; }
+    if (fns[name] !== undefined) { if (++ctx.calls > 2000) throw new Error("Функція викликає сама себе без кінця."); block(fns[name]); ctx.calls--; return; }
+    throw new Error("Невідома команда «" + name + "». Перевір, чи правильно написано, з великими й малими літерами.");
+  }
+  function block(s) {
+    var i = 0;
+    function ws() { while (i < s.length && /\s/.test(s[i])) i++; }
+    function grab(open, close) { var st = i, d = 0; do { if (s[i] === open) d++; else if (s[i] === close) d--; i++; } while (d && i < s.length); return s.slice(st + 1, i - 1); }
+    while (true) {
+      ws(); if (i >= s.length) return;
+      if (s[i] === "{") { block(grab("{", "}")); continue; }
+      if (/^for\s*\(/.test(s.slice(i, i + 6))) {
+        i = s.indexOf("(", i);
+        var head = grab("(", ")").split(";"), body;
+        ws();
+        if (s[i] === "{") body = grab("{", "}");
+        else { var e = s.indexOf(";", i); body = s.slice(i, e + 1); i = e + 1; }
+        exec(head[0]);
+        while (ev(head[1])) { block(body); exec(head[2]); }
+        continue;
+      }
+      var end = s.indexOf(";", i); if (end < 0) end = s.length;
+      exec(s.slice(i, end)); i = end + 1;
+    }
+  }
+  try {
+    var modes = {};
+    ctx = { t: 0, ev: [], modes: modes, ops: 0, calls: 0 };
+    top.split(";").forEach(function (t) { if (t.trim()) exec(t); });
+    ctx = { t: 0, ev: [], modes: modes, ops: 0, calls: 0 }; block(fns.setup);
+    var setupEv = ctx.ev;
+    ctx = { t: 0, ev: [], modes: modes, ops: 0, calls: 0 }; block(fns.loop);
+  } catch (e) { return fail(null, "runtime", e.message); }
+
+  var pins = [];
+  setupEv.concat(ctx.ev).forEach(function (e) { if (pins.indexOf(e.pin) < 0) pins.push(e.pin); });
+  pins.sort(function (a, b) { return b - a; });
+  var init = {};
+  setupEv.forEach(function (e) { init[e.pin] = e.v; });
+  return { ok: true, T: ctx.t, ev: ctx.ev, init: init, pins: pins, modes: modes };
+
+  function fail(line, short, msg) { return { ok: false, line: line, short: short, msg: msg }; }
+}
+
+// state of a pin at moment p of the loop (cyclic: before its first write, it holds the value from the previous lap)
+function stateAt(prog, pin, p) {
+  var v, last;
+  for (var i = 0; i < prog.ev.length; i++) {
+    var e = prog.ev[i]; if (e.pin !== pin) continue;
+    last = e.v; if (e.t <= p) v = e.v;
+  }
+  if (v === undefined) v = last !== undefined ? last : prog.init[pin] || 0;
+  return v;
+}
+function segments(prog, pin) {
+  var out = [], cur = stateAt(prog, pin, -1), t = 0;
+  prog.ev.forEach(function (e) {
+    if (e.pin !== pin) return;
+    if (e.t > t) { out.push({ v: cur, d: e.t - t }); t = e.t; }
+    cur = e.v;
+  });
+  if (prog.T > t) out.push({ v: cur, d: prog.T - t });
+  var merged = [];
+  out.forEach(function (s) { var l = merged[merged.length - 1]; if (l && l.v === s.v) l.d += s.d; else merged.push({ v: s.v, d: s.d }); });
+  return merged;
+}
+function cyclic(segs) { // join first and last if they are the same state (the loop wraps around)
+  segs = segs.map(function (s) { return { v: s.v, d: s.d }; });
+  if (segs.length > 1 && segs[0].v === segs[segs.length - 1].v) { segs[segs.length - 1].d += segs[0].d; segs.shift(); }
+  return segs;
+}
+
+var CHECKS = {
+  time: function (p) {
+    var s = cyclic(segments(p, 13));
+    var on = s.filter(function (x) { return x.v; }), off = s.filter(function (x) { return !x.v; });
+    if (!on.length || !off.length) return null;
+    if (on.every(function (x) { return x.d === 2000; }) && off.every(function (x) { return x.d === 500; }))
+      return "Вийшло: 2 секунди світиться, півсекунди ні. Тепер перенеси це у Wokwi.";
+    return null;
+  },
+  sos: function (p) {
+    var on = cyclic(segments(p, 13)).filter(function (x) { return x.v; }).map(function (x) { return x.d; });
+    if (on.length !== 9) return null;
+    var u = on[0], short = function (d) { return Math.abs(d - u) <= u * 0.25; }, long = function (d) { return d >= u * 2; };
+    if ([0, 1, 2, 6, 7, 8].every(function (i) { return short(on[i]); }) && [3, 4, 5].every(function (i) { return long(on[i]); }))
+      return "Це справжній SOS: три короткі, три довгі, три короткі. Скопіюй код у Wokwi.";
+    return null;
+  }
+};
+
+/* ---------- прогрес і чек-лист: assets/lesson.js ---------- */
+var setCheck = window.LessonKit.setCheck;
+
+/* ---------- copy ---------- */
+function copyText(text, btn) {
+  var done = function () { var t = btn.textContent; btn.textContent = "Скопійовано"; setTimeout(function () { btn.textContent = t; }, 1400); };
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function () {});
+}
+document.querySelectorAll("[data-static]").forEach(function (box) {
+  var pre = box.querySelector("pre"), raw = pre.textContent;
+  pre.innerHTML = hl(raw);
+  box.querySelector("[data-copy]").addEventListener("click", function (e) { copyText(raw, e.currentTarget); });
+  var tr = box.querySelector("[data-try]");
+  if (tr) tr.addEventListener("click", function () { var lab = labs[tr.dataset.try]; lab.set(raw); lab.start(); lab.el.scrollIntoView({ block: "center" }); });
+});
+
+/* ---------- labs ---------- */
+var COLORS = { 13: ["#FF4A4D", "#4A1F22"], 12: ["#3EE07F", "#173B27"], 11: ["#FFD23F", "#3E3518"] };
+var PLAY = '<svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z" fill="currentColor"/></svg>';
+var STOP = '<svg viewBox="0 0 12 12"><rect x="2" y="2" width="8" height="8" fill="currentColor"/></svg>';
+var labs = {};
+
+function Lab(el) {
+  var self = this, src = el.querySelector("[data-code]"), initial = src.value;
+  self.el = el;
+  var body = document.createElement("div"); body.className = "lab-body";
+  body.innerHTML =
+    '<div class="editor"><div class="gutter" aria-hidden="true"></div><div class="scroller"><div class="ed">' +
+    '<pre aria-hidden="true"></pre><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Код програми"></textarea></div></div></div>' +
+    '<div class="stage"><div class="leds"></div><div class="timing"><svg></svg><p></p></div>' +
+    (el.hasAttribute("data-sliders") ? '<div class="sliders"><label>Світиться <b>1000 мс</b><input type="range" min="10" max="3000" step="10" data-n="0"></label><label>Не світиться <b>1000 мс</b><input type="range" min="10" max="3000" step="10" data-n="1"></label></div>' : "") +
+    "</div>";
+  el.querySelector(".lab-head").after(body);
+  var con = document.createElement("div"); con.className = "console"; con.setAttribute("role", "status");
+  body.after(con);
+  var hints = el.querySelector("[data-hints]");
+  if (hints) {
+    var foot = document.createElement("div"); foot.className = "lab-foot";
+    var ps = [].slice.call(hints.querySelectorAll("p")), hb = document.createElement("button");
+    hb.className = "btn-ghost"; hb.style.justifySelf = "start";
+    var shown = 0, upd = function () { hb.textContent = "Показати підказку " + (shown + 1) + " з " + ps.length; hb.hidden = shown >= ps.length; };
+    hb.addEventListener("click", function () { ps[shown++].hidden = false; upd(); });
+    upd(); con.after(foot); foot.append(hints, hb);
+  }
+  var ta = body.querySelector("textarea"), pre = body.querySelector("pre"), gut = body.querySelector(".gutter");
+  var ledsEl = body.querySelector(".leds"), tsvg = body.querySelector(".timing svg"), tcap = body.querySelector(".timing p");
+  var runBtn = el.querySelector("[data-run]"), sliders = [].slice.call(body.querySelectorAll(".sliders input"));
+  var touched = false, prog = null, running = false, t0 = 0, raf = 0, ledNodes = {}, head = null, timer = 0;
+
+  function render() {
+    var code = ta.value;
+    pre.innerHTML = hl(code) + "\n";
+    prog = compile(code);
+    var n = code.split("\n").length, g = [];
+    for (var i = 0; i < n; i++) g.push(prog.ok || prog.line !== i ? String(i + 1) : '<span class="err">' + (i + 1) + "</span>");
+    gut.innerHTML = g.join("\n");
+    if (!prog.ok) {
+      con.className = "console err";
+      con.textContent = (prog.line != null ? "рядок " + (prog.line + 1) + ": " + prog.short + ". " : "") + prog.msg;
+      drawLeds([13]); drawTiming(null); return;
+    }
+    drawLeds(prog.pins.length ? prog.pins : [13]);
+    drawTiming(prog);
+    syncSliders();
+    var win = el.dataset.check && CHECKS[el.dataset.check](prog);
+    if (win) { con.className = "console win"; con.textContent = win; if (touched) setCheck(el.dataset.check, true); }
+    else if (prog.pins.length && !prog.ev.concat([]).some(function (e) { return e.v; }) && !prog.pins.some(function (p) { return prog.init[p]; })) { con.className = "console ok"; con.textContent = "Код без помилок, але жодна команда не подає HIGH. Світлодіод ніхто не вмикає, тому він темний."; }
+    else if (!prog.pins.length) { con.className = "console ok"; con.textContent = "Код без помилок, але в ньому немає digitalWrite: плата нічого не вмикає."; }
+    else if (!prog.T) { con.className = "console ok"; con.textContent = "У loop() немає delay(): світлодіод перемикається так швидко, що око бачить лише тьмяне світло."; }
+    else {
+      var noMode = prog.pins.filter(function (p) { return prog.modes[p] !== 1; });
+      con.className = "console ok";
+      con.textContent = noMode.length ? "Пін " + noMode.join(", ") + " не налаштований через pinMode(..., OUTPUT). Світлодіод ледь жевріє, а не світиться повністю."
+        : "Код без помилок. Один оберт loop() триває " + fmt(prog.T) + (running ? "." : ". Натисни «Запустити».");
+    }
+  }
+  function fmt(ms) { return ms >= 1000 && ms % 100 === 0 ? (ms / 1000).toString().replace(".", ",") + " с" : Math.round(ms) + " мс"; }
+
+  function drawLeds(pins) {
+    var key = pins.join(",");
+    if (ledsEl.dataset.k === key) return;
+    ledsEl.dataset.k = key; ledsEl.innerHTML = ""; ledNodes = {};
+    pins.forEach(function (p) {
+      var c = COLORS[p] || ["#5CA8FF", "#1A2C44"], d = document.createElement("div");
+      d.className = "ledbox"; d.style.setProperty("--on", c[0]); d.style.setProperty("--off", c[1]);
+      d.innerHTML = '<svg viewBox="0 0 56 104"><circle class="glow" cx="28" cy="30" r="40"/><path class="dome" d="M10 58V28a18 18 0 0136 0v30z"/><rect x="6" y="56" width="44" height="7" rx="2" fill="#2B3B40"/><path d="M20 63v40M36 63v30" stroke="#8A979E" stroke-width="3"/></svg>' +
+        '<span>пін ' + p + "</span><span class=\"st\"></span>";
+      ledsEl.append(d); ledNodes[p] = d;
+    });
+  }
+  function setLed(p, mode) { // mode: 0 off, 1 on, 2 dim
+    var d = ledNodes[p]; if (!d) return;
+    d.classList.toggle("on", mode === 1); d.classList.toggle("dim", mode === 2);
+    d.querySelector(".st").textContent = mode === 1 ? "HIGH, світиться" : mode === 2 ? "ледь жевріє" : running ? "LOW" : "";
+  }
+
+  function drawTiming(p) {
+    head = null;
+    if (!p || !p.pins.length || !p.T) { tsvg.style.display = "none"; tcap.textContent = "Тут з'явиться діаграма сигналу: коли світлодіод світиться, а коли ні."; return; }
+    tsvg.style.display = "";
+    var W = Math.max(240, tsvg.parentNode.clientWidth - 24), row = 58, h = p.pins.length * row + 8, out = "";
+    p.pins.forEach(function (pin, r) {
+      var y0 = r * row + 18, hi = y0 + 4, lo = y0 + 34, x = 0, path = "", c = (COLORS[pin] || ["#5CA8FF"])[0];
+      out += '<text x="0" y="' + (y0 - 6) + '" fill="#8FB0B4" font-size="11" font-family="JetBrains Mono">пін ' + pin + "</text>";
+      segments(p, pin).forEach(function (s, i) {
+        var w = s.d / p.T * W, y = s.v ? hi : lo;
+        path += (i ? " V" + y : "M0 " + y) + " H" + (x + w);
+        if (w > 40) out += '<text x="' + (x + w / 2) + '" y="' + (s.v ? hi + 18 : lo - 8) + '" fill="' + (s.v ? "#fff" : "#8FB0B4") + '" font-size="11" text-anchor="middle" font-family="JetBrains Mono">' + fmt(s.d) + "</text>";
+        if (s.v) out += '<rect x="' + x + '" y="' + hi + '" width="' + w + '" height="' + (lo - hi) + '" fill="' + c + '" opacity=".16"/>';
+        x += w;
+      });
+      out += '<path d="' + path + '" fill="none" stroke="' + c + '" stroke-width="2.5" stroke-linejoin="round"/>';
+    });
+    out += '<line class="ph" x1="0" x2="0" y1="6" y2="' + (h - 2) + '" stroke="#F2A65A" stroke-width="2" opacity="0"/>';
+    tsvg.setAttribute("viewBox", "-2 0 " + (W + 4) + " " + h); tsvg.dataset.w = W; tsvg.innerHTML = out; head = tsvg.querySelector(".ph");
+    tcap.textContent = "Діаграма одного оберту loop(): вгорі HIGH, внизу LOW. Разом " + fmt(p.T) + ", потім усе повторюється.";
+  }
+
+  function frame(now) {
+    if (!running) return;
+    if (prog && prog.ok) {
+      if (!prog.T) prog.pins.forEach(function (p) {
+        var vs = prog.ev.filter(function (e) { return e.pin === p; }).map(function (e) { return e.v; });
+        setLed(p, vs.indexOf(1) >= 0 && vs.indexOf(0) >= 0 ? 2 : stateAt(prog, p, 0) ? 1 : 0);
+      });
+      else {
+        var ph = (now - t0) % prog.T;
+        prog.pins.forEach(function (p) { var v = stateAt(prog, p, ph); setLed(p, v && prog.modes[p] !== 1 ? 2 : v); });
+        if (head) { var x = ph / prog.T * tsvg.dataset.w; head.setAttribute("x1", x); head.setAttribute("x2", x); head.setAttribute("opacity", "1"); }
+      }
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  self.start = function () { running = true; touched = true; t0 = performance.now(); runBtn.setAttribute("aria-pressed", "true"); runBtn.innerHTML = STOP + "Зупинити"; render(); cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); };
+  self.stop = function () { running = false; cancelAnimationFrame(raf); runBtn.setAttribute("aria-pressed", "false"); runBtn.innerHTML = PLAY + "Запустити"; Object.keys(ledNodes).forEach(function (p) { setLed(+p, 0); }); if (head) head.setAttribute("opacity", "0"); render(); };
+  self.set = function (code) { touched = true; ta.value = code; t0 = performance.now(); render(); };
+  self.code = function () { return ta.value; };
+
+  // sliders rewrite the 1st / 2nd delay() in place, so hand edits survive
+  function delays() { var r = [], re = /delay\(\s*(\d+)\s*\)/g, m; while ((m = re.exec(ta.value))) r.push(m); return r; }
+  function syncSliders() { var d = delays(); sliders.forEach(function (s) { var m = d[+s.dataset.n]; s.disabled = !m; if (!m) s.previousElementSibling.textContent = "немає числа"; else { s.value = m[1]; s.previousElementSibling.textContent = m[1] + " мс"; } }); }
+  sliders.forEach(function (s) {
+    s.addEventListener("input", function () {
+      var m = delays()[+s.dataset.n]; if (!m) return;
+      ta.value = ta.value.slice(0, m.index) + "delay(" + s.value + ")" + ta.value.slice(m.index + m[0].length);
+      render();
+    });
+  });
+
+  ta.value = initial;
+  ta.addEventListener("input", function () { touched = true; pre.innerHTML = hl(ta.value) + "\n"; clearTimeout(timer); timer = setTimeout(render, 250); });
+  runBtn.addEventListener("click", function () { running ? self.stop() : self.start(); });
+  var rs = el.querySelector("[data-reset]"); if (rs) rs.addEventListener("click", function () { self.set(initial); });
+  var cp = el.querySelector("[data-copy-lab]"); if (cp) cp.addEventListener("click", function (e) { copyText(ta.value, e.currentTarget); });
+  self.stop();
+  addEventListener("resize", function () { clearTimeout(timer); timer = setTimeout(render, 200); });
+}
+document.querySelectorAll("[data-lab]").forEach(function (el) { labs[el.dataset.lab] = new Lab(el); });
+
+var SOS = document.getElementById("sos-solution").value;
+document.querySelector('[data-load="sos"]').addEventListener("click", function () { labs.play.set(SOS); labs.play.start(); });
+
+/* break-it buttons */
+var BREAKS = {
+  1: function (c) { return c.replace(/HIGH/g, "LOW"); },
+  2: function (c) { return c.replace(/delay\(1000\)/g, "delay(20)"); },
+  3: function (c) { return c.replace("HIGH);", "HIGH)"); }
+};
+var breakBase = labs["break"].code();
+document.querySelectorAll("[data-break]").forEach(function (b) {
+  b.addEventListener("click", function () { var lab = labs["break"]; lab.set(BREAKS[b.dataset.break](breakBase)); lab.start(); lab.el.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" }); });
+});
+
+/* SOS levels */
+var STARTERS = {
+  e: SOS,
+  b: labs.sos.code(),
+  m: SOS.replace("const int UNIT", "const int PAUSE_PIN = 12;      // другий світлодіод, світиться в паузі\nconst int UNIT")
+        .replace("pinMode(LED_PIN, OUTPUT);", "pinMode(LED_PIN, OUTPUT);\n  pinMode(PAUSE_PIN, OUTPUT);")
+        .replace("  delay(UNIT * 7);", "  digitalWrite(PAUSE_PIN, HIGH);         // пауза почалась\n  delay(UNIT * 7);\n  // що треба зробити з PAUSE_PIN тут?")
+};
+var tabs = [].slice.call(document.querySelectorAll("#levels [role=tab]"));
+tabs.forEach(function (t) {
+  t.addEventListener("click", function () {
+    tabs.forEach(function (x) { x.setAttribute("aria-selected", String(x === t)); });
+    document.querySelectorAll("#levels [role=tabpanel]").forEach(function (p) { p.hidden = p.dataset.panel !== t.dataset.level; });
+  });
+});
+document.querySelectorAll("[data-starter]").forEach(function (b) {
+  b.addEventListener("click", function () { labs.sos.set(STARTERS[b.dataset.starter]); labs.sos.el.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" }); });
+});
+
+/* ---------- hero: board sends SOS forever ---------- */
+(function () {
+  var board = document.getElementById("hero-board"), strip = document.getElementById("hero-morse");
+  var marks = "...---...".split(""), html = "";
+  marks.forEach(function (m, i) { html += '<i class="' + (m === "." ? "dot" : "dash") + '"></i>' + (i === 2 || i === 5 ? '<i class="gap"></i>' : ""); });
+  strip.innerHTML = html;
+  var sym = [].slice.call(strip.querySelectorAll("i:not(.gap)"));
+  if (reduced) { board.classList.add("on"); return; }
+  var U = 180, seq = [];
+  marks.forEach(function (m, i) { seq.push([i, m === "." ? U : 3 * U], [-1, i === 2 || i === 5 ? 3 * U : i === 8 ? 7 * U : U]); });
+  var k = 0;
+  (function step() {
+    var s = seq[k++ % seq.length];
+    board.classList.toggle("on", s[0] >= 0);
+    sym.forEach(function (el, i) { el.classList.toggle("lit", i === s[0]); });
+    setTimeout(step, s[1]);
+  })();
+})();
+
+})();
+</script>
 </body>
 </html>

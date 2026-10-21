@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Інтерактивний посібник оператора Snapmaker 2.0 A350 · База знань КПКТА</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Unbounded, Golos Text, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Golos Text', 'system-ui', 'sans-serif'],
+            display: ['Unbounded', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            pcb: {
+              DEFAULT: '#0E6673',
+              deep: '#0C2A31',
+              panel: '#11353E',
+              light: '#E7F2F0',
+              hover: '#094B54'
+            },
+            copper: '#B9761C',
+            paper: '#F2F5F4'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F2F5F4;
+      background-image:
+        linear-gradient(rgba(14, 102, 115, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14, 102, 115, 0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .badge-tag { transition: all 0.2s ease; }
+  </style>
+</head>
+<body class="text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- Навігаційна панель -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center space-x-3">
+          <a href="../../index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-pcb hover:text-pcb-deep transition bg-pcb-light px-3 py-1.5 rounded-lg border border-teal-200">
+            ← Карта курсу
+          </a>
+          <div>
+            <div class="text-[11px] uppercase tracking-wider font-bold text-pcb font-mono">Модуль 2 · База знань</div>
+            <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight font-display">Snapmaker A350: Посібник оператора</h1>
+          </div>
+        </div>
+
+        <nav class="hidden md:flex space-x-1 lg:space-x-2 text-sm font-medium">
+          <a href="#overview" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Огляд</a>
+          <a href="#workflow" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Воркфлоу</a>
+          <a href="#profile" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Золотий профіль</a>
+          <a href="#troubleshooting" class="px-3 py-2 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 transition flex items-center gap-1 font-semibold">
+            🔍 Пошук проблем
+          </a>
+          <a href="#calculator" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition font-medium">Калькулятор</a>
+          <a href="#quiz" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Тест</a>
+        </nav>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="window.print()" title="Роздрукувати конспект" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition text-xs flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            <span class="hidden sm:inline">Друк</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero-блок -->
+  <section class="bg-pcb-deep text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-teal-900">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
+      <div class="space-y-4 max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-800/50 text-teal-200 border border-teal-600/40 text-xs font-semibold font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Модуль 3D-друку Snapmaker 2.0 A350 / A350T
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-bold tracking-tight leading-tight font-display">
+          Практичний довідник та інженерні алгоритми безвідмовного друку
+        </h2>
+        <p class="text-slate-300 text-base leading-relaxed">
+          Інтерактивний посібник оператора верстата: робота в Snapmaker Luban, температурні режими, захисний бокс Enclosure, Z-Offset у реальному часі, універсальний калькулятор партійного друку та діагностика несправностей.
+        </p>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <a href="#troubleshooting" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold transition shadow-lg shadow-amber-500/20 text-sm">
+            🔍 Пошук проблеми (Troubleshooting)
+          </a>
+          <a href="#calculator" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-pcb hover:bg-pcb-hover text-white font-medium transition border border-teal-500/40 text-sm">
+            🧮 Універсальний калькулятор друку
+          </a>
+          <a href="lesson-01.html" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium transition border border-slate-700 text-sm">
+            ← Перейти до Уроку 2.1
+          </a>
+        </div>
+      </div>
+
+      <!-- Швидкі індикатори A350 -->
+      <div class="grid grid-cols-2 gap-3 w-full lg:w-80">
+        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 shadow-inner">
+          <div class="text-xs text-slate-400 font-medium">Робоча зона</div>
+          <div class="text-xl font-bold text-teal-300 font-mono mt-1">320×335×310</div>
+          <div class="text-xs text-slate-400 mt-1">мм (робочий стіл)</div>
+        </div>
+        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 shadow-inner">
+          <div class="text-xs text-slate-400 font-medium">Діаметр сопла</div>
+          <div class="text-xl font-bold text-amber-400 font-mono mt-1">0.40 мм</div>
+          <div class="text-xs text-slate-400 mt-1">Нитка: 1.75 мм</div>
+        </div>
+        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 shadow-inner">
+          <div class="text-xs text-slate-400 font-medium">Макс. стіл / сопло</div>
+          <div class="text-xl font-bold text-emerald-400 font-mono mt-1">80°C / 275°C</div>
+          <div class="text-xs text-slate-400 mt-1">Крок шару: 0.05–0.3 мм</div>
+        </div>
+        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 shadow-inner">
+          <div class="text-xs text-slate-400 font-medium">Захист від аварій</div>
+          <div class="text-xl font-bold text-rose-400 font-mono mt-1">Power Loss</div>
+          <div class="text-xs text-slate-400 mt-1">Пам'ять контролера</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Головний контент -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16 flex-1">
+
+    <!-- РОЗДІЛ 1: Огляд та безпека -->
+    <section id="overview" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">01</span>
+          Конструкція Snapmaker A350 та підготовка
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Ключові вузли, робочі температури матеріалів та правила експлуатації камери</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Картка 1: Робочий стіл -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg">
+            🧲
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Магнітна платформа з PEI</h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Верстат обладнано підігрівальним столом та знімним гнучким листом із пружинної сталі. Деталі знімаються завдяки вигину листа <strong>лише після остигання нижче 25–30 °C</strong>.
+          </p>
+          <div class="pt-2 border-t border-slate-100 text-xs text-slate-500 flex items-center gap-1.5 font-medium">
+            <span class="text-emerald-600">✔ Догляд:</span> знежирення ізопропіловим спиртом (IPA).
+          </div>
+        </div>
+
+        <!-- Картка 2: Захисний бокс -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-lg">
+            🚪
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Захисний бокс (Enclosure)</h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Служить для теплоізоляції та захисту від протягів. <strong>Правило для PLA:</strong> тримати дверцята зачиненими, а <em>витяжний вентилятор вимкненим</em>, щоб уникнути передчасного охолодження та деформації кутів (Warping).
+          </p>
+          <div class="pt-2 border-t border-slate-100 text-xs text-slate-500 flex items-center gap-1.5 font-medium">
+            <span class="text-amber-600">⚠ Важливо:</span> вентилятор вмикається для ABS / смол.
+          </div>
+        </div>
+
+        <!-- Картка 3: Матеріали -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg">
+            🧵
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Температурна сумісність</h4>
+          <ul class="text-xs text-slate-600 space-y-2">
+            <li class="flex justify-between items-center pb-1 border-b border-slate-100">
+              <span class="font-semibold text-slate-800">PLA (основний)</span>
+              <span class="font-mono text-pcb font-semibold">200–205°C / 50–55°C</span>
+            </li>
+            <li class="flex justify-between items-center pb-1 border-b border-slate-100">
+              <span class="font-semibold text-slate-800">PETG</span>
+              <span class="font-mono text-pcb font-semibold">230–240°C / 70–75°C</span>
+            </li>
+            <li class="flex justify-between items-center pb-1 border-b border-slate-100">
+              <span class="font-semibold text-slate-800">ABS / ASA (у боксі)</span>
+              <span class="font-mono text-pcb font-semibold">240–255°C / 80°C</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="font-semibold text-slate-800">TPU (гнучкий)</span>
+              <span class="font-mono text-pcb font-semibold">215–225°C / 40–50°C</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 2: Воркфлоу -->
+    <section id="workflow" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">02</span>
+          Покроковий технологічний процес (Step-by-Step Workflow)
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Від STL-файлу до готового виробу без аварійних зупинок</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative group hover:border-pcb transition">
+          <div class="text-xs font-mono font-bold text-slate-400 mb-2">КРОК 01</div>
+          <h5 class="font-bold text-slate-900 mb-1">Підготовка STL</h5>
+          <p class="text-xs text-slate-600">Імпорт файлу в Snapmaker Luban. Перевірка орієнтації, площини основи та наявності нависань.</p>
+          <span class="inline-block mt-3 px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-600 font-medium">Luban → 3D Printing</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative group hover:border-pcb transition">
+          <div class="text-xs font-mono font-bold text-slate-400 mb-2">КРОК 02</div>
+          <h5 class="font-bold text-slate-900 mb-1">Слайсинг моделі</h5>
+          <p class="text-xs text-slate-600">Вибір профілю PLA, шар 0.20 мм, 3–4 стінки, заповнення Gyroid 20–25%, стіл 50°C. Натисніть <strong>«Generate G-code»</strong>.</p>
+          <span class="inline-block mt-3 px-2 py-0.5 rounded text-[11px] bg-teal-50 text-pcb font-medium">Generate G-code</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative group hover:border-pcb transition">
+          <div class="text-xs font-mono font-bold text-slate-400 mb-2">КРОК 03</div>
+          <h5 class="font-bold text-slate-900 mb-1">Перевірка шарів</h5>
+          <p class="text-xs text-slate-600">Огляд моделі у вікні Preview через вертикальний повзунок: перевірка внутрішніх заповнень та контурів.</p>
+          <span class="inline-block mt-3 px-2 py-0.5 rounded text-[11px] bg-amber-50 text-amber-700 font-medium">Preview Slider</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative group hover:border-pcb transition">
+          <div class="text-xs font-mono font-bold text-slate-400 mb-2">КРОК 04</div>
+          <h5 class="font-bold text-slate-900 mb-1">Безпечний експорт</h5>
+          <p class="text-xs text-slate-600"><strong>Send to Device</strong> або USB-флешка. Запуск із тачскрину A350 гарантує роботу Power Loss Recovery.</p>
+          <span class="inline-block mt-3 px-2 py-0.5 rounded text-[11px] bg-emerald-50 text-emerald-700 font-medium">Send to Device</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative group hover:border-pcb transition">
+          <div class="text-xs font-mono font-bold text-slate-400 mb-2">КРОК 05</div>
+          <h5 class="font-bold text-slate-900 mb-1">Контроль старту</h5>
+          <p class="text-xs text-slate-600">Стеження за першим шаром (Skirt/Brim). Коригування висоти Z-Offset (±0.05 мм) на льоту без зупинки.</p>
+          <span class="inline-block mt-3 px-2 py-0.5 rounded text-[11px] bg-purple-50 text-purple-700 font-medium">Live Z-Offset</span>
+        </div>
+      </div>
+
+      <div class="bg-teal-50/70 rounded-2xl p-5 border border-teal-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-start gap-3">
+          <div class="text-2xl mt-0.5">💡</div>
+          <div>
+            <h6 class="font-bold text-slate-900 text-sm">Як запускати друк: прямий потік чи локальна пам'ять?</h6>
+            <p class="text-xs text-slate-600 mt-0.5">
+              Під час потокового запуску через USB-кабель («Запустити з Luban») у разі вимикання ПК або розриву зв'язку друк переривається <em>без можливості відновлення</em>. Рекомендується завжди натискати <strong>«Send to Device»</strong> (передає файл по Wi-Fi у пам'ять контролера верстата) або користуватися USB-флешкою.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 3: Золотий профіль друку PLA -->
+    <section id="profile" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">03</span>
+          «Золотий інженерний профіль» для Snapmaker A350 (PLA)
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Оптимальні значення, вивірені на практиці для міцних деталей (корпуси, шестерні, кронштейни)</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 text-slate-700 font-semibold text-xs uppercase tracking-wider border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Параметр у Luban</th>
+                <th class="py-3 px-4">Рекомендоване значення</th>
+                <th class="py-3 px-4 hidden sm:table-cell">Інженерне обґрунтування</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 font-mono text-xs">
+              <tr class="hover:bg-slate-50/50">
+                <td class="py-3 px-4 font-sans font-medium text-slate-900">Висота шару (Layer Height)</td>
+                <td class="py-3 px-4 text-pcb font-bold">0.20 мм</td>
+                <td class="py-3 px-4 text-slate-500 font-sans hidden sm:table-cell">Прискорює друк на 25–30% відносно 0.16 мм без втрати міцності.</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50">
+                <td class="py-3 px-4 font-sans font-medium text-slate-900">Товщина стінок (Wall Thickness)</td>
+                <td class="py-3 px-4 text-pcb font-bold">1.20 мм (3 периметри)</td>
+                <td class="py-3 px-4 text-slate-500 font-sans hidden sm:table-cell">Саме стінки (3 × 0.4 мм сопло) тримають механічні навантаження, а не заповнення.</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50">
+                <td class="py-3 px-4 font-sans font-medium text-slate-900">Щільність та візерунок (Infill)</td>
+                <td class="py-3 px-4 text-pcb font-bold">20% – 25% (Gyroid)</td>
+                <td class="py-3 px-4 text-slate-500 font-sans hidden sm:table-cell">Гіроїд дає ізотропну міцність і не спричиняє ударів сопла об перетини ліній.</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50">
+                <td class="py-3 px-4 font-sans font-medium text-slate-900">Температура сопла</td>
+                <td class="py-3 px-4 text-slate-900 font-bold">205 °C</td>
+                <td class="py-3 px-4 text-slate-500 font-sans hidden sm:table-cell">Стабільна плинність для стандартного кольорового PLA.</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 bg-amber-50/40">
+                <td class="py-3 px-4 font-sans font-medium text-slate-900">Температура столу (Bed Temp)</td>
+                <td class="py-3 px-4 text-amber-700 font-bold">50 °C (старт: 55–60 °C)</td>
+                <td class="py-3 px-4 text-slate-500 font-sans hidden sm:table-cell">Усуває ефект «приварювання намертво», який виникає при стандартних 70 °C.</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50">
+                <td class="py-3 px-4 font-sans font-medium text-slate-900">Ретракція (Retraction)</td>
+                <td class="py-3 px-4 text-slate-900 font-bold">5.0 мм при 60 мм/с</td>
+                <td class="py-3 px-4 text-slate-500 font-sans hidden sm:table-cell">Запобігає утворенню тонкої павутини (stringing) під час переїздів.</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 bg-emerald-50/30">
+                <td class="py-3 px-4 font-sans font-medium text-slate-900">Z-Hop (Підйом сопла)</td>
+                <td class="py-3 px-4 text-emerald-700 font-bold">0.2 мм (Only Over Printed)</td>
+                <td class="py-3 px-4 text-slate-500 font-sans hidden sm:table-cell">Усуває подряпини та діагональні сліди від гарячого сопла на верхній площині.</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50">
+                <td class="py-3 px-4 font-sans font-medium text-slate-900">Швидкість друку (Print Speed)</td>
+                <td class="py-3 px-4 text-slate-900 font-bold">60 мм/с (стінки 40 мм/с)</td>
+                <td class="py-3 px-4 text-slate-500 font-sans hidden sm:table-cell">Чиста якість зовнішніх граней без вібрацій масивної рами A350.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-pcb-deep text-white p-6 rounded-2xl border border-teal-900 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="text-xs font-mono text-teal-300 uppercase tracking-widest font-semibold">Порада інструктора</div>
+            <h4 class="text-lg font-bold mt-1 text-white font-display">Як зберегти цей профіль у Snapmaker Luban</h4>
+            <ol class="text-xs text-slate-300 mt-3 space-y-2 list-decimal list-inside leading-relaxed">
+              <li>У правому меню виберіть базовий профіль <em>«Normal / Fast»</em>.</li>
+              <li>Перейдіть у режим <strong>«Всі параметри» (Advanced)</strong>.</li>
+              <li>Змініть температуру столу на 50°C, шар на 0.20 мм, увімкніть Z-Hop 0.2 мм.</li>
+              <li>Натисніть <strong>«Зберегти як новий профіль»</strong> та вкажіть назву (наприклад, <code class="bg-slate-800 px-1 py-0.5 rounded text-amber-300">A350_PLA_Optimum</code>).</li>
+            </ol>
+          </div>
+
+          <div class="p-3 bg-pcb-panel rounded-xl border border-teal-800 text-xs text-slate-300">
+            <span class="text-amber-400 font-bold">Увага до режиму Ironing (Прасування):</span> якщо потрібна дзеркально гладка верхня кришка корпусу — увімкніть його, але пам'ятайте, що це додасть 10–15% до часу друку фінального шару.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 4: Пошук проблем (Troubleshooting Engine) -->
+    <section id="troubleshooting" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+            <span class="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center text-sm font-extrabold font-mono">04</span>
+            Інтерактивний діагност проблем та збоїв друку
+          </h3>
+          <p class="text-sm text-slate-500 mt-1">Миттєвий пошук несправностей за симптомами (перший шар, залипання, збій живлення, волога, дефекти)</p>
+        </div>
+        <div class="text-xs font-semibold text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm">
+          База рішень: <span id="items-count" class="text-pcb font-bold">7</span> випадків
+        </div>
+      </div>
+
+      <!-- Пошуковий рядок та фільтри -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+        <div class="relative">
+          <input
+            type="text"
+            id="troubleSearch"
+            placeholder="Введіть симптом, наприклад: 'прилипла', 'сліди сопла', 'світло', 'волога', 'Z-Offset', 'вентилятор'..."
+            class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pcb focus:border-transparent text-sm transition"
+            oninput="filterTroubles()"
+          >
+          <svg class="w-5 h-5 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+
+        <div class="flex flex-wrap gap-2 pt-1 text-xs" id="categoryButtons">
+          <button onclick="setFilter('all', this)" class="badge-tag px-3 py-1.5 rounded-lg bg-pcb-deep text-white font-medium">Всі проблеми</button>
+          <button onclick="setFilter('first-layer', this)" class="badge-tag px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium">Перший шар & Адгезія</button>
+          <button onclick="setFilter('removal', this)" class="badge-tag px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium">Зняття зі столу</button>
+          <button onclick="setFilter('surface', this)" class="badge-tag px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium">Якість поверхні / Сліди</button>
+          <button onclick="setFilter('power', this)" class="badge-tag px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium">Зникнення світла (Power Loss)</button>
+          <button onclick="setFilter('filament', this)" class="badge-tag px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium">Волога & Сушіння</button>
+        </div>
+      </div>
+
+      <!-- Контейнер карток проблем -->
+      <div id="troubleCards" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- Проблема 1 -->
+        <div class="trouble-item bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3" data-category="removal" data-keywords="деталь прилипла намертво не можу зняти стіл температура 70 z-offset шпатель зігнути лист">
+          <div class="flex items-start justify-between gap-2">
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-rose-100 text-rose-700 uppercase">Зняття деталей</span>
+            <span class="text-xs font-mono text-slate-400">#TR-01</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Деталь прилипла «намертво» до сталевого листа</h4>
+          <div class="text-xs text-slate-600 space-y-1.5">
+            <p><strong>Чому виникло:</strong> Стіл був нагрітий до 70°C (пластик затік у мікропори текстури PEI) або сопло було занадто низько виставлене (занизький Z-Offset).</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 text-slate-700 font-sans">
+              <div class="font-bold text-pcb text-xs">🛠 Що робити прямо зараз:</div>
+              <ul class="list-disc list-inside space-y-1 text-xs">
+                <li><strong>Охолодити:</strong> зачекайте, поки стіл охолоне нижче 25°C. Не здирайте гарячим!</li>
+                <li><strong>Зігнути лист:</strong> зніміть магнітний лист і акуратно зігніть його дугою в 2 напрямках.</li>
+                <li><strong>Термошок:</strong> покладіть лист у морозилку на 5–10 хв (метал стиснеться швидше за PLA).</li>
+                <li><strong>Ізопропіловий спирт (IPA):</strong> капніть під периметр деталі, спирт послабить зчеплення.</li>
+              </ul>
+            </div>
+            <p class="text-emerald-700 font-medium pt-1">✔ На майбутнє: знизьте температуру столу в Luban до 50–55°C та додайте до Z-Offset +0.05 мм.</p>
+          </div>
+        </div>
+
+        <!-- Проблема 2 -->
+        <div class="trouble-item bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3" data-category="first-layer" data-keywords="перший шар не прилипає ковзає нитка відривається z-offset висота сопло стіл рівень калібрування">
+          <div class="flex items-start justify-between gap-2">
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 text-amber-700 uppercase">Перший шар</span>
+            <span class="text-xs font-mono text-slate-400">#TR-02</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Нитка не прилипає до столу або волочиться за соплом</h4>
+          <div class="text-xs text-slate-600 space-y-1.5">
+            <p><strong>Чому виникло:</strong> Сопло розташоване занадто високо від платформи або на сталевому листі є сліди жиру від пальців.</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 text-slate-700">
+              <div class="font-bold text-pcb text-xs">🛠 Порядок дій:</div>
+              <ul class="list-disc list-inside space-y-1 text-xs">
+                <li><strong>Корекція на льоту:</strong> під час друку спідниці (Skirt) натисніть <code>– (мінус)</code> з кроком 0.05 мм у вікні «Зсув Z» в Luban чи на тачскрині.</li>
+                <li><strong>Знежирення:</strong> ретельно протріть холодний лист серветкою з ізопропіловим спиртом (IPA).</li>
+                <li><strong>Перевірка калібрування:</strong> запустіть Auto Bed Leveling на тачскрині верстата.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Проблема 3 -->
+        <div class="trouble-item bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3" data-category="surface" data-keywords="сліди сопла подряпини шкрабання пересування z-hop ретракт прасування ironing напливи overextrusion потік">
+          <div class="flex items-start justify-between gap-2">
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-teal-100 text-teal-800 uppercase">Якість поверхні</span>
+            <span class="text-xs font-mono text-slate-400">#TR-03</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Діагональні смуги та сліди від носика сопла (Nozzle Dragging)</h4>
+          <div class="text-xs text-slate-600 space-y-1.5">
+            <p><strong>Чому виникло:</strong> Під час холостих переміщень сопло торкається верхнього шару пластику, або є невеликий надлишок подачі (Over-extrusion).</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 text-slate-700">
+              <div class="font-bold text-pcb text-xs">🛠 Як усунути в Snapmaker Luban:</div>
+              <ul class="list-disc list-inside space-y-1 text-xs">
+                <li><strong>Увімкнути Z-Hop:</strong> у налаштуваннях ретракції встановіть <em>Підйом по осі Z</em> на <strong>0.2 мм</strong>.</li>
+                <li><strong>Обмежити підйом:</strong> активуйте тумблер <em>«Підйом по осі Z тільки над надрукованими елементами»</em>.</li>
+                <li><strong>Зменшити потік:</strong> встановіть Top Surface Flow на <strong>95–97%</strong>.</li>
+                <li><strong>Функція Ironing:</strong> для гладких кришок увімкніть «Прасування» верхнього шару.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Проблема 4 -->
+        <div class="trouble-item bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3" data-category="power" data-keywords="зникло світло живлення power loss recovery продовжити друк пауза стоп вимкнути">
+          <div class="flex items-start justify-between gap-2">
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 text-amber-700 uppercase">Збій живлення</span>
+            <span class="text-xs font-mono text-slate-400">#TR-04</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Зникло світло: чи можна продовжити друк (Power Loss Recovery)?</h4>
+          <div class="text-xs text-slate-600 space-y-1.5">
+            <p><strong>Як це працює в A350:</strong> Верстат підтримує відновлення тільки якщо завдання було надіслано через <strong>Send to Device</strong> або з <strong>USB-флешки</strong>.</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 text-slate-700">
+              <div class="font-bold text-pcb text-xs">🛠 Критичні нюанси:</div>
+              <ul class="list-disc list-inside space-y-1 text-xs">
+                <li><strong>Охолодження столу:</strong> якщо світла не було понад 10–15 хв, стіл вистигне, деталь стиснеться та відлипне. Продовжувати не можна — сопло зіб'є деталь!</li>
+                <li><strong>Швидке відновлення:</strong> якщо стіл ще теплий і деталь тримається міцно — натисніть <em>Resume</em> на тачскрині.</li>
+                <li><strong>Кнопка Stop:</strong> повністю скидає буфер координат — після Stop продовжити неможливо.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Проблема 5 -->
+        <div class="trouble-item bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3" data-category="surface" data-keywords="витяжний вентилятор enclosure захисний бокс кути відклеюються warping протяги">
+          <div class="flex items-start justify-between gap-2">
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-teal-100 text-teal-800 uppercase">Експлуатація камери</span>
+            <span class="text-xs font-mono text-slate-400">#TR-05</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Чи вмикати витяжний вентилятор бокса під час друку PLA?</h4>
+          <div class="text-xs text-slate-600 space-y-1.5">
+            <p><strong>Відповідь:</strong> <strong>НІ, тримати вимкненим!</strong></p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 text-slate-700">
+              <div class="font-bold text-pcb text-xs">💡 Чому це важливо:</div>
+              <p class="text-xs">
+                PLA є біорозкладним полімером і не виділяє токсичних газів. Робота витяжки створює протяги всередині камери, стіл локально вистигає, що призводить до підриву кутів моделі (ефект <em>Warping</em>).
+              </p>
+              <p class="text-xs text-pcb font-semibold">Тримайте вентилятор Off, дверцята бокса зачиненими, а LED-підсвітку On для нагляду.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Проблема 6 -->
+        <div class="trouble-item bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3" data-category="filament" data-keywords="вологий філамент сушіння пластику стіл як сушарка тріскотить бульбашки павутина dht22 вологість">
+          <div class="flex items-start justify-between gap-2">
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-purple-100 text-purple-700 uppercase">Матеріалознавство</span>
+            <span class="text-xs font-mono text-slate-400">#TR-06</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Пластик потріскує, піниться або залишає багато павутини (волога)</h4>
+          <div class="text-xs text-slate-600 space-y-1.5">
+            <p><strong>Ознаки:</strong> звук мікро-вибухів у соплі під час нагрівання — закипає вода, яка потрапила в структуру філаменту з повітря.</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 text-slate-700">
+              <div class="font-bold text-pcb text-xs">🛠 Як посушити прямо на столі Snapmaker A350:</div>
+              <ol class="list-decimal list-inside space-y-1 text-xs">
+                <li>Покладіть котушку плазом по центру столу A350.</li>
+                <li>Накрийте картонною коробкою з 3–4 невеликими отворами зверху для виходу пари.</li>
+                <li>Увімкніть нагрів столу на <strong>45–50 °C</strong> для PLA (не вище 55°C, щоб пластик не розм'як).</li>
+                <li>Залиште на <strong>4–6 годин</strong> (через 3 години переверніть котушку).</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- Проблема 7 -->
+        <div class="trouble-item bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3" data-category="surface" data-keywords="деталь не схожа переплутав stl розміри відмінність перевірка шарів орієнтація">
+          <div class="flex items-start justify-between gap-2">
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700 uppercase">Організація файлів</span>
+            <span class="text-xs font-mono text-slate-400">#TR-07</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-base">Надрукована деталь не відповідає очікуванням (переплутано версію STL)</h4>
+          <div class="text-xs text-slate-600 space-y-1.5">
+            <p><strong>Типова проблема:</strong> завантаження подібних за назвою файлів зі складних інженерних збірок (наприклад, верхня і нижня кришки, лівий і правий кронштейни).</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 text-slate-700 text-xs">
+              <strong>Правило контролю:</strong> обов'язково обертайте 3D-модель на столі Luban перед слайсингом, а після генерації коду — перевірте пошаровий перегляд у вікні Preview.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 5: Універсальний інженерний калькулятор -->
+    <section id="calculator" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">05</span>
+          Універсальний інженерний калькулятор друку (Snapmaker A350)
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Точний фізичний розрахунок завантаження столу 320 × 335 мм, витрати пластику, часу та собівартості будь-якого проєкту</p>
+      </div>
+
+      <!-- Швидкі шаблони (пресети) без прив'язки до окремих сторонніх моделей -->
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <span class="font-bold text-slate-500 uppercase tracking-wider font-mono mr-1">Швидкі пресети:</span>
+        <button type="button" onclick="loadPreset('case')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-pcb text-slate-700 hover:text-pcb font-medium transition shadow-sm">
+          📦 Корпус пристрою (2 деталі, по 45 г)
+        </button>
+        <button type="button" onclick="loadPreset('gears')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-pcb text-slate-700 hover:text-pcb font-medium transition shadow-sm">
+          ⚙️ Механічний вузол / шестерні (6 деталей, по 16 г)
+        </button>
+        <button type="button" onclick="loadPreset('complex')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-pcb text-slate-700 hover:text-pcb font-medium transition shadow-sm">
+          🏗 Багатодетальний Maker-проєкт (12 деталей, по 22 г)
+        </button>
+        <button type="button" onclick="loadPreset('single')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-pcb text-slate-700 hover:text-pcb font-medium transition shadow-sm">
+          🎯 Велика цілісна деталь (1 шт., 180 г)
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Форма калькулятора -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h4 class="font-bold text-slate-900 text-base font-display">Параметри проєкту</h4>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Загальна кількість деталей проєкту (шт.):</label>
+            <input type="number" id="calcTotalParts" value="6" min="1" max="200" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-mono focus:ring-2 focus:ring-pcb focus:outline-none" oninput="calculateBatch()">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Деталей на один стіл A350 (шт.):</label>
+            <input type="number" id="calcPartsPerBed" value="3" min="1" max="50" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-mono focus:ring-2 focus:ring-pcb focus:outline-none" oninput="calculateBatch()">
+            <span class="text-[11px] text-slate-500">Залежить від габаритів деталі та безпечної дистанції</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Середня вага однієї деталі (грам):</label>
+            <input type="number" id="calcAvgWeight" value="25" min="1" max="1000" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-mono focus:ring-2 focus:ring-pcb focus:outline-none" oninput="calculateBatch()">
+            <span class="text-[11px] text-slate-500">Вагу готової моделі показує Luban після слайсингу</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Висота шару:</label>
+              <select id="calcLayer" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-pcb focus:outline-none font-mono" onchange="calculateBatch()">
+                <option value="0.12">0.12 мм (Ювелірний)</option>
+                <option value="0.16">0.16 мм (Точний)</option>
+                <option value="0.20" selected>0.20 мм (Оптимальний)</option>
+                <option value="0.28">0.28 мм (Швидкий)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Підтримки/брім:</label>
+              <select id="calcWaste" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-pcb focus:outline-none font-mono" onchange="calculateBatch()">
+                <option value="0.05">5% (Без підтримки)</option>
+                <option value="0.10" selected>10% (Стандарт)</option>
+                <option value="0.20">20% (Густі підтримки)</option>
+                <option value="0.30">30% (Складні нависання)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Ціна котушки PLA 1 кг (грн ₴):</label>
+            <input type="number" id="calcSpoolCost" value="650" min="200" max="3000" step="10" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-mono focus:ring-2 focus:ring-pcb focus:outline-none" oninput="calculateBatch()">
+          </div>
+
+          <div id="riskAlert" class="p-3 bg-teal-50 rounded-xl border border-teal-200 text-xs text-pcb-deep space-y-1">
+            <strong>Інженерна рекомендація:</strong>
+            <p id="riskText">Завантаження збалансоване для лабораторії.</p>
+          </div>
+        </div>
+
+        <!-- Результати розрахунку -->
+        <div class="lg:col-span-2 bg-pcb-deep text-white p-6 rounded-2xl border border-teal-900 shadow-md flex flex-col justify-between space-y-6">
+          <div>
+            <div class="text-xs font-mono text-teal-300 uppercase tracking-widest font-semibold">Фізичний розрахунок завантаження</div>
+            <h4 class="text-xl font-bold mt-1 text-white font-display">Технологічна карта виробництва на Snapmaker A350</h4>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5 mt-5">
+              <div class="bg-pcb-panel p-4 rounded-xl border border-teal-800/80">
+                <div class="text-xs text-slate-400">Кількість запусків</div>
+                <div id="resBatches" class="text-2xl font-bold font-mono text-teal-300 mt-1">2 столи</div>
+                <div id="resPartsNote" class="text-[11px] text-slate-400">по 3 шт. на запуск</div>
+              </div>
+
+              <div class="bg-pcb-panel p-4 rounded-xl border border-teal-800/80">
+                <div class="text-xs text-slate-400">Загальна вага PLA</div>
+                <div id="resTotalWeight" class="text-2xl font-bold font-mono text-amber-400 mt-1">165 г</div>
+                <div id="resNetWeight" class="text-[11px] text-slate-400">150 г чисті деталі</div>
+              </div>
+
+              <div class="bg-pcb-panel p-4 rounded-xl border border-teal-800/80">
+                <div class="text-xs text-slate-400">Час одного столу</div>
+                <div id="resBatchTime" class="text-2xl font-bold font-mono text-emerald-400 mt-1">~3.2 год</div>
+                <div class="text-[11px] text-slate-400">з них 10 хв прогрів</div>
+              </div>
+
+              <div class="bg-pcb-panel p-4 rounded-xl border border-teal-800/80">
+                <div class="text-xs text-slate-400">Сумарний час циклу</div>
+                <div id="resTotalTime" class="text-2xl font-bold font-mono text-purple-300 mt-1">~6.4 год</div>
+                <div class="text-[11px] text-slate-400">повний час роботи верстата</div>
+              </div>
+
+              <div class="bg-pcb-panel p-4 rounded-xl border border-teal-800/80">
+                <div class="text-xs text-slate-400">Собівартість пластику</div>
+                <div id="resCost" class="text-2xl font-bold font-mono text-cyan-300 mt-1">107 ₴</div>
+                <div id="resPartCost" class="text-[11px] text-slate-400">~18 ₴ за одну деталь</div>
+              </div>
+
+              <div class="bg-pcb-panel p-4 rounded-xl border border-teal-800/80">
+                <div class="text-xs text-slate-400">Вихід з 1 котушки (1 кг)</div>
+                <div id="resSetsPerSpool" class="text-2xl font-bold font-mono text-emerald-300 mt-1">6 комплектів</div>
+                <div id="resLeftover" class="text-[11px] text-slate-400">залишок: ~10 г</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-teal-900 text-xs space-y-2 text-slate-300">
+            <div class="font-bold text-teal-300">Правило безпечного партійного друку на A350:</div>
+            <p class="leading-relaxed">
+              Хоча робочий стіл Snapmaker A350 має велику площу (320 × 335 мм), друкувати всі деталі одночасно понад 8–10 годин — ризиковано. Якщо наприкінці відлипне одна деталь, зіпсується вся партія. Завжди гуртуйте деталі схожої висоти по 2–5 штук на стіл з інтервалом друку до 3–4 годин.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 6: Консоль та команди G-коду -->
+    <section id="console" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">06</span>
+          Консоль Luban: довідник безпечних G-код команд
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Команди опитування та діагностики верстата, безпечні для запуску учнівством</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">M105</span>
+            <span class="text-slate-400 font-sans text-[11px]">Опитування</span>
+          </div>
+          <p class="font-sans text-slate-700">Запит поточної температури сопла та столу в режимі реального часу.</p>
+          <div class="bg-slate-900 text-emerald-400 p-2 rounded text-[11px]">Відповідь: ok T:204.8/205 B:50.1/50</div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">M114</span>
+            <span class="text-slate-400 font-sans text-[11px]">Координати</span>
+          </div>
+          <p class="font-sans text-slate-700">Отримати поточне положення голівки за осями X, Y, Z та кроками екструдера.</p>
+          <div class="bg-slate-900 text-teal-300 p-2 rounded text-[11px]">Відповідь: X:173.08 Y:172.28 Z:0.92 E:48.3</div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">G28</span>
+            <span class="text-slate-400 font-sans text-[11px]">Паркування (Home)</span>
+          </div>
+          <p class="font-sans text-slate-700">Повернення осей у нуль. Застосовувати <strong>виключно коли стіл повністю порожній</strong>.</p>
+          <div class="bg-slate-900 text-amber-300 p-2 rounded text-[11px]">Увага: не викликати під час друку!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 7: Контрольний тест -->
+    <section id="quiz" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-sm font-extrabold font-mono">07</span>
+          Контрольний тест для самоперевірки (Safety & Process Quiz)
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Перевірка розуміння технологічних параметрів Snapmaker A350 перед самостійною роботою</p>
+      </div>
+
+      <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+        <!-- Питання 1 -->
+        <div class="quiz-block space-y-3 pb-4 border-b border-slate-100" id="q1">
+          <p class="font-semibold text-slate-900 text-sm">1. Що потрібно зробити, якщо надрукована деталь із PLA прилипла занадто міцно до платформи?</p>
+          <div class="space-y-2 text-xs">
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+              <input type="radio" name="q1" value="a" class="text-pcb focus:ring-pcb">
+              <span>Здирати гострим ножем або бити молотком по гарячому столу.</span>
+            </label>
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+              <input type="radio" name="q1" value="b" class="text-pcb focus:ring-pcb">
+              <span>Дочекатися повного охолодження &lt;25°C, зняти гнучкий сталевий лист і зігнути його дугою; за потреби застосувати краплю спирту (IPA) або холод.</span>
+            </label>
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+              <input type="radio" name="q1" value="c" class="text-pcb focus:ring-pcb">
+              <span>Увімкнути нагрів столу до 90°C і тягнути деталь плоскогубцями.</span>
+            </label>
+          </div>
+          <div class="quiz-feedback hidden text-xs font-semibold p-2.5 rounded-lg mt-2"></div>
+        </div>
+
+        <!-- Питання 2 -->
+        <div class="quiz-block space-y-3 pb-4 border-b border-slate-100" id="q2">
+          <p class="font-semibold text-slate-900 text-sm">2. Як убезпечити тривалий друк на випадок зникнення електроживлення (Power Loss Recovery)?</p>
+          <div class="space-y-2 text-xs">
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+              <input type="radio" name="q2" value="a" class="text-pcb focus:ring-pcb">
+              <span>Завжди передавати файл через «Send to Device» (по Wi-Fi) або запускати з USB-флешки безпосередньо з тачскрина верстата.</span>
+            </label>
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+              <input type="radio" name="q2" value="b" class="text-pcb focus:ring-pcb">
+              <span>Транслювати потік G-коду з комп'ютера через USB-кабель без збереження в пам'ять принтера.</span>
+            </label>
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+              <input type="radio" name="q2" value="c" class="text-pcb focus:ring-pcb">
+              <span>Power Loss Recovery спрацьовує завжди, незалежно від способу запуску.</span>
+            </label>
+          </div>
+          <div class="quiz-feedback hidden text-xs font-semibold p-2.5 rounded-lg mt-2"></div>
+        </div>
+
+        <!-- Питання 3 -->
+        <div class="quiz-block space-y-3" id="q3">
+          <p class="font-semibold text-slate-900 text-sm">3. Який режим роботи витяжного вентилятора (Exhaust Fan) бокса встановлюється для друку PLA?</p>
+          <div class="space-y-2 text-xs">
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+              <input type="radio" name="q3" value="a" class="text-pcb focus:ring-pcb">
+              <span>Вентилятор на 100%, дверцята навстіж.</span>
+            </label>
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+              <input type="radio" name="q3" value="b" class="text-pcb focus:ring-pcb">
+              <span>Вимкнено (Off), дверцята бокса зачинені, щоб уникнути протягів та відклеювання моделі (Warping).</span>
+            </label>
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+              <input type="radio" name="q3" value="c" class="text-pcb focus:ring-pcb">
+              <span>Вмикати реверс вентилятора на максимум.</span>
+            </label>
+          </div>
+          <div class="quiz-feedback hidden text-xs font-semibold p-2.5 rounded-lg mt-2"></div>
+        </div>
+
+        <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200">
+          <button onclick="checkQuiz()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-pcb hover:bg-pcb-hover text-white font-bold text-sm transition shadow-md shadow-teal-700/20">
+            Перевірити відповіді
+          </button>
+          <div id="quizResult" class="text-xs font-bold text-slate-600"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Підвал -->
+  <footer class="bg-pcb-deep text-slate-400 py-8 px-4 sm:px-6 lg:px-8 border-t border-teal-900 text-xs">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="space-y-1 text-center md:text-left">
+        <div class="text-white font-bold text-sm font-display">Київський професійний коледж «ТЕХНО-АРТ» імені Бадрі Лолашвілі</div>
+        <p>Курс «Адаптивна цифрова майстерня: Arduino + 3D CAD + 3D Друк + AI + Maker» · 2026</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <a href="../../index.html" class="text-teal-300 hover:underline">Карта курсу</a>
+        <span>·</span>
+        <a href="lesson-01.html" class="text-teal-300 hover:underline">Урок 2.1 (Snapmaker)</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript логіка довідника -->
+  <script>
+    // --- Логіка пошуку несправностей ---
+    let currentFilter = 'all';
+
+    function setFilter(cat, btn) {
+      currentFilter = cat;
+      const buttons = document.querySelectorAll('#categoryButtons button');
+      buttons.forEach(b => {
+        b.classList.remove('bg-pcb-deep', 'text-white');
+        b.classList.add('bg-slate-100', 'text-slate-700');
+      });
+      if (btn) {
+        btn.classList.remove('bg-slate-100', 'text-slate-700');
+        btn.classList.add('bg-pcb-deep', 'text-white');
+      }
+      filterTroubles();
+    }
+
+    function filterTroubles() {
+      const query = document.getElementById('troubleSearch').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.trouble-item');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const category = card.getAttribute('data-category');
+        const keywords = card.getAttribute('data-keywords').toLowerCase();
+        const text = card.innerText.toLowerCase();
+
+        const matchesCategory = (currentFilter === 'all') || (category === currentFilter);
+        const matchesQuery = (query === '') || keywords.includes(query) || text.includes(query);
+
+        if (matchesCategory && matchesQuery) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      document.getElementById('items-count').innerText = visibleCount;
+    }
+
+    // --- Пресети калькулятора (без прив'язки до окремих сторонніх моделей) ---
+    const PRESETS = {
+      case: { totalParts: 2, partsPerBed: 2, avgWeight: 45, layer: "0.20", waste: "0.10" },
+      gears: { totalParts: 6, partsPerBed: 3, avgWeight: 16, layer: "0.16", waste: "0.10" },
+      complex: { totalParts: 12, partsPerBed: 4, avgWeight: 22, layer: "0.20", waste: "0.15" },
+      single: { totalParts: 1, partsPerBed: 1, avgWeight: 180, layer: "0.20", waste: "0.10" }
+    };
+
+    function loadPreset(key) {
+      const p = PRESETS[key];
+      if (!p) return;
+      document.getElementById('calcTotalParts').value = p.totalParts;
+      document.getElementById('calcPartsPerBed').value = p.partsPerBed;
+      document.getElementById('calcAvgWeight').value = p.avgWeight;
+      document.getElementById('calcLayer').value = p.layer;
+      document.getElementById('calcWaste').value = p.waste;
+      calculateBatch();
+    }
+
+    // --- Універсальний фізичний розрахунок завантаження столу Snapmaker A350 ---
+    function calculateBatch() {
+      const totalParts = Math.max(1, parseInt(document.getElementById('calcTotalParts').value) || 1);
+      const partsPerBed = Math.max(1, parseInt(document.getElementById('calcPartsPerBed').value) || 1);
+      const avgWeight = Math.max(1, parseFloat(document.getElementById('calcAvgWeight').value) || 1);
+      const layer = parseFloat(document.getElementById('calcLayer').value) || 0.20;
+      const wasteRatio = parseFloat(document.getElementById('calcWaste').value) || 0.10;
+      const spoolCost = Math.max(1, parseFloat(document.getElementById('calcSpoolCost').value) || 650);
+
+      // Кількість запусків (столів)
+      const batches = Math.ceil(totalParts / partsPerBed);
+
+      // Маса чистого пластику та з урахуванням технічного запасу (підтримки, skirt)
+      const netWeight = Math.round(totalParts * avgWeight);
+      const totalWeight = Math.round(netWeight * (1 + wasteRatio));
+      const bedWeight = Math.round(totalWeight / batches);
+
+      // Швидкість плавлення сопла 0.4 мм: базово ~24 г/год при шарі 0.20 мм
+      let speedFactor = 1.0;
+      if (layer === 0.12) speedFactor = 1.70; // ювелірний шар довше
+      if (layer === 0.16) speedFactor = 1.30;
+      if (layer === 0.20) speedFactor = 1.00;
+      if (layer === 0.28) speedFactor = 0.75; // швидкий товстий шар
+
+      // Чистий час екструзії + 10 хвилин (0.17 год) прогріву та авторівняння на кожен запуск столу
+      const prepHoursPerBed = 0.17;
+      const printHoursPerBed = (bedWeight / 24) * speedFactor;
+      const totalBedHours = (printHoursPerBed + prepHoursPerBed);
+      const totalHours = totalBedHours * batches;
+
+      // Фінансова собівартість (грн за грам = ціна_котушки / 1000)
+      const costPerGram = spoolCost / 1000;
+      const projectCost = Math.round(totalWeight * costPerGram);
+      const singlePartCost = (projectCost / totalParts).toFixed(1);
+
+      // Вихід комплектів з 1 котушки (1000 г)
+      const setsPerSpool = Math.floor(1000 / Math.max(1, totalWeight));
+      const leftover = 1000 - (setsPerSpool * totalWeight);
+
+      // Виведення результатів
+      document.getElementById('resBatches').innerText = `${batches} ${batches === 1 ? 'стіл' : (batches < 5 ? 'столи' : 'столів')}`;
+      document.getElementById('resPartsNote').innerText = `по ${partsPerBed} шт. на запуск`;
+
+      document.getElementById('resTotalWeight').innerText = `${totalWeight} г`;
+      document.getElementById('resNetWeight').innerText = `${netWeight} г чисті деталі (+${Math.round(wasteRatio*100)}% запас)`;
+
+      document.getElementById('resBatchTime').innerText = `~${totalBedHours.toFixed(1)} год`;
+      document.getElementById('resTotalTime').innerText = `~${totalHours.toFixed(1)} год`;
+
+      document.getElementById('resCost').innerText = `${projectCost} ₴`;
+      document.getElementById('resPartCost').innerText = `~${singlePartCost} ₴ за одну деталь`;
+
+      document.getElementById('resSetsPerSpool').innerText = `${setsPerSpool} ${setsPerSpool === 1 ? 'комплект' : (setsPerSpool < 5 ? 'комплекти' : 'комплектів')}`;
+      document.getElementById('resLeftover').innerText = `залишок з котушки: ~${leftover} г`;
+
+      // Інженерна оцінка безпеки партії
+      const riskAlert = document.getElementById('riskAlert');
+      const riskText = document.getElementById('riskText');
+      if (totalBedHours > 7) {
+        riskAlert.className = 'p-3 bg-rose-50 rounded-xl border border-rose-200 text-xs text-rose-800 space-y-1';
+        riskText.innerHTML = `<strong>⚠ Увага (довгий стіл ~${totalBedHours.toFixed(1)} год):</strong> один запуск занадто тривалий. Якщо на 6-й годині деталь відлипне, буде зіпсовано весь стіл. Рекомендується зменшити кількість деталей на один стіл до ${Math.max(1, Math.floor(partsPerBed / 2))} шт.`;
+      } else if (totalBedHours >= 2.5 && totalBedHours <= 5) {
+        riskAlert.className = 'p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-800 space-y-1';
+        riskText.innerHTML = `<strong>✔ Оптимальне завантаження (~${totalBedHours.toFixed(1)} год на стіл):</strong> безпечний інтервал друку для навчальної лабораторії КПКТА.`;
+      } else {
+        riskAlert.className = 'p-3 bg-teal-50 rounded-xl border border-teal-200 text-xs text-pcb-deep space-y-1';
+        riskText.innerHTML = `<strong>Компактна партія (~${totalBedHours.toFixed(1)} год на стіл):</strong> швидкий цикл із мінімальним ризиком відклеювання.`;
+      }
+    }
+
+    // --- Логіка квізу ---
+    function checkQuiz() {
+      const answers = { q1: 'b', q2: 'a', q3: 'b' };
+      let score = 0;
+
+      // Q1
+      const q1Val = document.querySelector('input[name="q1"]:checked')?.value;
+      const f1 = document.querySelector('#q1 .quiz-feedback');
+      f1.classList.remove('hidden');
+      if (q1Val === answers.q1) {
+        f1.className = 'quiz-feedback text-xs font-semibold p-2.5 rounded-lg mt-2 bg-emerald-100 text-emerald-800';
+        f1.innerText = '✔ Вірно! Охолодження нижче 25°C і легкий вигин сталевого листа безпечно відокремлюють деталь.';
+        score++;
+      } else {
+        f1.className = 'quiz-feedback text-xs font-semibold p-2.5 rounded-lg mt-2 bg-rose-100 text-rose-800';
+        f1.innerText = '✖ Невірно. Застосування сили або ніж подряпають лист. Зачекайте остигання або скористайтеся спиртом чи охолодженням.';
+      }
+
+      // Q2
+      const q2Val = document.querySelector('input[name="q2"]:checked')?.value;
+      const f2 = document.querySelector('#q2 .quiz-feedback');
+      f2.classList.remove('hidden');
+      if (q2Val === answers.q2) {
+        f2.className = 'quiz-feedback text-xs font-semibold p-2.5 rounded-lg mt-2 bg-emerald-100 text-emerald-800';
+        f2.innerText = '✔ Вірно! Тільки якщо файл завантажено в локальну пам’ять принтера, контролер зберігає останній шар.';
+        score++;
+      } else {
+        f2.className = 'quiz-feedback text-xs font-semibold p-2.5 rounded-lg mt-2 bg-rose-100 text-rose-800';
+        f2.innerText = '✖ Невірно. Потоковий друк із ПК перерветься назавжди при вимкненні комп’ютера.';
+      }
+
+      // Q3
+      const q3Val = document.querySelector('input[name="q3"]:checked')?.value;
+      const f3 = document.querySelector('#q3 .quiz-feedback');
+      f3.classList.remove('hidden');
+      if (q3Val === answers.q3) {
+        f3.className = 'quiz-feedback text-xs font-semibold p-2.5 rounded-lg mt-2 bg-emerald-100 text-emerald-800';
+        f3.innerText = '✔ Вірно! Витяжний вентилятор для PLA тримають вимкненим, щоб запобігти деформації (Warping).';
+        score++;
+      } else {
+        f3.className = 'quiz-feedback text-xs font-semibold p-2.5 rounded-lg mt-2 bg-rose-100 text-rose-800';
+        f3.innerText = '✖ Невірно. Потік повітря від витяжки створює протяг і спричиняє відклеювання кутів PLA.';
+      }
+
+      const resBox = document.getElementById('quizResult');
+      resBox.innerText = `Результат тесту: ${score} із 3 правильних відповідей.`;
+      resBox.className = score === 3 ? 'text-xs font-bold text-emerald-600' : 'text-xs font-bold text-amber-600';
+    }
+
+    // Ініціалізація
+    window.onload = function() {
+      calculateBatch();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Модуль 2, Урок 1. Snapmaker A350: Анатомія та ідеальний перший шар</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Унікальні стилі цього уроку. Спільні — у ../../assets/lesson.css */
+.hero { max-width: 1240px; margin: 0 auto; padding: 24px 24px 48px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.hero .kicker { margin: 0 0 14px; color: var(--copper); font-weight: 600; font-size: 15px; }
+.hero h1 { font-size: clamp(34px, 5.2vw, 60px); font-weight: 700; margin: 0 0 20px; }
+.hero .promise { font-size: 20px; line-height: 1.5; max-width: 34ch; margin: 0 0 28px; }
+.hero-board svg.printer { width: 100%; height: auto; filter: drop-shadow(0 18px 28px rgba(12, 42, 49, .22)); }
+.gcode-ticker { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; padding: 8px 14px; background: var(--pcb-deep); color: #DCEAE8; border-radius: 8px; font: 13px var(--mono); }
+.gcode-ticker .badge { color: #4ADE80; font-weight: 600; }
+.hero-board figcaption { text-align: center; color: var(--muted); font-size: 14px; margin-top: 8px; }
+/* ---------- module roadmap strip ---------- */
+.mod-map { max-width: 980px; margin: 28px 0 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-m); overflow: hidden; }
+.mod-map summary { cursor: pointer; padding: 14px 18px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; list-style: none; background: #E9F1EF; color: var(--ink); }
+.mod-map summary::-webkit-details-marker { display: none; }
+.mod-map summary span { font: 500 13px var(--mono); color: var(--pcb); }
+.mod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+.mod-item { background: var(--surface); padding: 14px 16px; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+.mod-item.current { background: #F1F9F4; border-left: 4px solid var(--ok); }
+.mod-item b { font: 600 12px var(--mono); color: var(--pcb); }
+.mod-item strong { font-size: 15px; color: var(--ink); }
+.mod-item small { color: var(--muted); font-size: 13px; line-height: 1.35; }
+ol.how { counter-reset: how; list-style: none; padding: 0; margin: 18px 0; max-width: 720px; }
+/* ---------- glossary parts tray ---------- */
+.read-as td, .read-as th { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+.read-as th { font-family: var(--mono); font-size: 13px; color: var(--muted); background: #E9F1EF; }
+figure.fig .canvas { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-m); padding: 16px; }
+/* ---------- interactive 3D labs ---------- */
+.lab-body { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+.stage { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.viz-box { background: var(--pcb-panel); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.viz-box svg { width: 100%; max-width: 360px; height: auto; display: block; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+.metric-card { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 8px; padding: 8px 10px; text-align: center; }
+.metric-card small { display: block; font-size: 11px; color: #8FB0B4; }
+.metric-card b { font: 600 15px var(--mono); color: #fff; }
+.sliders { display: grid; gap: 10px; }
+.sliders label { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font-size: 13.5px; }
+.sliders label b { font: 600 13.5px var(--mono); color: #F2A65A; }
+@media (max-width: 1000px) {
+  .hero-board { max-width: 540px; }
+}
+</style>
+<link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body data-lesson="m2-l01" data-root="../../">
+
+<nav class="topbar" aria-label="Навігація курсом">
+  <div class="crumbs">
+    <a href="../../index.html">Карта курсу</a>
+    <span aria-hidden="true">/</span><span>Модуль 2. 3D-друк та Snapmaker A350</span>
+  </div>
+  <a href="../../index.html">До карти модулів →</a>
+</nav>
+
+<header class="hero">
+  <div>
+    <p class="kicker">Модуль 2, урок 1 • Старт курсу 3D-друку</p>
+    <h1>Твій перший шар на Snapmaker A350</h1>
+    <p class="promise">За 45 хвилин ти приборкаєш модульний верстат 3-в-1, налаштуєш ідеальний Z-Offset і підготуєш у Snapmaker Luban свій перший інженерний профіль друку.</p>
+    <ul class="facts">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>45 хв теорія + симулятор у браузері</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Обладнання: Snapmaker 2.0 A350 + Luban</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>Фокус: Безпека, калібрування, слайсинг</li>
+    </ul>
+  </div>
+
+  <figure class="hero-board" style="margin:0">
+    <svg class="printer" viewBox="0 0 360 230" role="img" aria-label="Схема Snapmaker A350 під час укладання першого шару">
+      <!-- Frame & Z towers -->
+      <rect x="18" y="190" width="324" height="22" rx="5" fill="#1B2226"/>
+      <rect x="38" y="16" width="22" height="176" rx="3" fill="#2A343B" stroke="#0E6673" stroke-width="1.5"/>
+      <rect x="300" y="16" width="22" height="176" rx="3" fill="#2A343B" stroke="#0E6673" stroke-width="1.5"/>
+      <rect x="34" y="12" width="292" height="16" rx="3" fill="#1B2226"/>
+      <!-- X gantry beam -->
+      <rect x="32" y="96" width="296" height="20" rx="3" fill="#0E6673"/>
+      <line x1="42" y1="106" x2="318" y2="106" stroke="#0A4A54" stroke-width="3"/>
+      <!-- Heated Bed -->
+      <rect x="64" y="168" width="232" height="10" rx="2" fill="#3B464C"/>
+      <rect x="68" y="163" width="224" height="5" rx="1" fill="#B9761C"/>
+      <!-- Printed First Layer Bead -->
+      <rect id="hero-bead" x="105" y="158" width="90" height="5" rx="2.5" fill="#E5383B"/>
+      <!-- Toolhead (3D Module) -->
+      <g id="hero-head" transform="translate(155, 76)">
+        <rect x="0" y="0" width="46" height="58" rx="5" fill="#14232B" stroke="#CFE6E5" stroke-width="1.5"/>
+        <text x="23" y="18" text-anchor="middle" font-family="Unbounded, sans-serif" font-size="7" fill="#CFE6E5">3D</text>
+        <circle cx="23" cy="36" r="9" fill="#0E6673"/>
+        <!-- Nozzle -->
+        <polygon points="17,58 29,58 25,76 21,76" fill="#E9B949"/>
+        <circle cx="23" cy="78" r="4" fill="#FF6B6D"/>
+      </g>
+      <!-- Touchscreen Controller -->
+      <rect x="292" y="122" width="38" height="62" rx="5" fill="#14232B" stroke="#55666E" stroke-width="1.5"/>
+      <rect x="296" y="127" width="30" height="46" rx="2" fill="#0E6673"/>
+      <text x="311" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#fff">205°C</text>
+      <text x="311" y="154" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#F2A65A">60°C</text>
+      <text x="311" y="166" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="6" fill="#9FF0BE">Z:0.20</text>
+      <!-- Dimension callout -->
+      <text x="180" y="185" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#CFE6E5">Робочий стіл A350: 320 × 350 × 330 мм</text>
+    </svg>
+    <div class="gcode-ticker" aria-live="polite">
+      <span id="hero-gcode">G1 X164.2 Y120.0 Z0.20 E4.12 F1800</span>
+      <span class="badge">● Перший шар: OK</span>
+    </div>
+    <figcaption>Модульний комбайн Snapmaker A350 у режимі 3D-друку: точність першого шару вирішує долю всієї деталі</figcaption>
+  </figure>
+</header>
+
+<div class="layout">
+  <aside class="toc" aria-label="Зміст уроку">
+    <ol>
+      <li><a href="#s0"><b>0</b>Симулятор Z-Offset</a></li>
+      <li><a href="#s1"><b>1</b>Анатомія і безпека</a></li>
+      <li><a href="#s2"><b>2</b>Шлях у Luban</a></li>
+      <li><a href="#s3"><b>3</b>Міцність vs Час</a></li>
+      <li><a href="#s4"><b>4</b>Зламай профіль</a></li>
+      <li><a href="#s5"><b>5</b>Виклик: Роборука</a></li>
+      <li><a href="#s6"><b>6</b>Перевір себе</a></li>
+      <li><a href="#s7"><b>★</b>На верстаті A350</a></li>
+      <li><a href="#s8"><b>✓</b>Завершення</a></li>
+    </ol>
+    <div class="meter"><p>Чек-лист: <b id="meter-text">0 з 5</b></p><div class="bar"><span id="meter-bar"></span></div></div>
+  </aside>
+
+  <main>
+    <div class="prose">
+      <p class="lead">У першому модулі вдалося навчити плату Arduino керувати світлом і моторами. Але де взяти корпус для твого пристрою, шестерню або захват для роборуки? Купити їх неможливо — їх треба <strong>надрукувати на 3D-принтері</strong>.</p>
+      <p class="lead">У нашій лабораторії стоїть <strong>Snapmaker 2.0 A350</strong>. Це не просто принтер, а модульний верстат <strong>3-в-1</strong> (3D-принтер, лазерний гравер та фрезер ЧПК) з величезною робочою зоною <code>320 × 350 × 330 мм</code>.</p>
+    </div>
+
+    <!-- Карта Модуля 2 -->
+    <details class="mod-map" open>
+      <summary>Карта Модуля 2: Від нуля до інженера 3D-друку та CAD/CAM <span>6 уроків у модулі</span></summary>
+      <div class="mod-grid">
+        <div class="mod-item current"><b>Урок 1 (Ти тут)</b><strong>Анатомія A350 та Перший шар</strong><small>Безпека, калібрування столу, Z-Offset і базовий слайсинг у Snapmaker Luban.</small></div>
+        <div class="mod-item"><b>Урок 2</b><strong>Філаменти та фізика полімерів</strong><small>PLA, PETG, TPU. Температурні вежі, ретракт, вологість пластику та заміна сопла.</small></div>
+        <div class="mod-item"><b>Урок 3</b><strong>Інженерний слайсинг у Luban</strong><small>Стінки проти заповнення (Gyroid), геометрія підтримок (Supports), мости та адгезія.</small></div>
+        <div class="mod-item"><b>Урок 4</b><strong>Основи CAD для 3D-друку (DfAM)</strong><small>Проєктування деталей з урахуванням усадки, допусків (0.2 мм) та орієнтації шарів.</small></div>
+        <div class="mod-item"><b>Урок 5</b><strong>Основи CAM: Лазер та CNC на A350</strong><small>Перехід від нарощування (3D) до відсікання: швидка заміна модулів Quick Swap Kit.</small></div>
+        <div class="mod-item"><b>Урок 6 (Фінал)</b><strong>Серійний друк та складання пристрою</strong><small>Компонування 3 столів A350, розрахунок економіки (220 г PLA за 7 год) і збирання з Arduino.</small></div>
+      </div>
+    </details>
+
+    <div class="callout safe"><b>Золоте правило 3D-друку</b><strong>90% усіх аварій та браку стаються на першому шарі.</strong> Якщо перший шар пластику ліг на стіл рівно і надійно прилип — деталь надрукується успішно. Зараз ти побачиш, як це працює, у безпечному симуляторі.</div>
+
+    <!-- ===== 0 ===== -->
+    <section class="step" id="s0">
+      <div class="step-head"><span class="step-num">0</span><h2>Спробуй зараз: Симулятор Першого шару та Z-Offset</h2></div>
+      <div class="prose">
+        <p>Коли Snapmaker починає друк, сопло нагрівається до <code>205°C</code> і опускається майже впритул до столу. Відстань між кінчиком сопла і столом називається <strong>Z-Offset</strong> (зміщення по осі Z). Покрути повзунки нижче і подивись у розрізі, що станеться з розплавленою ниткою пластику!</p>
+      </div>
+
+      <div class="lab" id="lab-zoffset">
+        <div class="lab-head">
+          <span class="title">Калібрування першого шару • Snapmaker A350</span>
+          <div class="acts">
+            <button class="btn-ghost" id="z-ideal">Ідеальний профіль</button>
+            <button class="btn-ghost" id="z-reset">Скинути</button>
+          </div>
+        </div>
+        <div class="lab-body">
+          <div class="editor">
+            <div class="gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9</div>
+            <div class="scroller"><div class="ed">
+              <pre id="z-code-view"></pre>
+            </div></div>
+          </div>
+          <div class="stage">
+            <div class="viz-box">
+              <svg viewBox="0 0 320 135" aria-label="Переріз сопла та першого шару пластику на столі">
+                <!-- Heated Bed -->
+                <rect x="10" y="102" width="300" height="18" rx="3" fill="#2A343B"/>
+                <rect id="z-bed-surface" x="10" y="96" width="300" height="6" rx="1" fill="#B9761C"/>
+                <text x="20" y="115" font-family="JetBrains Mono, monospace" font-size="10" fill="#CFE6E5" id="z-bed-label">Стіл з підігрівом: 60°C</text>
+                <!-- Extruded plastic bead -->
+                <rect id="z-plastic" x="75" y="80" width="170" height="16" rx="8" fill="#E5383B"/>
+                <!-- Brass Nozzle -->
+                <g id="z-nozzle-group" transform="translate(0, 0)">
+                  <rect x="132" y="6" width="56" height="32" rx="3" fill="#3B464C"/>
+                  <polygon points="138,38 182,38 168,78 152,78" fill="#E9B949"/>
+                  <rect x="157" y="18" width="6" height="60" fill="#FF6B6D"/>
+                </g>
+              </svg>
+            </div>
+            <div class="sliders">
+              <label>Z-Offset (відстань сопла від столу) <b id="z-val-lbl">0.10 мм</b>
+                <input type="range" id="z-slider" min="-0.05" max="0.40" step="0.05" value="0.10">
+              </label>
+              <label>Температура столу (Bed Temp) <b id="bed-val-lbl">60 °C</b>
+                <input type="range" id="bed-slider" min="40" max="80" step="5" value="60">
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="console ok" id="z-console" role="status"></div>
+      </div>
+
+      <h3>Словник мейкера: головні терміни</h3>
+      <dl class="parts">
+        <div><svg viewBox="0 0 44 44" fill="none"><rect x="6" y="6" width="32" height="32" rx="4" stroke="#0E6673" stroke-width="3"/><path d="M22 12v20M12 22h20" stroke="#E5383B" stroke-width="2.5"/></svg><dt>Осі X, Y, Z</dt><dd>Координати простору: X — вліво/вправо, Y — вперед/назад (рух столу), Z — вгору/вниз (підйом балки).</dd></div>
+        <div><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="15" stroke="#B9761C" stroke-width="5"/><circle cx="22" cy="22" r="6" fill="#14232B"/></svg><dt>Філамент (Filament)</dt><dd>Пластикова нитка діаметром 1.75 мм на котушці. Наш базовий матеріал — біорозкладний пластик PLA.</dd></div>
+        <div><svg viewBox="0 0 44 44" fill="none"><rect x="12" y="6" width="20" height="18" rx="3" fill="#0E6673"/><polygon points="15,24 29,24 24,36 20,36" fill="#E9B949"/></svg><dt>Екструдер і Сопло</dt><dd>Механізм, який тягне пластик, плавить його при 200–215°C і видавлює крізь отвір діаметром 0.4 мм.</dd></div>
+        <div><svg viewBox="0 0 44 44" fill="none"><path d="M6 34h32" stroke="#14232B" stroke-width="4"/><rect x="12" y="25" width="20" height="9" rx="4.5" fill="#E5383B"/><polygon points="16,10 28,10 24,24 20,24" fill="#E9B949"/></svg><dt>Z-Offset</dt><dd>Точний зазор між соплом і столом на старті. Перевіряється калібрувальною карткою з легким тертям.</dd></div>
+        <div><svg viewBox="0 0 44 44" fill="none"><rect x="8" y="8" width="28" height="28" rx="4" stroke="#0E6673" stroke-width="2.5"/><path d="M8 16h28M8 24h28M8 32h28" stroke="#E5383B" stroke-width="2"/></svg><dt>Слайсер (Luban)</dt><dd>Програма, яка «нарізає» об'ємну 3D-модель (<code>.stl</code>) на сотні плоских горизонтальних шарів.</dd></div>
+        <div><svg viewBox="0 0 44 44" fill="none" stroke="#0E6673" stroke-width="2.5"><path d="M12 14h20M12 22h14M12 30h18"/><circle cx="32" cy="22" r="3" fill="#E5383B"/></svg><dt>G-код (<code>.gcode</code>)</dt><dd>Мова команд для верстата: куди поїхати, з якою швидкістю, до якої температури нагріти стіл і сопло.</dd></div>
+      </dl>
+    </section>
+
+    <!-- ===== 1 ===== -->
+    <section class="step" id="s1">
+      <div class="step-head"><span class="step-num">1</span><h2>Анатомія Snapmaker A350 та Правила безпеки</h2></div>
+      <div class="prose">
+        <p>На відміну від дешевих домашніх принтерів з відкритими ременями, Snapmaker A350 побудований із герметичних алюмінієвих <strong>лінійних модулів</strong>, усередині яких сталевий гвинт рухає каретку з точністю до сотих часток міліметра.</p>
+      </div>
+
+      <div class="callout danger">
+        <b>Правила безпеки в лабораторії (Safety First)</b>
+        <p>1. <strong>Опікова зона:</strong> Сопло розігрівається до <strong>205–250°C</strong>, а стіл — до <strong>60–80°C</strong>. Ніколи не торкайся металевого кінчика сопла руками чи пінцетом під час роботи.</p>
+        <p>2. <strong>Механіка високого зусилля:</strong> Лінійні модулі A350 дуже потужні. Не тримай пальці чи інструменти на шляху руху столу (вісь Y) та балки (вісь Z).</p>
+        <p>3. <strong>Аварійна зупинка:</strong> Якщо сопло врізалося в стіл або чути гучний тріск моторів — негайно натисни кнопку <strong>Emergency Stop</strong> (або вимкни тумблер на блоці живлення).</p>
+      </div>
+
+      <h3>Як виконати підготовку обладнання перед кожним запуском</h3>
+      <ol class="how">
+        <li><strong>Перевір робочий стіл:</strong> гнучка магнітна пластина має бути чистою (без крихт пластику та жирних плям від пальців) і рівно лежати на магнітній основі.</li>
+        <li><strong>Автоматичне вирівнювання (Heated Bed Leveling):</strong> на сенсорному екрані обери <em>Calibration → Auto Leveling</em>. Індуктивний датчик сам обміряє сітку точок столу.</li>
+        <li><strong>Налаштуй Z-Offset (фінальна точка):</strong> коли голова опуститься в центр, поклади під сопло фірмову калібрувальну карткою (або аркуш щільного паперу). Кроками по <code>0.05 мм</code> опускай сопло, поки картка не почне рухатися з відчутним тертям, а при штовханні вперед — злегка вигинатися.</li>
+        <li><strong>Завантаж філамент:</strong> на екрані натисни <em>Control → Nozzle → Load</em>. Коли температура сягне <code>200°C</code>, встав зрізаний під гострим кутом кінчик нитки PLA та натисни кнопку подачі, поки з сопла не піде рівна нитка.</li>
+      </ol>
+    </section>
+
+    <!-- ===== 2 ===== -->
+    <section class="step" id="s2">
+      <div class="step-head"><span class="step-num">2</span><h2>Від 3D-моделі до верстата: шлях у Snapmaker Luban</h2></div>
+      <div class="prose">
+        <p>Верстат не розуміє файлів картинок чи об'ємних фігур напряму. Щоб перетворити 3D-деталь (файл <code>.stl</code> або <code>.3mf</code>) на команди руху моторів (<code>.gcode</code>), ми використовуємо фірмову програму <strong>Snapmaker Luban</strong>.</p>
+      </div>
+
+      <figure class="fig">
+        <div class="canvas">
+          <svg viewBox="0 0 740 150" role="img" aria-label="Схема процесу в Snapmaker Luban: STL модель, Налаштування шарів, Генерація G-code, Робоча область Workspace">
+            <g font-family="Golos Text, sans-serif" font-size="13">
+              <!-- Box 1 -->
+              <rect x="8" y="25" width="160" height="95" rx="10" fill="#F2F5F4" stroke="#0E6673" stroke-width="2"/>
+              <text x="88" y="52" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="600" fill="#0E6673">1. Імпорт .STL</text>
+              <text x="88" y="74" text-anchor="middle" fill="#14232B">Move / Scale / Rotate</text>
+              <text x="88" y="94" text-anchor="middle" fill="#55666E" font-size="12">Кнопка Auto-arrange</text>
+              <path d="M172 72 H192" stroke="#0E6673" stroke-width="2.5"/>
+              <!-- Box 2 -->
+              <rect x="195" y="25" width="170" height="95" rx="10" fill="#F2F5F4" stroke="#0E6673" stroke-width="2"/>
+              <text x="280" y="52" text-anchor="middle" font-family="JetBrains Mono" font-size="11.5" font-weight="600" fill="#0E6673">2. Матеріал і профіль</text>
+              <text x="280" y="74" text-anchor="middle" fill="#14232B">Шар, стінки, Infill</text>
+              <text x="280" y="94" text-anchor="middle" fill="#55666E" font-size="12">Перевірка типу PLA</text>
+              <path d="M368 72 H388" stroke="#0E6673" stroke-width="2.5"/>
+              <!-- Box 3 -->
+              <rect x="391" y="25" width="165" height="95" rx="10" fill="#F2F5F4" stroke="#B9761C" stroke-width="2"/>
+              <text x="473" y="52" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="600" fill="#B9761C">3. Generate G-code</text>
+              <text x="473" y="74" text-anchor="middle" fill="#14232B">Пошаровий Preview</text>
+              <text x="473" y="94" text-anchor="middle" fill="#55666E" font-size="12">Контроль часу і ваги</text>
+              <path d="M559 72 H579" stroke="#0E6673" stroke-width="2.5"/>
+              <!-- Box 4 -->
+              <rect x="582" y="25" width="150" height="95" rx="10" fill="#E6F4EC" stroke="#1F8A5B" stroke-width="2"/>
+              <text x="657" y="52" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="600" fill="#1F8A5B">4. Workspace</text>
+              <text x="657" y="74" text-anchor="middle" fill="#14232B">Send to Device / Wi-Fi</text>
+              <text x="657" y="94" text-anchor="middle" fill="#12442E" font-size="12">Моніторинг наживо</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Чотири кроки підготовки деталі у Snapmaker Luban: від завантаження тривимірної сітки до запуску друку по Wi-Fi або через USB-флешку.</figcaption>
+      </figure>
+
+      <h3>Читаємо стартовий G-код як речення</h3>
+      <div class="scroll-x"><table class="read-as">
+        <tr><th>Команда G-code</th><th>Що робить Snapmaker A350</th></tr>
+        <tr><td><code>G28</code></td><td><strong>«Додому (Home All Axes)».</strong> Усі три осі їдуть у крайні верхні точки до кінцевих датчиків.</td></tr>
+        <tr><td><code>M140 S60</code></td><td>«Почни нагрівати <strong>робочий стіл до 60°C</strong>».</td></tr>
+        <tr><td><code>M104 S205</code></td><td>«Розігрій <strong>сопло екструдера до 205°C</strong> (температура плавлення PLA)».</td></tr>
+        <tr><td><code>G1 X10 Y10 Z0.20 F1500</code></td><td>«Плавно перемісти сопло в точку X=10, Y=10 на висоту першого шару <strong>0.20 мм</strong>».</td></tr>
+        <tr><td><code>M106 S255</code></td><td>«Увімкни вентилятор обдуву деталі на повну потужність (починаючи з 2-го шару)».</td></tr>
+      </table></div>
+    </section>
+
+    <!-- ===== 3 ===== -->
+    <section class="step" id="s3">
+      <div class="step-head"><span class="step-num">3</span><h2>Інженерна оптимізація: Міцність проти Часу</h2></div>
+      <div class="prose">
+        <p>Новачки часто думають: «Щоб деталь роборуки була міцною, поставлю заповнення (Infill) 80% і найменший шар 0.12 мм!». Результат — деталь друкується <strong>14 годин</strong> і перевитрачає пластик, а міцнішою майже не стає.</p>
+        <p><strong>Секрет інженерів:</strong> міцність деталі на вигин залежить від <strong>кількості зовнішніх стінок (Walls)</strong>, а не від внутрішньої сітки. Оптимізуй профіль базової деталі маніпулятора просто тут:</p>
+        <ul>
+          <li>встанови висоту шару <code>layer_height</code> на <code>0.20</code> або <code>0.24</code> мм;</li>
+          <li>збільш кількість стінок <code>wall_line_count</code> до <code>3</code> або <code>4</code>;</li>
+          <li>зменш заповнення <code>infill_density</code> до <code>20</code> або <code>25</code> %;</li>
+          <li>підніми швидкість <code>print_speed</code> до <code>65</code> мм/с, а температуру столу <code>bed_temp</code> вистав на <code>60</code> °C.</li>
+        </ul>
+      </div>
+
+      <div class="lab" id="lab-slicer">
+        <div class="lab-head">
+          <span class="title">Завдання 3 • Оптимізатор профілю Snapmaker Luban</span>
+          <div class="acts">
+            <button class="btn-ghost" id="sl-reset">Скинути на заводський</button>
+            <button class="btn-ghost" id="sl-copy">Копіювати параметри</button>
+          </div>
+        </div>
+        <div class="lab-body">
+          <div class="editor">
+            <div class="gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8</div>
+            <div class="scroller"><div class="ed">
+              <pre id="sl-code-pre" aria-hidden="true"></pre>
+              <textarea id="sl-code-ta" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Параметри профілю Luban">// Профіль: Основа механічного пристрою
+layer_height = 0.16;     // висота шару, мм (0.12 .. 0.28)
+wall_line_count = 2;     // кількість стінок (1 .. 5)
+infill_density = 50;     // заповнення всередині, % (10 .. 80)
+print_speed = 50;        // швидкість руху, мм/с (30 .. 80)
+nozzle_temp = 205;       // температура сопла, °C
+bed_temp = 70;           // температура столу, °C</textarea>
+            </div></div>
+          </div>
+          <div class="stage">
+            <div class="viz-box">
+              <div class="metrics">
+                <div class="metric-card"><small>Час друку</small><b id="m-time">4 год 25 хв</b></div>
+                <div class="metric-card"><small>Витрата PLA</small><b id="m-weight">132 г</b></div>
+                <div class="metric-card"><small>Міцність вузла</small><b id="m-strength">Середня</b></div>
+              </div>
+              <svg viewBox="0 0 280 95" id="sl-cross-svg" aria-label="Поперечний переріз деталі: стінки та внутрішнє заповнення">
+                <rect x="20" y="12" width="240" height="70" rx="8" fill="#1B2226" stroke="#E5383B" stroke-width="4" id="sl-wall-rect"/>
+                <g id="sl-infill-grid" stroke="#F2A65A" stroke-width="1.5" opacity="0.75"></g>
+              </svg>
+            </div>
+            <div class="sliders">
+              <label>Висота шару (layer_height) <b id="lbl-lh">0.16 мм</b><input type="range" min="0.12" max="0.28" step="0.04" value="0.16" data-param="layer_height"></label>
+              <label>Кількість стінок (wall_line_count) <b id="lbl-wl">2</b><input type="range" min="1" max="5" step="1" value="2" data-param="wall_line_count"></label>
+              <label>Заповнення (infill_density) <b id="lbl-inf">50 %</b><input type="range" min="10" max="80" step="5" value="50" data-param="infill_density"></label>
+              <label>Швидкість (print_speed) <b id="lbl-spd">50 мм/с</b><input type="range" min="30" max="80" step="5" value="50" data-param="print_speed"></label>
+            </div>
+          </div>
+        </div>
+        <div class="console ok" id="sl-console" role="status"></div>
+        <div class="lab-foot">
+          <div class="hints" id="sl-hints">
+            <p hidden><span>Підказка 1.</span>Висоту шару <code>layer_height</code> постав <code>0.20</code> або <code>0.24</code> — це миттєво скоротить кількість шарів на чверть.</p>
+            <p hidden><span>Підказка 2.</span>Зроби <code>wall_line_count = 3;</code> або <code>4;</code>, а <code>infill_density = 20;</code> або <code>25;</code>.</p>
+            <p hidden><span>Підказка 3.</span>У тексті коду ліворуч виправ <code>bed_temp = 60;</code> та постав швидкість <code>print_speed = 65;</code>.</p>
+          </div>
+          <button class="btn-ghost" id="sl-hint-btn" style="justify-self:start">Показати підказку 1 з 3</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4 ===== -->
+    <section class="step" id="s4">
+      <div class="step-head"><span class="step-num">4</span><h2>Зламай профіль (і зрозумій причину браку)</h2></div>
+      <div class="prose">
+        <p>Досвідчений оператор Snapmaker відрізняється від новачка тим, що за перші 2 хвилини бачить, що пішло не так. Натисни по черзі кнопки <strong>«Зламати»</strong>, подивись, як реагує симулятор вище, і перевір свій висновок.</p>
+      </div>
+
+      <div class="breaks">
+        <div class="brk"><span class="n">1</span>
+          <div><p>Встанови температуру сопла <code>nozzle_temp = 165;</code> для пластику PLA.</p><p class="think">Що зробить мотор екструдера, коли спробує проштовхнути холодний пластик?</p></div>
+          <button class="btn-line" data-break-sl="cold">Зламати</button>
+          <details><summary>Перевір свою думку</summary><p>Пластик PLA плавиться лише від 190°C. При 165°C сопло залишиться забитим, шестерня екструдера почне гучно клацати й гризти нитку, а деталь взагалі не почне друкуватися.</p></details>
+        </div>
+        <div class="brk"><span class="n">2</span>
+          <div><p>Постав <code>wall_line_count = 1;</code> та <code>infill_density = 10;</code>.</p><p class="think">Деталь надрукується дуже швидко, але що з нею станеться, коли ти закрутиш у неї гвинт М3?</p></div>
+          <button class="btn-line" data-break-sl="weak">Зламати</button>
+          <details><summary>Перевір свою думку</summary><p>Одна тонка стінка (0.4 мм) прогинається пальцями, як паперовий стаканчик. Для механічних деталей роботів потрібно мінімум 3 стінки (1.2 мм суцільного пластику по контуру).</p></details>
+        </div>
+        <div class="brk"><span class="n">3</span>
+          <div><p>Вистав <code>bed_temp = 85;</code> для звичайного PLA.</p><p class="think">Чому вища температура столу не означає краще прилипання?</p></div>
+          <button class="btn-line" data-break-sl="hotbed">Зламати</button>
+          <details><summary>Перевір свою думку</summary><p>При 85°C пластик PLA перебуває вище температури склування (60°C) і залишається м'яким, як пластилін. Нижні шари розплющаться під вагою верхніх (ефект «слонячої ноги»), а кути деталі вигнуться догори.</p></details>
+        </div>
+      </div>
+
+      <div class="callout ai"><b>Спитай ШІ як інженерного консультанта</b>Коли підбираєш параметри під нову деталь, формулюй запит із технічними умовами:
+        <p><em>«Я друкую шестерню для сервопривода SG90 на Snapmaker A350 із пластику PLA (сопло 0.4 мм). Порадь оптимальну кількість стінок, висоту шару та тип заповнення в Luban, щоб зубці не зрізало під навантаженням.»</em></p>
+      </div>
+    </section>
+
+    <!-- ===== 5 ===== -->
+    <section class="step" id="s5">
+      <div class="step-head"><span class="step-num">5</span><h2>Виклик: Технологічна карта друку пристрою</h2></div>
+      <div class="prose">
+        <p>Наш наскрізний навчальний проєкт — <strong>механічний маніпулятор</strong>, який складається з <strong>16 деталей</strong>. Стіл Snapmaker A350 має розмір <code>320 × 350 мм</code>, тому замість того, щоб запускати принтер 16 разів по одній деталі, ми групуємо їх у <strong>3 партії (3 столи)</strong> за допомогою кнопки <em>Auto-arrange</em> у Luban.</p>
+      </div>
+
+      <div class="levels" id="levels">
+        <button role="tab" aria-selected="true" data-level="e"><b>Explorer</b><small>Я досліджую</small></button>
+        <button role="tab" aria-selected="false" data-level="b"><b>Builder</b><small>Я налаштовую</small></button>
+        <button role="tab" aria-selected="false" data-level="m"><b>Maker</b><small>Я компоную партії</small></button>
+        <button role="tab" aria-selected="false" data-level="x"><b>Master</b><small>Стартовий G-код</small></button>
+        <div role="tabpanel" data-panel="e"><p>Натисни кнопку нижче, щоб завантажити готовий план виробництва маніпулятора на 3 столи A350. Перевір загальний час та витрату пластику (вистачить однієї котушки на 4 повні комплекти!).</p><button class="btn-line" data-starter="e">Завантажити готовий план</button></div>
+        <div role="tabpanel" data-panel="b" hidden><p>Доповни технологічну карту: вкажи кількість деталей для трьох столів так, щоб у сумі вийшло рівно <strong>16 деталей</strong>, а висота шару дорівнювала <code>0.20</code> мм.</p><button class="btn-line" data-starter="b">Відкрити заготовку Builder</button></div>
+        <div role="tabpanel" data-panel="m" hidden><p>Спроєктуй комбінований режим: перші два столи (основа і тяги) друкуються швидким конструкційним шаром <code>0.20</code> мм, а третій стіл (дрібні шестерні захвату) — точним шаром <code>0.16</code> мм.</p><button class="btn-line" data-starter="m">Відкрити заготовку Maker</button></div>
+        <div role="tabpanel" data-panel="x" hidden><p>Напиши власний блок стартового G-коду для Snapmaker A350 з командами <code>G28</code>, прогрівом <code>M140 S60</code>, <code>M104 S205</code> та лінією очищення сопла скраю столу.</p></div>
+      </div>
+
+      <div class="lab" id="lab-batch">
+        <div class="lab-head">
+          <span class="title">device_production_plan.txt</span>
+          <div class="acts">
+            <button class="btn-ghost" id="bt-reset">Скинути</button>
+            <button class="btn-run" id="bt-verify">Перевірити план виробництва</button>
+          </div>
+        </div>
+        <div class="lab-body">
+          <div class="editor">
+            <div class="gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8</div>
+            <div class="scroller"><div class="ed">
+              <pre id="bt-pre" aria-hidden="true"></pre>
+              <textarea id="bt-ta" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="План партій друку">// План виробництва деталей маніпулятора на Snapmaker A350
+batch_1_parts = 3;       // Стіл 1: База та поворотна шестерня
+batch_2_parts = 5;       // Стіл 2: Довгі важелі та тяги
+batch_3_parts = 0;       // Стіл 3: Захват і дрібні вузли (допиши, щоб разом було 16!)
+layer_mm = 0.20;         // Висота шару партії, мм
+walls = 3;               // Кількість стінок периметра
+infill_pct = 20;         // Щільність заповнення Gyroid, %</textarea>
+            </div></div>
+          </div>
+          <div class="stage">
+            <div class="viz-box">
+              <div class="metrics">
+                <div class="metric-card"><small>Усього деталей</small><b id="bt-total-parts">8 / 16 шт.</b></div>
+                <div class="metric-card"><small>Загальний час</small><b id="bt-total-time">4.2 год</b></div>
+                <div class="metric-card"><small>Загальна вага PLA</small><b id="bt-total-mass">135 г</b></div>
+              </div>
+              <p style="margin:6px 0 0;font-size:13px;color:#8FB0B4;text-align:center">1 стандартна котушка PLA (1000 г) = <b id="bt-robots" style="color:#9FF0BE">4 повних роборуки</b></p>
+            </div>
+          </div>
+        </div>
+        <div class="console ok" id="bt-console" role="status">Впиши кількість деталей для третього столу (batch_3_parts = 8;) і натисни «Перевірити план виробництва».</div>
+      </div>
+    </section>
+
+    <!-- ===== 6 ===== -->
+    <section class="step" id="s6">
+      <div class="step-head"><span class="step-num">6</span><h2>Перевір себе</h2></div>
+      <div class="prose"><p>Спочатку сформулюй відповідь подумки, потім відкривай картку.</p></div>
+      <div class="cards">
+        <details><summary>Чому у профілі Luban обов'язково перевіряти збіг вибраного матеріалу з тим, що заряджений у принтер?</summary><p>Різні пластики мають різні температури плавлення (PLA — 205°C, PETG — 235°C, TPU — гнучкий). Якщо в програмі залишити інший пластик, принтер перегріє або недогріє сопло, що призведе до збою друку або забиття екструдера.</p></details>
+        <details><summary>Що важливіше для міцності важеля роборуки: 4 стінки чи 60% заповнення?</summary><p>4 стінки (периметри). Основне механічне навантаження на вигин і скручування приймає зовнішня оболонка деталі, а заповнення 20–25% цілком достатньо для підтримки верхніх шарів.</p></details>
+        <details><summary>Як зрозуміти під час калібрування Z-Offset, що відстань сопла до столу правильна?</summary><p>Калібрувальна картка між холодним соплом і столом має протягуватися з відчутним легким опором (тертям), а при спробі штовхнути її вперед — злегка згинатися, не заклинюючи намертво.</p></details>
+        <details><summary>Яка оптимальна температура столу на Snapmaker A350 для друку деталей із PLA?</summary><p>55–60°C. При 70°C і вище стіл довше гріється, деталь може деформуватися біля основи («слоняча нога») і надто сильно прикипіти до покриття.</p></details>
+      </div>
+    </section>
+
+    <!-- ===== 7 ===== -->
+    <section class="step" id="s7">
+      <div class="step-head"><span class="step-num bonus">★</span><h2>Бонус: Практика на живому верстаті Snapmaker A350 <span class="tag">у лабораторії</span></h2></div>
+      <ol class="how">
+        <li>Увімкни Snapmaker A350 та переконайся, що встановлений модуль <strong>3D Printing Module</strong> і гнучкий магнітний стіл.</li>
+        <li>Відкрий на комп'ютері <strong>Snapmaker Luban</strong>, зайди у <strong>3D Printing</strong>, перетягни файл першої деталі (<code>.stl</code>) на стіл та натисни <strong>Auto-arrange</strong>.</li>
+        <li>Праворуч обери матеріал <strong>PLA</strong>, створи свій профіль із налаштуваннями з Кроку 3 та натисни <strong>Generate G-code</strong>.</li>
+        <li>Перевір пошаровий перегляд (<strong>Preview</strong>), натисни <strong>Export → Send to Device</strong> (по Wi-Fi) або збережи на USB-флешку.</li>
+        <li>Підтвердь запуск на сенсорному екрані верстата і <strong>обов'язково проконтролюй очима укладання перших двох шарів</strong>!</li>
+      </ol>
+    </section>
+
+    <!-- ===== 8 ===== -->
+    <section class="step" id="s8">
+      <div class="step-head"><span class="step-num final">✓</span><h2>Завершення: збережи свій прогрес</h2></div>
+      <p><strong>Обов'язково для зарахування уроку</strong></p>
+      <ul class="checklist">
+        <li><label><input type="checkbox" class="check" data-key="zoffset"><span>Відкалібровано ідеальний перший шар у симуляторі Z-Offset<small>Крок 0, позначиться автоматично при Z-Offset 0.05–0.15 мм і столі 55–60°C</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="safety"><span>Опрацьовано правила безпеки та алгоритм автокалібрування A350<small>Крок 1</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="slicer"><span>Оптимізовано інженерний профіль у калькуляторі Luban (шар 0.20–0.24, 3–4 стінки, 20–25% Infill)<small>Крок 3, позначиться сам</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="break"><span>Протестовано 3 сценарії браку в «Зламай профіль»<small>Крок 4</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="batch"><span>Складено технологічну карту на 16 деталей маніпулятора<small>Крок 5, позначиться сам після перевірки</small></span></label></li>
+      </ul>
+      <p><strong>Додатково</strong></p>
+      <ul class="checklist">
+        <li><label><input type="checkbox" class="check" data-key="quiz" data-bonus><span>Дано відповіді на всі 4 питання самоперевірки</span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="realprint" data-bonus><span>Запущено реальний друк першої деталі на Snapmaker A350 у майстерні</span></label></li>
+      </ul>
+
+      <div class="done-row"><button class="btn-done" id="done-btn">Позначити урок пройденим</button><span id="done-hint"></span></div>
+
+      <div class="callout next">
+        <b>У наступному уроці Модуля 2</b>
+        Чому один пластик гнеться як гума, інший витримує окріп, а третій починає стріляти бульбашками просто під час друку? В <strong>Уроці 2 «Філаменти та фізика полімерів»</strong> ми розберемо PLA, PETG і TPU, надрукуємо температурну вежу та навчимося боротися з «павутинням» (Stringing).
+        <p><a href="../../index.html">Повернутися до карти курсу →</a></p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>КПКТА імені Бадрі Лолашвілі. Курс «Arduino + 3D CAD + 3D Друк + AI + Maker»</footer>
+
+<script src="../../assets/lesson.js"></script>
+<script>
+(function () {
+"use strict";
+var LESSON = "m2-l01", KEY = "arduino-course-v1";
+
+/* ---------- syntax highlighter ---------- */
+var TOK = /(\/\/[^\n]*)|(\b(?:layer_height|wall_line_count|infill_density|print_speed|nozzle_temp|bed_temp|z_offset|batch_1_parts|batch_2_parts|batch_3_parts|layer_mm|walls|infill_pct)\b)|(\b(?:G28|G1|M104|M140|M106|PLA)\b)|(-?\b\d+(?:\.\d+)?\b)/g;
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function hl(code) {
+  var out = "", last = 0, m;
+  TOK.lastIndex = 0;
+  while ((m = TOK.exec(code))) {
+    out += esc(code.slice(last, m.index));
+    var cls = m[1] ? "c" : m[2] ? "f" : m[3] ? "k" : "n";
+    out += '<span class="tk-' + cls + '">' + esc(m[0]) + "</span>";
+    last = TOK.lastIndex;
+  }
+  return out + esc(code.slice(last));
+}
+
+/* ---------- прогрес і чек-лист: assets/lesson.js ---------- */
+var setCheck = window.LessonKit.setCheck;
+
+/* ---------- Hero animation ---------- */
+(function () {
+  var head = document.getElementById("hero-head"), bead = document.getElementById("hero-bead"), gcode = document.getElementById("hero-gcode");
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var t = 0;
+  setInterval(function () {
+    t += 0.06;
+    var x = 90 + (Math.sin(t) + 1) * 65;
+    head.setAttribute("transform", "translate(" + x + ", 76)");
+    var w = Math.max(20, x - 67);
+    bead.setAttribute("x", 85);
+    bead.setAttribute("width", w);
+    gcode.textContent = "G1 X" + (x + 40).toFixed(1) + " Y165.0 Z0.20 E" + (w * 0.06).toFixed(2) + " F1800";
+  }, 50);
+})();
+
+/* ---------- Lab 0: Z-Offset Simulator ---------- */
+(function () {
+  var zSlider = document.getElementById("z-slider"), bedSlider = document.getElementById("bed-slider");
+  var zLbl = document.getElementById("z-val-lbl"), bedLbl = document.getElementById("bed-val-lbl");
+  var nozzle = document.getElementById("z-nozzle-group"), plastic = document.getElementById("z-plastic");
+  var bedLabel = document.getElementById("z-bed-label"), codeView = document.getElementById("z-code-view"), con = document.getElementById("z-console");
+  var touched = false;
+
+  function updateZ() {
+    var z = parseFloat(zSlider.value), bed = parseInt(bedSlider.value, 10);
+    zLbl.textContent = (z >= 0 ? "+" : "") + z.toFixed(2) + " мм";
+    bedLbl.textContent = bed + " °C";
+    bedLabel.textContent = "Стіл з підігрівом: " + bed + "°C";
+
+    var offsetPx = (0.10 - z) * 45;
+    nozzle.setAttribute("transform", "translate(0, " + offsetPx.toFixed(1) + ")");
+
+    if (z <= 0.01) {
+      plastic.setAttribute("y", 93); plastic.setAttribute("height", 3); plastic.setAttribute("width", 220); plastic.setAttribute("x", 50); plastic.setAttribute("rx", 1);
+    } else if (z > 0.22) {
+      plastic.setAttribute("y", 72); plastic.setAttribute("height", 14); plastic.setAttribute("width", 130); plastic.setAttribute("x", 95); plastic.setAttribute("rx", 7);
+    } else {
+      var h = Math.round(10 + z * 35);
+      plastic.setAttribute("y", 96 - h); plastic.setAttribute("height", h); plastic.setAttribute("width", 175); plastic.setAttribute("x", 72); plastic.setAttribute("rx", h / 2);
+    }
+
+    var stateComment = z <= 0.01 ? "// НЕБЕЗПЕКА: сопло шкребе стіл!" : z > 0.22 ? "// БРАК: сопло високо, нитка не липне" : "// OK: ідеальний притиск валика";
+    var raw = "// Поточні параметри першого шару\n" +
+              "material = PLA;\n" +
+              "nozzle_temp = 205;      // °C\n" +
+              "bed_temp = " + bed + ";          // °C " + (bed > 65 ? "(загарячий!)" : bed < 50 ? "(захолодний!)" : "(норма)") + "\n" +
+              "z_offset = " + z.toFixed(2) + ";        // мм " + stateComment + "\n\n" +
+              "G28                     // калібрування осей\n" +
+              "M140 S" + bed + "                // прогрів столу\n" +
+              "G1 Z" + Math.max(0.02, z + 0.1).toFixed(2) + " F1200          // вихід на перший шар";
+    codeView.innerHTML = hl(raw);
+
+    if (z <= 0.01) {
+      con.className = "console err";
+      con.textContent = "Критично низький Z-Offset (" + z.toFixed(2) + " мм)! Сопло дряпає покриття столу і блокує вихід розплавленого пластику.";
+    } else if (z > 0.22) {
+      con.className = "console err";
+      con.textContent = "Занадто високий Z-Offset (" + z.toFixed(2) + " мм)! Кругла нитка падає з повітря і не притискається — деталь відірветься («спагеті»).";
+    } else if (bed > 65) {
+      con.className = "console err";
+      con.textContent = "Z-Offset у нормі, але стіл перегрітий (" + bed + "°C)! Нижні шари PLA розпливуться («слоняча нога»). Зменш до 55–60°C.";
+    } else if (bed < 50) {
+      con.className = "console err";
+      con.textContent = "Стіл надто холодний (" + bed + "°C)! Кути великої деталі на A350 відклеяться під час охолодження (Warping).";
+    } else {
+      con.className = "console win";
+      con.textContent = "Ідеальний перший шар! Z-Offset " + z.toFixed(2) + " мм та стіл " + bed + "°C забезпечують плоский валик і надійну адгезію.";
+      if (touched) setCheck("zoffset", true);
+    }
+  }
+
+  zSlider.addEventListener("input", function () { touched = true; updateZ(); });
+  bedSlider.addEventListener("input", function () { touched = true; updateZ(); });
+  document.getElementById("z-ideal").addEventListener("click", function () { touched = true; zSlider.value = "0.10"; bedSlider.value = "60"; updateZ(); });
+  document.getElementById("z-reset").addEventListener("click", function () { zSlider.value = "0.30"; bedSlider.value = "70"; updateZ(); });
+  updateZ();
+})();
+
+/* ---------- Lab 3: Slicer Optimizer ---------- */
+(function () {
+  var ta = document.getElementById("sl-code-ta"), pre = document.getElementById("sl-code-pre"), initial = ta.value;
+  var sliders = [].slice.call(document.querySelectorAll("#lab-slicer .sliders input"));
+  var con = document.getElementById("sl-console");
+  var touched = false;
+
+  function parseVal(name, def) {
+    var r = new RegExp("\\b" + name + "\\s*=\\s*(-?\\d+(?:\\.\\d+)?)"), m = r.exec(ta.value);
+    return m ? parseFloat(m[1]) : def;
+  }
+  function setVal(name, val) {
+    var r = new RegExp("(\\b" + name + "\\s*=\\s*)(-?\\d+(?:\\.\\d+)?)");
+    if (r.test(ta.value)) ta.value = ta.value.replace(r, "$1" + val);
+  }
+
+  function renderSlicer() {
+    pre.innerHTML = hl(ta.value) + "\n";
+    var lh = parseVal("layer_height", 0.16);
+    var wl = parseVal("wall_line_count", 2);
+    var inf = parseVal("infill_density", 50);
+    var spd = parseVal("print_speed", 50);
+    var noz = parseVal("nozzle_temp", 205);
+    var bed = parseVal("bed_temp", 70);
+
+    document.getElementById("lbl-lh").textContent = lh.toFixed(2) + " мм";
+    document.getElementById("lbl-wl").textContent = wl;
+    document.getElementById("lbl-inf").textContent = inf + " %";
+    document.getElementById("lbl-spd").textContent = spd + " мм/с";
+
+    sliders.forEach(function (s) {
+      var p = s.dataset.param;
+      if (p === "layer_height") s.value = lh;
+      if (p === "wall_line_count") s.value = wl;
+      if (p === "infill_density") s.value = inf;
+      if (p === "print_speed") s.value = spd;
+    });
+
+    // Cross section SVG
+    var wallRect = document.getElementById("sl-wall-rect"), grid = document.getElementById("sl-infill-grid");
+    wallRect.setAttribute("stroke-width", Math.min(18, wl * 3.2));
+    var step = Math.max(8, Math.round(52 - inf * 0.55)), paths = "";
+    for (var x = 32; x < 248; x += step) {
+      paths += '<line x1="' + x + '" y1="18" x2="' + x + '" y2="76"/>';
+    }
+    for (var y = 20; y < 76; y += step) {
+      paths += '<line x1="26" y1="' + y + '" x2="254" y2="' + y + '"/>';
+    }
+    grid.innerHTML = paths;
+
+    // Calculate time & mass for Base part
+    var mass = Math.round(42 + wl * 11 + inf * 1.35);
+    var hours = (0.16 / Math.max(0.08, lh)) * (50 / Math.max(20, spd)) * (1.55 + wl * 0.25 + inf * 0.032) + (bed > 62 ? 0.15 : 0);
+    var hInt = Math.floor(hours), mInt = Math.round((hours - hInt) * 60);
+    document.getElementById("m-time").textContent = hInt + " год " + mInt + " хв";
+    document.getElementById("m-weight").textContent = mass + " г";
+    var strEl = document.getElementById("m-strength");
+    strEl.textContent = wl >= 3 && inf >= 15 ? "Висока (Інженерна)" : wl === 2 ? "Середня" : "Крихка!";
+    strEl.style.color = wl >= 3 && inf >= 15 ? "#9FF0BE" : wl === 1 ? "#FFB4B5" : "#fff";
+
+    if (noz < 185) {
+      con.className = "console err";
+      con.textContent = "Помилка: Температура сопла " + noz + "°C занизька для PLA! Екструдер заклинить.";
+    } else if (wl < 2 || inf < 15) {
+      con.className = "console err";
+      con.textContent = "Увага: Лише " + wl + " стінка або заповнення " + inf + "% зробить деталь ламкою під навантаженням сервоприводів.";
+    } else if (bed > 65) {
+      con.className = "console err";
+      con.textContent = "Стіл має " + bed + "°C. Зменш bed_temp до 55–60°C у коді ліворуч, щоб уникнути прикипання та «слонячої ноги».";
+    } else if (lh >= 0.20 && lh <= 0.24 && wl >= 3 && inf >= 20 && inf <= 25 && spd >= 60 && bed >= 55 && bed <= 60) {
+      con.className = "console win";
+      con.textContent = "Чудова робота! Час друку скорочено до " + hInt + " год " + mInt + " хв, витрата лише " + mass + " г, а міцність оболонки висока.";
+      if (touched) setCheck("slicer", true);
+    } else {
+      con.className = "console ok";
+      con.textContent = "Профіль робочий, але його можна прискорити: постав шар 0.20–0.24, стінки 3–4, Infill 20–25%, швидкість 65 і стіл 60°C.";
+    }
+  }
+
+  sliders.forEach(function (s) {
+    s.addEventListener("input", function () {
+      touched = true;
+      setVal(s.dataset.param, s.value);
+      renderSlicer();
+    });
+  });
+  ta.addEventListener("input", function () { touched = true; renderSlicer(); });
+  document.getElementById("sl-reset").addEventListener("click", function () { ta.value = initial; renderSlicer(); });
+  document.getElementById("sl-copy").addEventListener("click", function (e) {
+    if (navigator.clipboard) navigator.clipboard.writeText(ta.value);
+    var b = e.currentTarget, t = b.textContent; b.textContent = "Скопійовано"; setTimeout(function () { b.textContent = t; }, 1400);
+  });
+
+  // Hints
+  var hps = [].slice.call(document.querySelectorAll("#sl-hints p")), hbtn = document.getElementById("sl-hint-btn"), hidx = 0;
+  hbtn.addEventListener("click", function () {
+    if (hidx < hps.length) hps[hidx++].hidden = false;
+    if (hidx >= hps.length) hbtn.hidden = true;
+    else hbtn.textContent = "Показати підказку " + (hidx + 1) + " з " + hps.length;
+  });
+
+  // Break-it buttons
+  var breakCount = 0;
+  document.querySelectorAll("[data-break-sl]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var mode = btn.dataset.breakSl;
+      ta.value = initial;
+      if (mode === "cold") setVal("nozzle_temp", 165);
+      if (mode === "weak") { setVal("wall_line_count", 1); setVal("infill_density", 10); }
+      if (mode === "hotbed") setVal("bed_temp", 85);
+      renderSlicer();
+      if (++breakCount >= 2) setCheck("break", true);
+      document.getElementById("lab-slicer").scrollIntoView({ block: "center", behavior: "smooth" });
+    });
+  });
+
+  renderSlicer();
+})();
+
+/* ---------- Lab 5: Batch Production Planner ---------- */
+(function () {
+  var ta = document.getElementById("bt-ta"), pre = document.getElementById("bt-pre"), initial = ta.value;
+  var con = document.getElementById("bt-console");
+
+  function val(k, d) {
+    var m = new RegExp("\\b" + k + "\\s*=\\s*(-?\\d+(?:\\.\\d+)?)").exec(ta.value);
+    return m ? parseFloat(m[1]) : d;
+  }
+
+  function renderBatch(verify) {
+    pre.innerHTML = hl(ta.value) + "\n";
+    var b1 = val("batch_1_parts", 0), b2 = val("batch_2_parts", 0), b3 = val("batch_3_parts", 0);
+    var lh = val("layer_mm", 0.20), w = val("walls", 3), inf = val("infill_pct", 20);
+    var total = b1 + b2 + b3;
+    var mass = Math.round(total * (8.5 + w * 1.2 + inf * 0.08));
+    var hrs = (total * 0.42 * (0.20 / Math.max(0.12, lh))).toFixed(1);
+
+    document.getElementById("bt-total-parts").textContent = total + " / 16 шт.";
+    document.getElementById("bt-total-time").textContent = hrs + " год";
+    document.getElementById("bt-total-mass").textContent = mass + " г";
+    document.getElementById("bt-robots").textContent = Math.max(1, Math.floor(1000 / Math.max(50, mass))) + " повних комплекти";
+
+    if (total === 16 && b1 > 0 && b2 > 0 && b3 > 0 && lh >= 0.16 && lh <= 0.24 && w >= 3) {
+      con.className = "console win";
+      con.textContent = "План виробництва деталей маніпулятора затверджено! 16 деталей на 3 столи A350: ~" + hrs + " год друку та " + mass + " г пластику PLA.";
+      if (verify) setCheck("batch", true);
+    } else if (verify) {
+      con.className = "console err";
+      con.textContent = "Перевір розрахунок: сума деталей (batch_1 + batch_2 + batch_3) має дорівнювати рівно 16, а стінок (walls) має бути не менше 3.";
+    }
+  }
+
+  ta.addEventListener("input", function () { renderBatch(false); });
+  document.getElementById("bt-verify").addEventListener("click", function () { renderBatch(true); });
+  document.getElementById("bt-reset").addEventListener("click", function () { ta.value = initial; renderBatch(false); });
+
+  var STARTERS = {
+    e: "// Готовий інженерний план виробництва маніпулятора (3 столи A350)\nbatch_1_parts = 3;       // Стіл 1: База, поворотна шестерня, диск (~2.5 год, 90 г)\nbatch_2_parts = 5;       // Стіл 2: Важелі, тяги, мачта (~2.2 год, 75 г)\nbatch_3_parts = 8;       // Стіл 3: Пальці клешні та серво-кріплення (~1.8 год, 55 г)\nlayer_mm = 0.20;         // Оптимальний шар\nwalls = 3;               // Міцний периметр\ninfill_pct = 20;         // Заповнення Gyroid",
+    b: initial,
+    m: "// Комбінований план Maker (конструкційні столи + точні шестерні)\nbatch_1_parts = 3;\nbatch_2_parts = 5;\nbatch_3_parts = 8;\nlayer_mm = 0.16;         // Підвищена точність для зубців захвату\nwalls = 4;               // Посилені осі обертання\ninfill_pct = 25;"
+  };
+  var tabs = [].slice.call(document.querySelectorAll("#levels [role=tab]"));
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      tabs.forEach(function (x) { x.setAttribute("aria-selected", String(x === t)); });
+      document.querySelectorAll("#levels [role=tabpanel]").forEach(function (p) { p.hidden = p.dataset.panel !== t.dataset.level; });
+    });
+  });
+  document.querySelectorAll("[data-starter]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      ta.value = STARTERS[b.dataset.starter];
+      renderBatch(true);
+    });
+  });
+
+  renderBatch(false);
+})();
+
+})();
+</script>
+</body>
+</html>

@@ -3,53 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Адаптивна цифрова майстерня: Arduino · CAD · 3D-друк · AI · Maker</title>
+<title>Карта курсу — Адаптивна цифрова майстерня: Arduino · CAD · 3D-друк · AI · Maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body data-root="">
 
-<header class="site-header">
-  <div class="wrap">
-    <div class="inst">Київський професійний коледж «ТЕХНО-АРТ» імені Бадрі Лолашвілі</div>
-    <h1>Адаптивна цифрова майстерня</h1>
-    <p>Arduino → CAD → 3D-друк → AI → Maker-проєкт. Вчися у своєму темпі: уроки йдуть послідовно.</p>
-    <div class="meta">
-      <span class="pill">⏱ 250 годин</span>
-      <span class="pill">📦 Набори ТЕКО</span>
-      <span class="pill">⚡ Wokwi онлайн</span>
-      <span class="pill">📱 Працює на телефоні</span>
-    </div>
+<header class="topbar">
+  <div class="crumbs">
+    <span>Київський професійний коледж «ТЕХНО-АРТ» імені Бадрі Лолашвілі</span>
+    <span aria-hidden="true">·</span>
+    <span>Курс 250 годин</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="chip-btn" id="teacher-toggle-btn" type="button">🎓 Режим викладача</button>
   </div>
 </header>
 
-<main>
-  <div class="box mission">
-    <div class="box-title">🎯 Головна мета курсу</div>
-    Не «я вивчив Arduino», а <strong>«я можу створити працюючий пристрій»</strong>:
-    проблема → ідея → алгоритм → схема → код → Wokwi → налагодження → Arduino → CAD → 3D-друк → готовий виріб.
+<section class="hero">
+  <div>
+    <p class="kicker">Arduino · 3D CAD · 3D-друк · AI-ментор · Maker</p>
+    <h1>Адаптивна цифрова майстерня</h1>
+    <p class="promise">Від першого сигналу на мікроконтролері — до калібрування Snapmaker A350, 3D-моделювання корпусів і створення власного працюючого пристрою.</p>
+    <div class="hero-cta">
+      <a class="btn-primary" id="continue-btn" href="modules/01-arduino-basics/lesson-01.html">Почати навчання →</a>
+      <a class="btn-ghost" href="#resources-sec">🎬 Відео та джерела</a>
+    </div>
+    <ul class="facts">
+      <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3.5 2"/></svg>250 навчальних годин</li>
+      <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M7 8h6M7 12h4"/></svg>Набори ТЕКО + Wokwi</li>
+      <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 16h12M6 16V8l4-4 4 4v8"/><circle cx="10" cy="11" r="1.5"/></svg>3D-принтер Snapmaker A350</li>
+      <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2v4M10 14v4M2 10h4M14 10h4"/><circle cx="10" cy="10" r="3"/></svg>Працює з комп'ютера і телефона</li>
+    </ul>
   </div>
 
-  <h2>Твій прогрес</h2>
-  <div class="progress"><div id="progress-bar"></div></div>
-  <div id="progress-text" class="hint"></div>
+  <figure class="hero-board">
+    <svg class="board-map" viewBox="0 0 540 340" role="img" aria-label="Схема інженерного шляху: Електроніка Arduino, 3D-друк Snapmaker A350, 3D CAD моделювання та готовий Maker-проєкт">
+      <defs>
+        <pattern id="pcbGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#184C57" stroke-width="0.7"/>
+        </pattern>
+        <radialGradient id="ledGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#FF5A5C" stop-opacity=".85"/>
+          <stop offset="100%" stop-color="#FF5A5C" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- Корпус плати маршруту -->
+      <rect x="8" y="8" width="524" height="324" rx="16" fill="#0C2A31" stroke="#0E6673" stroke-width="2"/>
+      <rect x="16" y="16" width="508" height="308" rx="12" fill="url(#pcbGrid)"/>
+      <!-- Монтажні отвори по кутах -->
+      <g fill="#F2F5F4" stroke="#B9761C" stroke-width="3">
+        <circle cx="32" cy="32" r="6"/><circle cx="508" cy="32" r="6"/>
+        <circle cx="32" cy="308" r="6"/><circle cx="508" cy="308" r="6"/>
+      </g>
+      <!-- Мідні доріжки між модулями -->
+      <g fill="none" stroke="#1E7E8C" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M 155 95 H 255 L 275 115 H 330"/>
+        <path d="M 410 150 V 195 L 390 215 H 310"/>
+        <path d="M 210 245 H 145"/>
+      </g>
+      <!-- Вузли-переходи (vias) -->
+      <g fill="#0C2A31" stroke="#E7B95B" stroke-width="2.2">
+        <circle cx="255" cy="95" r="4"/><circle cx="275" cy="115" r="4"/>
+        <circle cx="390" cy="215" r="4"/><circle cx="210" cy="245" r="4"/>
+      </g>
 
-  <h2>Карта курсу</h2>
-  <div id="course-root"></div>
+      <!-- Вузол 0 + 1: Arduino & ТЕКО -->
+      <g transform="translate(36, 48)">
+        <rect width="205" height="96" rx="10" fill="#11353E" stroke="#2AA1B2" stroke-width="1.8"/>
+        <text x="16" y="26" fill="#7CE2EE" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">БЛОК 0 + МОДУЛЬ 1</text>
+        <text x="16" y="48" fill="#FFFFFF" font-family="Unbounded, sans-serif" font-size="14" font-weight="700">Arduino &amp; ТЕКО</text>
+        <text x="16" y="68" fill="#A9C6CA" font-family="Golos Text, sans-serif" font-size="12">Безпека · Схеми · Симулятор</text>
+        <text x="16" y="84" fill="#A9C6CA" font-family="Golos Text, sans-serif" font-size="12">Код C++ · Світлодіоди · Кнопки</text>
+        <circle cx="182" cy="24" r="14" fill="url(#ledGlow)" class="pulse-glow"/>
+        <circle cx="182" cy="24" r="5.5" fill="#FF5A5C"/>
+      </g>
 
-  <h2>Як працювати з уроком</h2>
-  <div class="grid">
-    <div class="card"><h4>1. Побач і повтори</h4><p>Збери схему у Wokwi за інструкцією — перший результат за 15 хвилин.</p></div>
-    <div class="card"><h4>2. Зміни і зламай</h4><p>Експериментуй з кодом. Помилка — це робочий етап, а не провал.</p></div>
-    <div class="card"><h4>3. Виправ з AI</h4><p>Користуйся AI як ментором: опиши симптом і гіпотезу, а не проси готовий код.</p></div>
-    <div class="card"><h4>4. Збережи в портфоліо</h4><p>Кожен урок завершується доказом: скріншот, посилання, короткий звіт.</p></div>
-  </div>
+      <!-- Вузол 2: 3D-друк Snapmaker A350 -->
+      <g transform="translate(298, 56)">
+        <rect width="206" height="96" rx="10" fill="#11353E" stroke="#E7B95B" stroke-width="1.8"/>
+        <text x="16" y="26" fill="#F2C46D" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">МОДУЛЬ 2 · НОВИЙ</text>
+        <text x="16" y="48" fill="#FFFFFF" font-family="Unbounded, sans-serif" font-size="14" font-weight="700">Snapmaker A350</text>
+        <text x="16" y="68" fill="#A9C6CA" font-family="Golos Text, sans-serif" font-size="12">Z-Offset · Slicer Luban · G-code</text>
+        <text x="16" y="84" fill="#A9C6CA" font-family="Golos Text, sans-serif" font-size="12">Друк корпусів та механіки</text>
+      </g>
 
-  <p class="hint">Прогрес зберігається у цьому браузері. На іншому пристрої він почнеться з нуля.
-  <button class="link-btn" id="reset-btn">Скинути прогрес</button></p>
-</main>
+      <!-- Вузол 3: 3D CAD -->
+      <g transform="translate(298, 192)">
+        <rect width="206" height="96" rx="10" fill="#11353E" stroke="#2AA1B2" stroke-width="1.5"/>
+        <text x="16" y="26" fill="#7CE2EE" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">МОДУЛЬ 3</text>
+        <text x="16" y="48" fill="#FFFFFF" font-family="Unbounded, sans-serif" font-size="14" font-weight="700">3D CAD Корпуси</text>
+        <text x="16" y="68" fill="#A9C6CA" font-family="Golos Text, sans-serif" font-size="12">Штангенциркуль · Допуски</text>
+        <text x="16" y="84" fill="#A9C6CA" font-family="Golos Text, sans-serif" font-size="12">Tinkercad · Fusion 360</text>
+      </g>
+
+      <!-- Вузол 4: Maker-проєкт -->
+      <g transform="translate(36, 192)">
+        <rect width="205" height="96" rx="10" fill="#11353E" stroke="#34D399" stroke-width="1.8"/>
+        <text x="16" y="26" fill="#4ADE80" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">МОДУЛЬ 4 · ФІНАЛ</text>
+        <text x="16" y="48" fill="#FFFFFF" font-family="Unbounded, sans-serif" font-size="14" font-weight="700">Maker-пристрій</text>
+        <text x="16" y="68" fill="#A9C6CA" font-family="Golos Text, sans-serif" font-size="12">Механіка + Серво + Код</text>
+        <text x="16" y="84" fill="#A9C6CA" font-family="Golos Text, sans-serif" font-size="12">Захист власного проєкту</text>
+      </g>
+
+      <!-- Напис на платі -->
+      <text x="270" y="320" text-anchor="middle" fill="#68959C" font-family="JetBrains Mono, monospace" font-size="10">KPKTA MAKER-LAB REV 2.4 · ADAPTIVE CURRICULUM BOARD</text>
+    </svg>
+    <div class="board-telemetry">
+      <span id="hero-stat-ready">Готових уроків: 6</span>
+      <span id="hero-stat-done" class="badge-ok">Твій прогрес: 0%</span>
+    </div>
+  </figure>
+</section>
+
+<div class="layout">
+  <aside class="toc" aria-label="Навігація по сторінці">
+    <ol>
+      <li><a href="#modules-sec" class="active"><b>01</b>Карта модулів</a></li>
+      <li><a href="#method-sec"><b>02</b>Як влаштовано урок</a></li>
+      <li><a href="#resources-sec"><b>03</b>Відео та джерела</a></li>
+    </ol>
+    <div class="meter">
+      <p>Прогрес курсу: <b id="progress-short">0%</b></p>
+      <div class="bar"><span id="progress-bar"></span></div>
+      <p id="progress-text" class="meter-sub"></p>
+      <div class="meter-actions">
+        <button class="link-btn" id="reset-btn" type="button">Скинути прогрес</button>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="callout safe" style="max-width:100%;margin-top:0">
+      <b>🎯 Головна інженерна мета курсу</b>
+      <p>Не просто «прочитати про електроніку чи 3D-принтер», а <strong>навчитися створювати працюючий пристрій під ключ</strong>: проблема → ідея → схема у Wokwi → код Arduino → обмір штангенциркулем → 3D-друк деталі на Snapmaker A350 → готовий виріб у портфоліо.</p>
+    </div>
+
+    <section class="step" id="modules-sec">
+      <div class="step-head">
+        <span class="step-num">01</span>
+        <div>
+          <h2>Карта курсу та навчальні модулі</h2>
+          <p class="sub-lead">Перший урок кожного модуля завжди відкритий — обирай потрібну траєкторію або проходь курс послідовно.</p>
+        </div>
+      </div>
+      <div id="course-root"></div>
+    </section>
+
+    <section class="step" id="method-sec">
+      <div class="step-head">
+        <span class="step-num bonus">02</span>
+        <div>
+          <h2>Як працювати з кожним уроком</h2>
+          <p class="sub-lead">Кожне заняття побудоване за 4-кроковим циклом інженерного дослідження.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <span class="card-step">КРОК 01</span>
+          <h4>Побач і випробуй у браузері</h4>
+          <p>У кожному уроці є вбудована інтерактивна лабораторія: змінюй код, таймінги або Z-Offset сопла і миттєво бач фізичний результат.</p>
+        </div>
+        <div class="card">
+          <span class="card-step">КРОК 02</span>
+          <h4>Зміни і досліди межі</h4>
+          <p>Навмисно «зламай» схему чи профіль слайсера у безпечному симуляторі, щоб навчитися розпізнавати симптоми помилок за секунди.</p>
+        </div>
+        <div class="card">
+          <span class="card-step">КРОК 03</span>
+          <h4>Працюй з AI як інженер</h4>
+          <p>Використовуй готові шаблони запитів до ШІ: описуй симптом і свою гіпотезу замість прохання «напиши код за мене».</p>
+        </div>
+        <div class="card">
+          <span class="card-step">КРОК 04</span>
+          <h4>Збережи артефакт у портфоліо</h4>
+          <p>Позначай виконані пункти чек-листа — прогрес автоматично зберігається у браузері та відкриває наступні уроки.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" id="resources-sec">
+      <div class="step-head">
+        <span class="step-num final">03</span>
+        <div>
+          <h2>Корисні джерела, відео та симулятори</h2>
+          <p class="sub-lead">Добірка перевірених відеоінструкцій, онлайн-середовищ і 3D-моделей для роботи в лабораторії та вдома.</p>
+        </div>
+      </div>
+      <div id="resources-root"></div>
+    </section>
+  </main>
+</div>
 
 <footer>
-  КПКТА імені Бадрі Лолашвілі · Курс «Arduino + 3D CAD + 3D Друк + AI + Maker» · 2026
+  <div class="footer-inner">
+    <div>КПКТА імені Бадрі Лолашвілі · Курс «Адаптивна цифрова майстерня: Arduino + 3D CAD + 3D Друк + AI + Maker» · 2026</div>
+    <div class="footer-links">
+      <a href="#modules-sec">Карта модулів</a> ·
+      <a href="#resources-sec">Відео та джерела</a>
+    </div>
+  </div>
 </footer>
 
 <script src="assets/course.js"></script>
