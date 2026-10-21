@@ -79,6 +79,27 @@
       });
       html += '</div>';
 
+      // Вітрина готових проєктів модуля (якщо є showcase)
+      if (m.showcase && m.showcase.length) {
+        html += '<div class="mod-showcase"><div class="showcase-head">' +
+          '<h4>🎯 Фінальні вироби модуля: що ти зможеш зібрати під ключ</h4>' +
+          '<p class="showcase-sub">Реальні інтегровані гаджети, які поєднують надрукований корпус, сервоприводи, сенсори та код:</p>' +
+          '</div><div class="showcase-grid">';
+        m.showcase.forEach(function (proj) {
+          html += '<div class="showcase-card">' +
+            '<div class="showcase-card-head">' +
+              '<span class="showcase-icon">' + proj.icon + '</span>' +
+              '<div><h5>' + proj.title + '</h5><span class="showcase-tag">' + proj.tag + '</span></div>' +
+            '</div>' +
+            '<p class="showcase-desc">' + proj.desc + '</p>' +
+            '<div class="showcase-specs">' +
+              proj.specs.map(function(sp){ return '<span class="spec-pill">' + sp + '</span>'; }).join('') +
+            '</div>' +
+          '</div>';
+        });
+        html += '</div></div>';
+      }
+
       // Додаткові ресурси/відео модуля
       if (m.resources && m.resources.length) {
         html += '<div class="mod-resources"><span class="mod-res-label">Матеріали та відео:</span>';
@@ -164,6 +185,218 @@
         });
       }, { rootMargin: "-25% 0px -60% 0px" });
       document.querySelectorAll("section.step").forEach(function (sec) { io.observe(sec); });
+    }
+
+    // Логіка модального вікна «Паспорт досягнень (для викладача)»
+    var passportModal = document.getElementById("passport-modal");
+    var passportOpenBtn = document.getElementById("passport-open-btn");
+    var passportCloseBtn = document.getElementById("passport-close-btn");
+    var nameInput = document.getElementById("student-name-input");
+    var groupInput = document.getElementById("student-group-input");
+    var copyReportBtn = document.getElementById("passport-copy-btn");
+    var printReportBtn = document.getElementById("passport-print-btn");
+    var copyHint = document.getElementById("passport-copy-hint");
+
+    function updatePassportView() {
+      var name = (localStorage.getItem("arduino-student-name") || "").trim();
+      var group = (localStorage.getItem("arduino-student-group") || "").trim();
+      if (nameInput) nameInput.value = name;
+      if (groupInput) groupInput.value = group;
+
+      var displayName = document.getElementById("student-display-name");
+      if (displayName) displayName.textContent = name || "Гуртківець лабораторії";
+      var displayMeta = document.getElementById("student-display-meta");
+      if (displayMeta) displayMeta.textContent = "Група: " + (group || "не вказано") + " · Гурток «Робототехніка» КПКТА";
+
+      var scoreNum = document.getElementById("passport-score-num");
+      if (scoreNum) scoreNum.textContent = pct + "%";
+
+      // Підрахунок балансу: Теорія / Симулятор vs Реальне залізо
+      var hardwareCount = 0;
+      if (s.artifacts) {
+        ready.forEach(function (l) {
+          if (s.artifacts[l.id] && s.artifacts[l.id].trim().length > 3) hardwareCount++;
+        });
+      }
+      var theoryVal = document.getElementById("theory-balance-val");
+      if (theoryVal) theoryVal.textContent = doneCount + " з " + ready.length + " (" + pct + "%)";
+      var hwVal = document.getElementById("hardware-balance-val");
+      if (hwVal) hwVal.textContent = hardwareCount + " залізячних артефактів";
+
+      // Контрольний верифікаційний код (хеш із імені, прогресу та поточної дати)
+      var certCode = document.getElementById("passport-cert-code");
+      if (certCode) {
+        var seed = (name || "STUDENT") + "-" + doneCount + "/" + ready.length + "-H" + hardwareCount;
+        var hash = 0;
+        for (var h = 0; h < seed.length; h++) hash = ((hash << 5) - hash) + seed.charCodeAt(h) | 0;
+        var hexCode = Math.abs(hash).toString(16).toUpperCase().padStart(4, "0").slice(0, 4);
+        certCode.textContent = "ID: KPKTA-2026-M" + doneCount + "-" + hexCode;
+      }
+
+      var dateStamp = document.getElementById("passport-date-stamp");
+      if (dateStamp) {
+        var now = new Date();
+        var dStr = String(now.getDate()).padStart(2, "0") + "." + String(now.getMonth() + 1).padStart(2, "0") + "." + now.getFullYear();
+        dateStamp.textContent = "Дата формування: " + dStr;
+      }
+
+      var listRoot = document.getElementById("passport-progress-summary");
+      if (listRoot) {
+        var listHtml = "";
+        ready.forEach(function (l) {
+          var isDone = !!s.done[l.id];
+          var art = (s.artifacts && s.artifacts[l.id]) ? s.artifacts[l.id].trim() : "";
+          listHtml += '<div class="passport-item ' + (isDone ? "done" : "") + '">' +
+            '<div class="passport-item-wrap">' +
+              '<span class="passport-item-title">' + (isDone ? "✅ " : "⏳ ") + l.title + '</span>' +
+              (art ? '<div class="passport-item-note">🛠 Залізо/Артефакт: ' + art.replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</div>' : '') +
+            '</div>' +
+            '<span class="passport-item-status">' + (isDone ? "ВИКОНАНО" : "В ПРОЦЕСІ") + '</span>' +
+          '</div>';
+        });
+        listRoot.innerHTML = listHtml;
+      }
+    }
+
+    if (passportOpenBtn && passportModal) {
+      passportOpenBtn.onclick = function () {
+        updatePassportView();
+        passportModal.hidden = false;
+      };
+      if (passportCloseBtn) passportCloseBtn.onclick = function () { passportModal.hidden = true; };
+      passportModal.onclick = function (e) {
+        if (e.target === passportModal) passportModal.hidden = true;
+      };
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !passportModal.hidden) passportModal.hidden = true;
+      });
+    }
+
+    if (nameInput) {
+      nameInput.oninput = function () {
+        localStorage.setItem("arduino-student-name", nameInput.value);
+        updatePassportView();
+      };
+    }
+    if (groupInput) {
+      groupInput.oninput = function () {
+        localStorage.setItem("arduino-student-group", groupInput.value);
+        updatePassportView();
+      };
+    }
+
+    // Експорт щоденника мейкера у файл JSON
+    var exportBtn = document.getElementById("export-progress-btn");
+    var importFile = document.getElementById("import-progress-file");
+
+    if (exportBtn) {
+      exportBtn.onclick = function () {
+        var st = load();
+        var studentName = localStorage.getItem("arduino-student-name") || "";
+        var studentGroup = localStorage.getItem("arduino-student-group") || "";
+        var exportData = {
+          version: "1.0",
+          studentName: studentName,
+          studentGroup: studentGroup,
+          progress: st,
+          exportedAt: new Date().toISOString()
+        };
+        var jsonStr = JSON.stringify(exportData, null, 2);
+        var blob = new Blob([jsonStr], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        var safeName = (studentName || "maker-portfolio").replace(/[^a-zA-Z0-9а-яА-ЯёЁіІїЇєЄ_-]/g, "_");
+        a.href = url;
+        a.download = safeName + "-progress.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+    }
+
+    if (importFile) {
+      importFile.onchange = function (e) {
+        var file = e.target.files && e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+          try {
+            var data = JSON.parse(evt.target.result);
+            if (data && data.progress && typeof data.progress === "object") {
+              save(data.progress);
+              if (data.studentName) localStorage.setItem("arduino-student-name", data.studentName);
+              if (data.studentGroup) localStorage.setItem("arduino-student-group", data.studentGroup);
+              alert("✓ Щоденник успішно завантажено! Весь твій прогрес та артефакти відновлено.");
+              location.reload();
+            } else {
+              alert("Помилка: вибраний файл не містить коректного щоденника мейкера.");
+            }
+          } catch (err) {
+            alert("Помилка зчитування файлу: " + err.message);
+          }
+        };
+        reader.readAsText(file);
+      };
+    }
+
+    if (copyReportBtn) {
+      copyReportBtn.onclick = function () {
+        var name = (localStorage.getItem("arduino-student-name") || "Гуртківець майстерні").trim();
+        var group = (localStorage.getItem("arduino-student-group") || "не вказано").trim();
+        var now = new Date();
+        var dStr = String(now.getDate()).padStart(2, "0") + "." + String(now.getMonth() + 1).padStart(2, "0") + "." + now.getFullYear();
+        var cert = (document.getElementById("passport-cert-code") || {}).textContent || "";
+
+        var hardwareCount = 0;
+        if (s.artifacts) {
+          ready.forEach(function (l) {
+            if (s.artifacts[l.id] && s.artifacts[l.id].trim().length > 3) hardwareCount++;
+          });
+        }
+
+        var lines = [
+          "🎓 KPKTA MAKER-LAB · ПАСПОРТ ДОСЯГНЕНЬ ГУРТКІВЦЯ",
+          "---------------------------------------------",
+          "Гуртківець: " + name,
+          "Група / Фах: " + group,
+          "Освітній простір: Гурток «Робототехніка» КПКТА",
+          "Дата: " + dStr,
+          "Прогрес курсу: " + doneCount + " з " + ready.length + " готових уроків (" + pct + "%)",
+          "Баланс: Віртуальна теорія (" + doneCount + "/" + ready.length + ") | Залізячні артефакти (" + hardwareCount + ")",
+          "Контрольний номер: " + cert,
+          "",
+          "📋 СТАТУС ВИКОНАННЯ УРОКІВ ТА ЛАБОРАТОРНИХ РОБІТ:"
+        ];
+        ready.forEach(function (l) {
+          var isDone = !!s.done[l.id];
+          var art = (s.artifacts && s.artifacts[l.id]) ? s.artifacts[l.id].trim() : "";
+          lines.push((isDone ? "[✅ Виконано] " : "[⏳ В процесі] ") + l.title);
+          if (art) {
+            lines.push("   🛠 Залізячний артефакт: " + art);
+          }
+        });
+        lines.push("");
+        lines.push("Сайт курсу: https://kpkta-robotics.github.io/maker-lab/");
+
+        var reportText = lines.join("\n");
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(reportText).then(function () {
+            if (copyHint) {
+              copyHint.textContent = "✓ Повний звіт скопійовано! Надішли його керівнику в Telegram чи Classroom.";
+              setTimeout(function () { copyHint.textContent = ""; }, 4000);
+            }
+          });
+        } else {
+          prompt("Скопіюй звіт для керівника вручну:", reportText);
+        }
+      };
+    }
+
+    if (printReportBtn) {
+      printReportBtn.onclick = function () {
+        window.print();
+      };
     }
   }
 

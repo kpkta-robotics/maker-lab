@@ -3,191 +3,475 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Техніка безпеки мейкера: як зберегти плату, пальці та нерви | Адаптивна цифрова майстерня</title>
-<link rel="stylesheet" href="../../assets/style.css">
+<title>Блок 0 · Урок 0.1: Техніка безпеки мейкера | Адаптивна цифрова майстерня</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Унікальні стилі уроку безпеки */
+.hero { max-width: 1240px; margin: 0 auto; padding: 24px 24px 56px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.hero .kicker { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+.hero h1 { font-size: clamp(34px, 5.5vw, 60px); font-weight: 700; margin: 0 0 20px; line-height: 1.15; }
+.hero .promise { font-size: 20px; line-height: 1.5; max-width: 32ch; margin: 0 0 28px; }
+.hero-board svg { width: 100%; height: auto; filter: drop-shadow(0 18px 28px rgba(12, 42, 49, .22)); }
+
+/* Лабораторія КЗ та Polyfuse */
+.safety-stage { padding: 20px; display: flex; flex-direction: column; gap: 16px; background: var(--pcb-deep); border-radius: 12px; }
+.circuit-viz { background: var(--pcb-panel); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; align-items: center; }
+.telemetry-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; width: 100%; margin-top: 14px; }
+.tele-box { background: rgba(12, 42, 49, 0.7); border: 1px solid rgba(30, 126, 140, 0.35); border-radius: 8px; padding: 8px 12px; font-family: var(--mono); }
+.tele-box small { display: block; color: #8FB0B4; font-size: 11px; text-transform: uppercase; }
+.tele-box b { font-size: 16px; color: #F2F5F4; }
+.tele-box.alert b { color: var(--signal); }
+.tele-box.ok b { color: #4ADE80; }
+
+/* Тренажер реакції */
+.reaction-box { background: var(--pcb-panel); border: 2px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; }
+.alarm-screen { min-height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--display); font-size: 20px; font-weight: 700; border-radius: 8px; margin-bottom: 16px; transition: background .2s, color .2s; }
+.alarm-screen.normal { background: #0E3E47; color: #7CE2EE; }
+.alarm-screen.danger { background: #E5383B; color: #FFFFFF; animation: blinkFast .3s infinite alternate; }
+.alarm-screen.saved { background: #1F8A5B; color: #FFFFFF; }
+@keyframes blinkFast { from { opacity: 1; } to { opacity: .4; } }
+</style>
+<link rel="stylesheet" href="../../assets/lesson.css">
 </head>
 <body data-lesson="m0-l01" data-root="../../">
 
-<header class="site-header">
-  <div class="wrap">
-    <div class="crumbs" id="crumbs"></div>
-    <h1>БЛОК 0 · Техніка безпеки мейкера: як зберегти плату, пальці та нерви</h1>
-    <p>Це не нудна інструкція для галочки в журналі. Це 5 золотих законів виживання в сучасній лабораторії, які вбережуть твоє обладнання від вигорання, а пальці — від опіків.</p>
-    <div class="meta">
-      <span class="pill">⏱ ~25 хв</span>
-      <span class="pill">🛡 Обов'язково перед стартом заліза</span>
-      <span class="pill">⚡ Безпечна напруга: 5 Вольт</span>
-    </div>
+<nav class="topbar" aria-label="Навігація курсом">
+  <div class="crumbs">
+    <a href="../../index.html">Карта курсу</a>
+    <span aria-hidden="true">/</span>
+    <span>Блок 0. Техніка безпеки та вхід</span>
+    <span aria-hidden="true">/</span>
+    <span class="crumb-current">Урок 0.1</span>
   </div>
-</header>
-
-<main>
-
-  <!-- ===== ВСТУП ===== -->
-  <p class="lead">Кожен інженер, який зараз створює бойові дрони, супутники чи медичні прилади, колись спалив свій перший світлодіод або випадково закоротив плату. Помилятися — це нормально і навіть корисно для навчання.</p>
-  <p class="lead">Але щоб навчання не перетворилося на купівлю нових деталей замість згорілих, запам'ятай прості правила. Ми працюємо з безпечною напругою <strong>5 Вольт</strong> від USB — вона не може вдарити людину струмом, проте плату за неправильного поводження може вивести з ладу за частку секунди.</p>
-
-  <div class="box ok">
-    <div class="box-title">💡 Головна заспокійлива новина</div>
-    <strong>5 Вольт від USB абсолютно безпечні для твого тіла!</strong> Опір людської шкіри настільки великий, що напруга до 12–24 Вольт взагалі не відчувається на дотик. Працювати з наборами ТЕКО можна абсолютно спокійно і без страху.
+  <div class="topbar-actions">
+    <a class="chip-btn" href="../../index.html">← До карти курсу</a>
   </div>
+</nav>
 
-  <!-- ===== КРОК 1 ===== -->
-  <div class="step"><span class="num">1</span><h2>5 Вольт проти 220 Вольт: небезпека металевого столу</h2></div>
-  <p>Якщо для твоїх пальців 5 Вольт — це дрібниця, то для мікроконтролера це робоча напруга, за якою стоять мільйони крихітних транзисторів. Знизу плати Arduino Uno стирчать десятки гострих металевих контактів (ніжок деталей).</p>
-
-  <div class="box danger">
-    <div class="box-title">🛑 Пастка металевого столу та підступних предметів</div>
-    Ніколи не клади ввімкнену плату на:
-    <ul style="margin:6px 0 0 18px;padding:0">
-      <li><strong>Металеву кришку ноутбука</strong> (MacBook, алюмінієві корпуси);</li>
-      <li><strong>Металеву лінійку, ключі, монети</strong> або знятий годинник;</li>
-      <li><strong>Фольгу, обгортки від шоколадок</strong> чи вологі серветки.</li>
+<section class="hero">
+  <div>
+    <p class="kicker">БЛОК 0 · ТЕХНІКА БЕЗПЕКИ МЕЙКЕРА</p>
+    <h1>Як зберегти плату, пальці та нерви</h1>
+    <p class="promise">5 золотих законів виживання в лабораторії: чому 5 Вольт безпечні для рук, де ховається коротке замикання та як діяти за 1 секунду.</p>
+    <ul class="facts">
+      <li>⏱ 25 хвилин</li>
+      <li>🛡 Обов'язково перед стартом заліза</li>
+      <li>⚡ Безпечна напруга: 5V</li>
     </ul>
-    <strong>Що станеться:</strong> Метал з'єднає випадкові ніжки на звороті плати між собою. Виникне миттєве замикання, і мікроконтролер може згоріти ще до того, як ти запустиш перший код!
   </div>
 
-  <div class="box ok">
-    <div class="box-title">🛡 Золоте правило поверхні</div>
-    Плату кладемо тільки на: <strong>дерев'яний стіл, пластиковий килимок, аркуш паперу або спеціальну надруковану на 3D-принтері підставку</strong> (яку ми змоделюємо в Модулі 2!).
-  </div>
-
-  <!-- ===== КРОК 2 ===== -->
-  <div class="step"><span class="num">2</span><h2>Коротке замикання (КЗ) — головний ворог майстерні</h2></div>
-  <p>У будь-якому електричному колі струм має йти від <strong>плюса (+5V)</strong> через <strong>навантаження</strong> (світлодіод, резистор, моторчик, зумер) до <strong>мінуса (GND, земля)</strong>. Навантаження чинить опір струму і стримує його потік.</p>
-
-  <div class="figure">
-    <svg viewBox="0 0 620 180" width="100%" height="auto" style="max-width:620px;background:#f8fafc;border-radius:10px;padding:8px">
-      <!-- Normal Circuit -->
-      <rect x="20" y="20" width="270" height="140" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
-      <text x="155" y="45" fill="#15803d" font-size="13" font-weight="700" text-anchor="middle">ПРАВИЛЬНО: є опір</text>
-      <text x="40" y="85" fill="#0369a1" font-weight="bold" font-size="12">+5V</text>
-      <path d="M70 80 H120" stroke="#0284c7" stroke-width="3" fill="none"/>
-      <!-- Resistor -->
-      <rect x="120" y="70" width="50" height="20" rx="4" fill="#fde68a" stroke="#b45309"/>
-      <text x="145" y="84" fill="#78350f" font-size="10" font-weight="bold" text-anchor="middle">220 Ом</text>
-      <path d="M170 80 H210" stroke="#0284c7" stroke-width="3" fill="none"/>
-      <circle cx="215" cy="80" r="10" fill="#ef4444"/>
-      <path d="M225 80 H260" stroke="#0f172a" stroke-width="3" fill="none"/>
-      <text x="245" y="115" fill="#0f172a" font-weight="bold" font-size="12">GND</text>
-      <text x="155" y="140" fill="#16a34a" font-size="11" text-anchor="middle">Струм обмежений: плата й діод у безпеці</text>
-
-      <!-- Short Circuit -->
-      <rect x="330" y="20" width="270" height="140" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
-      <text x="465" y="45" fill="#991b1b" font-size="13" font-weight="700" text-anchor="middle">КЗ (КОРОТКЕ ЗАМИКАННЯ)!</text>
-      <text x="350" y="85" fill="#0369a1" font-weight="bold" font-size="12">+5V</text>
-      <!-- Direct wire -->
-      <path d="M380 80 H540" stroke="#dc2626" stroke-width="5" fill="none"/>
-      <text x="560" y="85" fill="#0f172a" font-weight="bold" font-size="12">GND</text>
-      <!-- Flame icon / Warning -->
-      <circle cx="460" cy="80" r="14" fill="#fee2e2" stroke="#dc2626"/>
-      <text x="460" y="86" fill="#dc2626" font-size="14" font-weight="bold" text-anchor="middle">⚡</text>
-      <text x="465" y="125" fill="#dc2626" font-weight="bold" font-size="11" text-anchor="middle">Опору немає! Струм стрибає в небеса</text>
-      <text x="465" y="145" fill="#7f1d1d" font-size="10" text-anchor="middle">Дріт гарячий, спрацьовує захист або горить чип</text>
+  <figure class="hero-board">
+    <svg viewBox="0 0 480 300" role="img" aria-label="Ілюстрація правил безпеки підключення плати">
+      <defs>
+        <radialGradient id="safeGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#4ADE80" stop-opacity=".7"/>
+          <stop offset="100%" stop-color="#4ADE80" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- Килимок мейкера -->
+      <rect x="20" y="20" width="440" height="260" rx="14" fill="#0C2A31" stroke="#0E6673" stroke-width="2"/>
+      <g stroke="#184C57" stroke-width="0.8">
+        <line x1="20" y1="80" x2="460" y2="80"/><line x1="20" y1="140" x2="460" y2="140"/>
+        <line x1="20" y1="200" x2="460" y2="200"/><line x1="120" y1="20" x2="120" y2="280"/>
+        <line x1="240" y1="20" x2="240" y2="280"/><line x1="360" y1="20" x2="360" y2="280"/>
+      </g>
+      <!-- Плата Uno -->
+      <rect x="110" y="65" width="260" height="170" rx="10" fill="#0E6673" stroke="#0A4A54" stroke-width="2"/>
+      <!-- USB роз'єм -->
+      <rect x="90" y="90" width="45" height="40" rx="3" fill="#C9D3D8"/>
+      <!-- Polyfuse запобіжник -->
+      <rect x="145" y="96" width="16" height="24" rx="2" fill="#EAB308" stroke="#A16207" stroke-width="1.5"/>
+      <text x="170" y="112" fill="#FDE047" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700">Polyfuse 500mA</text>
+      <!-- Мікроконтролер -->
+      <rect x="210" y="115" width="130" height="40" rx="4" fill="#1B2226"/>
+      <text x="275" y="140" fill="#7CE2EE" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" text-anchor="middle">ATmega328P</text>
+      <!-- Зелений індикатор безпеки -->
+      <circle cx="340" cy="85" r="16" fill="url(#safeGlow)"/>
+      <circle cx="340" cy="85" r="5" fill="#4ADE80"/>
+      <text x="340" y="105" fill="#A9C6CA" font-family="Golos Text, sans-serif" font-size="10" text-anchor="middle">5V SAFE</text>
+      <!-- Напис -->
+      <text x="240" y="260" fill="#7CE2EE" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">ЗОЛОТИЙ СТАНДАРТ: ЗНЕСТРУМИВ → ЗІБРАВ → УВІМКНУВ</text>
     </svg>
-    <figcaption>Різниця між робочим колом та коротким замиканням: ніколи не з'єднуй +5V та GND без навантаження!</figcaption>
-  </div>
+  </figure>
+</section>
 
-  <p><strong>Коротке замикання (КЗ)</strong> виникає, коли дріт від піна <code>5V</code> напряму встромляють у <code>GND</code>. За законом Ома струм намагається вирости до нескінченності. Дріт розігрівається за 2 секунди, а блок живлення комп'ютера або стабілізатор плати починає задихатися.</p>
-
-  <div class="box ok">
-    <div class="box-title">🛡 Янгол-охоронець: запобіжник Polyfuse</div>
-    На оригінальних платах та якісних платах ТЕКО біля роз'єму USB є маленька золотисто-зелена деталь — <strong>самовідновлюваний запобіжник Polyfuse на 500 мА</strong>. Якщо трапилося коротке замикання, він миттєво нагрівається і розриває коло, рятуючи USB-порт твого комп'ютера. Коли плата охолоне — вона знову готова до роботи!
-  </div>
-
-  <!-- ===== КРОК 3 ===== -->
-  <div class="step"><span class="num">3</span><h2>Дії в аварії: що робити, коли пішов димок або пече</h2></div>
-  <p>Якщо ти припустився помилки в схемі — спокійно, панікувати не треба. Зберігай холодний розум і дій за алгоритмом:</p>
-
-  <div class="box danger" style="font-size:1.05rem">
-    <div class="box-title" style="font-size:1.15rem">🚨 Правило «Золотого секундного висмикування»</div>
-    Побачив димок, відчув запах паленого пластику або комп'ютер раптом видав звук вимкненого USB:
-    <ol style="margin:8px 0 0 18px;padding:0;font-weight:700">
-      <li>ОДРАЗУ висмикни синій кабель USB із комп'ютера!</li>
-      <li>НЕ чіпай гарячі деталі голими руками (стабілізатор напруги може нагрітися до 90°C).</li>
-      <li>Дай платі охолонути 1 хвилину.</li>
-      <li>Знайди місце помилки в схемі або поклич викладача на консультацію.</li>
-    </ol>
-  </div>
-
-  <h3>Тест «дотику тильним боком пальця»</h3>
-  <p>Якщо здається, що щось працює не так: відключи живлення, почекай 10 секунд і акуратно доторкнися до чорного квадратного чипа <strong>тильним боком нігтя або подушечкою пальця</strong> на частку секунди. Якщо мікросхема кипляча — шукай помилку в підключенні дротів.</p>
-
-  <!-- ===== КРОК 4 ===== -->
-  <div class="step"><span class="num">4</span><h2>Головне правило майстерні ТЕКО №1</h2></div>
-
-  <div class="win" style="text-align:center;font-size:1.15rem;padding:18px">
-    🔒 <strong>«Збираєш чи змінюєш дроти — ВІДКЛЮЧИ USB!»</strong><br>
-    <span style="font-size:0.95rem;color:#1e293b">Спочатку від'єднав кабель → спокійно переставив дроти на макетці → перевірив оком → увімкнув USB.</span>
-  </div>
-
-  <p>Коли плата під напругою, тремтяча рука може випадково зачепити дротом сусідній пін і пустити 5 вольт туди, де очікувався слабкий логічний сигнал. Працюй як професійний хірург електроніки: <strong>знеструмив — зібрав — увімкнув</strong>.</p>
-
-  <!-- ===== КРОК 5 ===== -->
-  <div class="step"><span class="num">5</span><h2>Безпека 3D-друку та інструментів (Модуль 2 і 3)</h2></div>
-  <p>Оскільки наш курс — це повноцінне мейкерство, у Модулях 2 та 3 ми працюватимемо з 3D-принтерами та ручним інструментом. Запам'ятай три прості речі:</p>
-
-  <div class="grid">
-    <div class="card">
-      <h4>🔥 Гаряче сопло (Hotend)</h4>
-      <p>Температура металевого носика 3D-принтера під час друку сягає <strong>200–230°C</strong>! Ніколи не торкайся сопла руками, коли принтер увімкнений або щойно завершив друк.</p>
+<div class="layout">
+  <aside class="toc" aria-label="Зміст заняття">
+    <div class="toc-sticky">
+      <p class="toc-title">Зміст заняття</p>
+      <ol>
+        <li><a href="#s1" class="active"><b>01</b> 5V проти 220V</a></li>
+        <li><a href="#s2"><b>02</b> Лабораторія КЗ та Polyfuse</a></li>
+        <li><a href="#s3"><b>03</b> Пастка металевого столу</a></li>
+        <li><a href="#s4"><b>04</b> Алгоритм висмикування USB</a></li>
+        <li><a href="#s5"><b>05</b> Безпека 3D-друку</a></li>
+        <li><a href="#s6"><b>06</b> Тренажер інтуїції</a></li>
+        <li><a href="#s7"><b>07</b> AI-ментор з діагностики</a></li>
+        <li><a href="#s8"><b>08</b> Присяга та чек-ліст</a></li>
+      </ol>
+      <div class="meter">
+        <div class="meter-head">
+          <span>Прогрес уроку</span>
+          <b id="meter-val">0%</b>
+        </div>
+        <div class="meter-bar"><span id="meter-fill" style="width:0%"></span></div>
+      </div>
     </div>
-    <div class="card">
-      <h4>🔪 Макетний ніж і кусачки</h4>
-      <p>Зрізаючи пластикові підтримки з надрукованої деталі, ніж завжди тримай рухом <strong>«ВІД СЕБЕ»</strong>, а не до себе чи в долоню. Справжні кусачки-бокорізи з набору гострі!</p>
-    </div>
-    <div class="card">
-      <h4>⚡ Статична електрика (ESD)</h4>
-      <p>Взимку, коли носиш вовняний светр, на тілі накопичується заряд до кількох тисяч вольт. Перш ніж брати плату в руки, торкнися металевого корпусу стола чи батареї, щоб зняти статику.</p>
-    </div>
-  </div>
+  </aside>
 
-  <!-- ===== ІНТЕРАКТИВНИЙ ТРЕНАЖЕР ===== -->
-  <div class="step"><span class="num">?</span><h2>Тренажер інтуїції: Як ти вчиниш?</h2></div>
+  <main>
+    <!-- Крок 01 -->
+    <section class="step" id="s1">
+      <div class="step-head">
+        <span class="step-num">01</span>
+        <div>
+          <h2>5 Вольт проти 220 Вольт: що загрожує пальцям, а що — платі?</h2>
+          <p class="sub-lead">Розвіюємо головний міф новачків: чому лабораторія Arduino абсолютно безпечна для життя.</p>
+        </div>
+      </div>
 
-  <details>
-    <summary>❓ Ситуація 1: Світлодіод увімкнули без резистора. Він блимнув яскраво-білим спалахом і згас. Що сталося?</summary>
-    <p><strong>Відповідь:</strong> Світлодіод миттєво згорів. Без струмообмежувального резистора 220 Ом через тонкий кристалик пішов струм у 10 разів більший за норму. Кристал розплавився. Діод можна викидати, але плата, на щастя, зазвичай виживає.</p>
-  </details>
+      <p>Кожен інженер, який зараз проєктує бойові дрони, супутники чи медичну апаратуру, колись спалив свій перший світлодіод або випадково закоротив контакти. Помилятися під час навчання — це нормально.</p>
+      <p>Ми працюємо з безпечною напругою <strong>5 Вольт</strong> від USB-порту комп'ютера. Опір людської шкіри становить десятки тисяч Ом, тому напруга до 12–24 Вольт взагалі не відчувається на дотик. Працювати з наборами ТЕКО можна абсолютно спокійно і без страху отримати ураження струмом.</p>
 
-  <details>
-    <summary>❓ Ситуація 2: Ти випадково впустив металевий пінцет прямо на працюючу плату Arduino. Твої дії?</summary>
-    <p><strong>Відповідь:</strong> НЕ хапай пінцет пальцями! Перша дія — <strong>миттєво висмикнути USB-кабель з комп'ютера</strong>. Тільки після повного знеструмлення прибери металевий предмет, оглянь плату на предмет запаху чи потемніння і лише потім підключай знову.</p>
-  </details>
+      <div class="callout safe">
+        <b>💡 Головна новина для спокою</b>
+        <p><strong>5 Вольт від USB не можуть вдарити людину струмом!</strong> Але для мініатюрних транзисторів всередині чипа коротке замикання становить смертельну небезпеку. Тому всі правила техніки безпеки спрямовані на захист обладнання від вигорання.</p>
+      </div>
+    </section>
 
-  <details>
-    <summary>❓ Ситуація 3: Друг просить швиденько переставити дріт на макетці, поки плата підключена до ноутбука. Що ти йому скажеш?</summary>
-    <p><strong>Відповідь:</strong> «Зачекай секунду, я висмикну USB». Це забирає рівно 1 секунду, але гарантує 100% збереження порту та мікроконтролера.</p>
-  </details>
+    <!-- Крок 02 -->
+    <section class="step" id="s2">
+      <div class="step-head">
+        <span class="step-num">02</span>
+        <div>
+          <h2>Лабораторія 1: Коротке замикання та запобіжник Polyfuse</h2>
+          <p class="sub-lead">Перевір поведінку кола під навантаженням і подивись, як спрацьовує розумний захист.</p>
+        </div>
+      </div>
 
-  <!-- ===== ЧЕК-ЛІСТ ===== -->
-  <div class="step"><span class="num">✓</span><h2>Твоя присяга мейкера (Чек-ліст уроку)</h2></div>
-  <p>Відзнач пункти, які тепер стали твоїми залізними звичками:</p>
+      <div class="lab">
+        <div class="lab-head">
+          <div>
+            <h3>Інтерактивний стенд: Струм та захист Polyfuse</h3>
+            <p>Увімкни штатне навантаження або замкни лінію 5V напряму на GND без опору.</p>
+          </div>
+          <button class="btn-primary" id="sim-trip-btn" type="button" style="padding:7px 14px;font-size:13px">⚡ Зробити КЗ (Тест)</button>
+        </div>
+        <div class="safety-stage">
+          <div class="circuit-viz">
+            <svg viewBox="0 0 540 140" style="max-width:540px;width:100%" aria-label="Схема електричного кола з запобіжником">
+              <!-- Лінія живлення -->
+              <path d="M 40 70 H 120" stroke="#0284C7" stroke-width="4" fill="none"/>
+              <text x="35" y="55" fill="#38BDF8" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">+5V USB</text>
+              <!-- Polyfuse -->
+              <rect id="poly-rect" x="120" y="55" width="50" height="30" rx="4" fill="#EAB308" stroke="#CA8A04" stroke-width="2"/>
+              <text id="poly-text" x="145" y="74" fill="#422006" font-family="JetBrains Mono, monospace" font-size="9" font-weight="800" text-anchor="middle">FUSE OK</text>
+              <!-- Провід після запобіжника -->
+              <path id="wire-mid" d="M 170 70 H 260" stroke="#0284C7" stroke-width="4" fill="none"/>
+              <!-- Навантаження / КЗ -->
+              <g id="load-box">
+                <rect x="260" y="58" width="80" height="24" rx="4" fill="#11353E" stroke="#2AA1B2" stroke-width="2"/>
+                <text x="300" y="74" fill="#E8F3F2" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">220 Ом + LED</text>
+              </g>
+              <!-- Повернення до GND -->
+              <path d="M 340 70 H 460" stroke="#64748B" stroke-width="4" fill="none"/>
+              <text x="470" y="74" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">GND</text>
+              <!-- Індикатор статусу кола -->
+              <circle id="status-bulb" cx="510" cy="70" r="14" fill="#4ADE80"/>
+            </svg>
 
-  <ul class="checklist">
-    <li><label><input type="checkbox" class="check" data-key="m0-l01-safe5v"> Знаю, чому 5 Вольт безпечні для моїх рук, але чутливі до замикань на платі</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m0-l01-metal"> Ніколи не кладу працюючу плату на метал, кришку ноутбука чи вологу поверхню</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m0-l01-rule1"> Дотримуюсь правила №1: перемикаю дроти тільки при відключеному USB-кабелі</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m0-l01-pull"> Пам'ятаю алгоритм висмикування USB, якщо відчуваю нагрів або запах</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m0-l01-tools"> Знаю про небезпеку гарячого сопла 3D-принтера (200°C) та правила роботи ножем</label></li>
-  </ul>
+            <div class="telemetry-row">
+              <div class="tele-box" id="tel-r">
+                <small>Опір кола (R)</small>
+                <b id="val-r">220 Ом</b>
+              </div>
+              <div class="tele-box" id="tel-i">
+                <small>Струм (I = U / R)</small>
+                <b id="val-i">22.7 мА</b>
+              </div>
+              <div class="tele-box ok" id="tel-fuse">
+                <small>Стан Polyfuse</small>
+                <b id="val-fuse">Холодний (OK)</b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px">На платах ТЕКО біля USB-порту впаяно <strong>самовідновлюваний запобіжник Polyfuse на 500 мА</strong>. У разі замикання він нагрівається, збільшує опір до безкінечності й розриває коло. Коли джерело замикання прибрано і деталь охолоне — плата знову працює!</p>
+    </section>
 
-  <div id="lesson-footer"></div>
+    <!-- Крок 03 -->
+    <section class="step" id="s3">
+      <div class="step-head">
+        <span class="step-num">03</span>
+        <div>
+          <h2>Пастка металевого столу та сторонніх предметів</h2>
+          <p class="sub-lead">Найчастіша причина передчасної загибелі плати на першому тижні занять.</p>
+        </div>
+      </div>
 
-  <div class="box mission">
-    <div class="box-title">🚀 Ти готовий до реальних проєктів!</div>
-    Тепер, коли правила безпеки в крові, жодне коротке замикання не застане тебе зненацька. Переходь до наступного кроку:
-    <ul>
-      <li>[Блок 0 · Налаштування Arduino IDE та драйвера CH340](lesson-setup.html) — підготуй зв'язок комп'ютера з платою;</li>
-      <li>[Модуль 1 · Урок 01: Твій перший сигнал (Blink та SOS)](../../modules/01-arduino-basics/lesson-01.html) — створи свою першу працюючу програму!</li>
-    </ul>
-  </div>
+      <p>Знизу плати Arduino Uno стирчать десятки гострих металевих контактів від припаяних елементів. Якщо покласти ввімкнену плату на провідну поверхню, ці ніжки замкнуться між собою у випадковому порядку.</p>
 
-</main>
+      <div class="callout warn">
+        <b>🛑 Ніколи не клади працюючу плату на:</b>
+        <ul style="margin:8px 0 0 18px">
+          <li><strong>Алюмінієву кришку ноутбука</strong> (MacBook або тонкі ультрабуки);</li>
+          <li><strong>Металеву лінійку, ключі, монети</strong> або знятий годинник;</li>
+          <li><strong>Фольгу від шоколаду чи вологі серветки</strong>.</li>
+        </ul>
+      </div>
 
-<footer>КПКТА імені Бадрі Лолашвілі · Курс «Arduino + 3D CAD + 3D Друк + AI + Maker»</footer>
+      <div class="callout safe">
+        <b>🛡 Правильна поверхня:</b>
+        <p>Плата повинна лежати виключно на: <strong>дерев'яному столі, антистатичному килимку, аркуші чистого паперу або 3D-друкованій підставці</strong> (яку буде створено у Модулі 2!).</p>
+      </div>
+    </section>
+
+    <!-- Крок 04 -->
+    <section class="step" id="s4">
+      <div class="step-head">
+        <span class="step-num">04</span>
+        <div>
+          <h2>Дії в аварійній ситуації: алгоритм швидкого висмикування</h2>
+          <p class="sub-lead">Що робити, якщо відчувається нагрів, запах або пішов димок.</p>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <b>🚨 Правило «Секундного висмикування»</b>
+        <p>З'явився запах паленого пластику, димок або звук відключення USB на комп'ютері:</p>
+        <ol style="margin:8px 0 0 18px;font-weight:600">
+          <li>ОДРАЗУ висмикнути кабель USB із комп'ютера (одним упевненим рухом).</li>
+          <li>НЕ торкатися деталей пальцями одразу (стабілізатор напруги розігрівається до 90°C).</li>
+          <li>Дати платі охолонути 60 секунд.</li>
+          <li>Знайти помилку в монтажі або запросити викладача на консультацію.</li>
+        </ol>
+      </div>
+
+      <div class="lab" style="margin-top:20px">
+        <div class="lab-head">
+          <div>
+            <h3>Тренажер реакції: Знеструмлення при аварії</h3>
+            <p>Натисни «Почати тест». Щойно на екрані з'явиться тривога — натисни кнопку висмикування якомога швидше!</p>
+          </div>
+          <button class="btn-primary" id="start-reaction-btn" type="button">Почати тест реакції</button>
+        </div>
+        <div class="reaction-box">
+          <div class="alarm-screen normal" id="alarm-display">СТЕНД У НОРМІ (5V СТАБІЛЬНО)</div>
+          <button class="btn-primary" id="pull-cord-btn" type="button" disabled style="background:var(--signal);font-size:16px;padding:12px 24px">
+            ⚡ ВИСМИКНУТИ USB-КАБЕЛЬ!
+          </button>
+          <p id="reaction-result" style="margin-top:12px;font-family:var(--mono);color:#DCEAE8"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Крок 05 -->
+    <section class="step" id="s5">
+      <div class="step-head">
+        <span class="step-num">05</span>
+        <div>
+          <h2>Безпека 3D-друку та ручного інструменту</h2>
+          <p class="sub-lead">Особливості роботи з верстатом Snapmaker A350 та слюсарним набором.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h4>🔥 Гаряче сопло (200–230°C)</h4>
+          <p>Металевий носик хотенда Snapmaker A350 розігрівається до температури плавлення пластику. Дотик голими пальцями викликає опік миттєво. Чищення сопла виконується лише латунною щіткою або пінцетом.</p>
+        </div>
+        <div class="card">
+          <h4>🔪 Ніж та кусачки-бокорізи</h4>
+          <p>Видаляючи підтримки з надрукованої моделі, лезо макетного ножа завжди направляють <strong>рухом «ВІД СЕБЕ»</strong>. Ніколи не тримають деталь на долоні під час зрізання пластику.</p>
+        </div>
+        <div class="card">
+          <h4>⚡ Статичний заряд (ESD)</h4>
+          <p>Взимку шерстяний одяг накопичує до 5000 Вольт статики. Перш ніж брати плату з коробки, доторкнися до незабарвленої металевої частини столу або заземленого корпусу верстата.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Крок 06 -->
+    <section class="step" id="s6">
+      <div class="step-head">
+        <span class="step-num">06</span>
+        <div>
+          <h2>Тренажер інтуїції: розбір реальних ситуацій</h2>
+          <p class="sub-lead">Як діяти правильно в типових моментах лабораторних робіт.</p>
+        </div>
+      </div>
+
+      <details>
+        <summary>❓ Ситуація 1: Світлодіод підключили без резистора. Він спалахнув яскравим білим світлом і згас. Що сталося?</summary>
+        <p><strong>Пояснення:</strong> Світлодіод згорів. Без струмообмежувального резистора (220 Ом) струм через кристал перевищив допустиму межу в 10 разів. Діод розплавився всередині. Його слід утилізувати, а нову схему обов'язково збирати з резистором.</p>
+      </details>
+
+      <details>
+        <summary>❓ Ситуація 2: На увімкнену плату Arduino випадково впав металевий пінцет. Перша дія?</summary>
+        <p><strong>Пояснення:</strong> Не хапати пінцет руками, а <strong>миттєво висмикнути синій USB-кабель із комп'ютера</strong>. Тільки після повного знеструмлення прибрати метал і оглянути плату.</p>
+      </details>
+
+      <details>
+        <summary>❓ Ситуація 3: Потрібно переставити один дріт на макетній платі. Чи обов'язково від'єднувати USB?</summary>
+        <p><strong>Пояснення:</strong> Так! Золоте правило №1 майстерні: <strong>«Знеструмив → зібрав → перевірив → увімкнув»</strong>. Це забирає 2 секунди, проте рятує мікроконтролер від випадкового замикання сусідніх контактів тремтячою рукою.</p>
+      </details>
+    </section>
+
+    <!-- Крок 07 -->
+    <section class="step" id="s7">
+      <div class="step-head">
+        <span class="step-num">07</span>
+        <div>
+          <h2>AI-ментор: як правильно запитувати ШІ про неполадки</h2>
+          <p class="sub-lead">Інженерний підхід: описувати симптоми та вимірювання замість абстрактного «чому не працює».</p>
+        </div>
+      </div>
+
+      <div class="callout ai">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
+          <b>🤖 Шаблон промпту для ChatGPT / Gemini:</b>
+          <button class="copy-btn" data-target="ai-safety-prompt" type="button">📋 Скопіювати промпт</button>
+        </div>
+        <pre id="ai-safety-prompt" style="font-size:13px;line-height:1.5;background:var(--pcb-deep);padding:12px;border-radius:6px;color:#CFE6E5;overflow-x:auto">Я працюю з платою Arduino Uno (чіп CH340) та макетною платою.
+Симптом: при підключенні схеми світлодіод ON на платі раптово гасне / стабілізатор біля роз'єму USB стає дуже гарячим на дотик за 3 секунди.
+Моя схема: від піна 5V іде дріт до кнопки, а другий контакт кнопки підключено до...
+Запитання: у чому найімовірніша причина виникнення короткого замикання та як перевірити схему мультиметром без ризику спалити USB-порт?</pre>
+      </div>
+    </section>
+
+    <!-- Крок 08 -->
+    <section class="step" id="s8">
+      <div class="step-head">
+        <span class="step-num final">08</span>
+        <div>
+          <h2>Присяга мейкера та чек-ліст допуску</h2>
+          <p class="sub-lead">Познач засвоєні правила. Пункти симулятора активуються автоматично під час проходження тренажерів.</p>
+        </div>
+      </div>
+
+      <ul class="checklist">
+        <li><label><input type="checkbox" class="check" data-key="m0-l01-safe5v"> Зрозуміло, чому 5 Вольт безпечні для тіла, але чутливі до замикань на платі</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m0-l01-fuse"> Пройдено тест у симуляторі запобіжника Polyfuse на стенді</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m0-l01-reaction"> Виконано норматив екстреного висмикування USB у тренажері реакції</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m0-l01-metal"> Засвоєно правило: ніколи не класти ввімкнену плату на метал або ноутбук</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m0-l01-rule1"> Прийнято закон №1: перемикання дротів здійснюється виключно при вимкненому USB</label></li>
+      </ul>
+
+      <div id="lesson-footer"></div>
+
+      <div class="callout safe" style="margin-top:24px">
+        <b>🚀 Наступні кроки в майстерні:</b>
+        <p>Тепер, коли базові правила безпеки засвоєні, можна сміливо переходити до практики:</p>
+        <ul style="margin:8px 0 0 18px">
+          <li><a href="lesson-diag.html">Блок 0 · Урок 0.2: Вхідна діагностика (6 інженерних компетентностей)</a> — визначення твоїх сильних сторін і ролі в команді;</li>
+          <li><a href="lesson-setup.html">Блок 0 · Урок 0.3: Налаштування Arduino IDE та драйвера CH340</a> — підготовка зв'язку комп'ютера з платою;</li>
+          <li><a href="../01-arduino-basics/lesson-01.html">Модуль 1 · Урок 01: Твій перший сигнал (Blink та маяк SOS)</a> — перша самостійно створена прошивка.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</div>
 
 <script src="../../assets/course.js"></script>
-<script src="../../assets/app.js"></script>
+<script src="../../assets/lesson.js"></script>
+<script>
+/* Логіка інтерактивних стендів Уроку 0.1 */
+(function() {
+  // 1. Стенд КЗ та Polyfuse
+  var tripBtn = document.getElementById("sim-trip-btn");
+  var polyRect = document.getElementById("poly-rect");
+  var polyText = document.getElementById("poly-text");
+  var statusBulb = document.getElementById("status-bulb");
+  var wireMid = document.getElementById("wire-mid");
+  var valR = document.getElementById("val-r");
+  var valI = document.getElementById("val-i");
+  var valFuse = document.getElementById("val-fuse");
+  var telFuse = document.getElementById("tel-fuse");
+  var telI = document.getElementById("tel-i");
+  var isShorted = false;
+
+  if (tripBtn) {
+    tripBtn.addEventListener("click", function() {
+      isShorted = !isShorted;
+      if (isShorted) {
+        tripBtn.textContent = "🔄 Відновити нормальне коло";
+        polyRect.setAttribute("fill", "#E5383B");
+        polyText.textContent = "TRIPPED";
+        polyText.setAttribute("fill", "#FFFFFF");
+        statusBulb.setAttribute("fill", "#5B2C2C");
+        wireMid.setAttribute("stroke", "#E5383B");
+        valR.textContent = "0.1 Ом (КЗ!)";
+        valI.textContent = "> 3000 мА";
+        valFuse.textContent = "Спрацював (РОЗІРВАНО)";
+        telFuse.className = "tele-box alert";
+        telI.className = "tele-box alert";
+        if (window.LessonKit) window.LessonKit.setCheck("m0-l01-fuse", true);
+      } else {
+        tripBtn.textContent = "⚡ Зробити КЗ (Тест)";
+        polyRect.setAttribute("fill", "#EAB308");
+        polyText.textContent = "FUSE OK";
+        polyText.setAttribute("fill", "#422006");
+        statusBulb.setAttribute("fill", "#4ADE80");
+        wireMid.setAttribute("stroke", "#0284C7");
+        valR.textContent = "220 Ом";
+        valI.textContent = "22.7 мА";
+        valFuse.textContent = "Холодний (OK)";
+        telFuse.className = "tele-box ok";
+        telI.className = "tele-box";
+      }
+    });
+  }
+
+  // 2. Тренажер аварійного висмикування USB
+  var startBtn = document.getElementById("start-reaction-btn");
+  var pullBtn = document.getElementById("pull-cord-btn");
+  var alarmDisplay = document.getElementById("alarm-display");
+  var reactionResult = document.getElementById("reaction-result");
+  var alertTime = 0;
+  var timerId = null;
+
+  if (startBtn && pullBtn) {
+    startBtn.addEventListener("click", function() {
+      startBtn.disabled = true;
+      pullBtn.disabled = false;
+      alarmDisplay.className = "alarm-screen normal";
+      alarmDisplay.textContent = "ЧЕКАЙ СИГНАЛУ ТРИВОГИ...";
+      reactionResult.textContent = "";
+
+      var delay = 1500 + Math.random() * 2500;
+      clearTimeout(timerId);
+      timerId = setTimeout(function() {
+        alertTime = Date.now();
+        alarmDisplay.className = "alarm-screen danger";
+        alarmDisplay.textContent = "🚨 ЗАПАХ ПАЛЕНОГО! ВИСМИКУЙ!";
+      }, delay);
+    });
+
+    pullBtn.addEventListener("click", function() {
+      if (!alertTime) {
+        // Фальстарт
+        clearTimeout(timerId);
+        alarmDisplay.className = "alarm-screen normal";
+        alarmDisplay.textContent = "ФАЛЬСТАРТ! Кабель висмикнуто зарано";
+        reactionResult.textContent = "Спробуй ще раз, дочекайся появи червоного сигналу.";
+        startBtn.disabled = false;
+        pullBtn.disabled = true;
+        return;
+      }
+      var elapsed = Date.now() - alertTime;
+      alarmDisplay.className = "alarm-screen saved";
+      alarmDisplay.textContent = "ВІДМІННО! СХЕМУ ЗНЕСТРУМЛЕНО";
+      reactionResult.textContent = "Час реакції: " + elapsed + " мс. Плату та комп'ютер урятовано!";
+      startBtn.disabled = false;
+      pullBtn.disabled = true;
+      alertTime = 0;
+      if (window.LessonKit) window.LessonKit.setCheck("m0-l01-reaction", true);
+    });
+  }
+})();
+</script>
 </body>
 </html>

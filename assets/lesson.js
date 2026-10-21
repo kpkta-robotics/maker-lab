@@ -35,6 +35,95 @@
     refreshProgress();
   }
 
+  /* ---------- блок артефактів та швидкого звіту гуртківця ---------- */
+  function setupArtifactWidget() {
+    var doneRow = document.querySelector(".done-row") || document.getElementById("lesson-footer");
+    if (!doneRow || document.getElementById("maker-artifact-box")) return;
+
+    var s = load();
+    var curArtifact = (s.artifacts && s.artifacts[LESSON]) || "";
+
+    var box = document.createElement("div");
+    box.id = "maker-artifact-box";
+    box.className = "maker-artifact-box";
+    box.innerHTML =
+      '<div class="artifact-head">' +
+        '<b>🛠 Щоденник гуртківця: залізячний артефакт або нотатка</b>' +
+        '<span class="artifact-tag">Для керівника гуртка</span>' +
+      '</div>' +
+      '<p class="artifact-sub">Вкажи посилання на проєкт (Wokwi, Tinkercad, диск з фото/відео) або зафіксуй реальний результат складання на платі ТЕКО чи друку на Snapmaker A350:</p>' +
+      '<textarea class="artifact-input" id="maker-artifact-text" placeholder="Наприклад: Зібрано на макетці ТЕКО, світлодіод миготить стабільно. Посилання: https://wokwi.com/..."></textarea>' +
+      '<div class="artifact-actions">' +
+        '<button class="btn-copy-lesson-report" id="btn-copy-lesson-report" type="button">📋 Скопіювати звіт за цей урок (Exit Ticket)</button>' +
+        '<span class="artifact-saved-hint" id="artifact-saved-hint"></span>' +
+      '</div>';
+
+    doneRow.parentNode.insertBefore(box, doneRow);
+
+    var ta = document.getElementById("maker-artifact-text");
+    var hint = document.getElementById("artifact-saved-hint");
+    var copyBtn = document.getElementById("btn-copy-lesson-report");
+
+    if (ta) {
+      ta.value = curArtifact;
+      ta.addEventListener("input", function () {
+        var st = load();
+        st.artifacts = st.artifacts || {};
+        st.artifacts[LESSON] = ta.value;
+        save(st);
+        if (hint) {
+          hint.textContent = "✓ Збережено";
+          setTimeout(function () { hint.textContent = ""; }, 2000);
+        }
+      });
+    }
+
+    if (copyBtn) {
+      copyBtn.addEventListener("click", function () {
+        var st = load();
+        var note = (st.artifacts && st.artifacts[LESSON]) || (ta ? ta.value : "");
+        var studentName = localStorage.getItem("arduino-student-name") || "Студент гуртка";
+        var studentGroup = localStorage.getItem("arduino-student-group") || "не вказано";
+        var lessonTitle = (document.querySelector("h1") || {}).textContent || document.title;
+        var reqCount = required.length;
+        var doneN = required.filter(function (c) { return c.checked; }).length;
+        var isDone = !!st.done[LESSON];
+
+        var now = new Date();
+        var timeStr = String(now.getDate()).padStart(2, "0") + "." +
+                      String(now.getMonth() + 1).padStart(2, "0") + "." +
+                      now.getFullYear() + ", " +
+                      String(now.getHours()).padStart(2, "0") + ":" +
+                      String(now.getMinutes()).padStart(2, "0");
+
+        var text = [
+          "⚡ КПКТА РОБОТОТЕХНІКА · ЗВІТ ЗА ЗАНЯТТЯ",
+          "---------------------------------------",
+          "Гуртківець: " + studentName + " (Група: " + studentGroup + ")",
+          "Урок: " + lessonTitle.trim(),
+          "Статус: " + (isDone ? "✅ ВИКОНАНО" : "⏳ В ПРОЦЕСІ") + " (" + doneN + " з " + reqCount + " обов'язкових пунктів)",
+          "Дата й час: " + timeStr,
+          "",
+          "🛠 ЗАЛІЗЯЧНИЙ АРТЕФАКТ / НОТАТКА:",
+          note ? note.trim() : "(Без додаткової нотатки)",
+          "",
+          "🔑 Контрольний підпис: KPKTA-" + (LESSON || "L").toUpperCase() + "-" + Math.abs((doneN * 31) ^ now.getDate()).toString(16).toUpperCase()
+        ].join("\n");
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            if (hint) {
+              hint.textContent = "✓ Звіт скопійовано! Надішли його керівнику в Telegram чи Classroom.";
+              setTimeout(function () { hint.textContent = ""; }, 4000);
+            }
+          });
+        } else {
+          prompt("Скопіюй звіт вручну:", text);
+        }
+      });
+    }
+  }
+
   (function init() {
     var s = load();
     checks.forEach(function (c) {
@@ -43,6 +132,7 @@
     });
     var btn = document.getElementById("done-btn");
     if (btn) btn.addEventListener("click", function () { var st = load(); st.done[LESSON] = true; save(st); refreshProgress(); });
+    setupArtifactWidget();
     refreshProgress();
   })();
 

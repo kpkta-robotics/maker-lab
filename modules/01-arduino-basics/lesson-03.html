@@ -3,347 +3,443 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Урок 03 — Розумний світлофор: кілька світлодіодів і масиви | Адаптивна цифрова майстерня</title>
-<link rel="stylesheet" href="../../assets/style.css">
+<title>Урок 1.3: Розумний світлофор і масиви C++ | Адаптивна цифрова майстерня</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Унікальні стилі уроку світлофора */
+.hero { max-width: 1240px; margin: 0 auto; padding: 24px 24px 56px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.hero .kicker { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+.hero h1 { font-size: clamp(34px, 5.5vw, 60px); font-weight: 700; margin: 0 0 20px; line-height: 1.15; }
+.hero .promise { font-size: 20px; line-height: 1.5; max-width: 32ch; margin: 0 0 28px; }
+.hero-board svg { width: 100%; height: auto; filter: drop-shadow(0 18px 28px rgba(12, 42, 49, .22)); }
+
+/* Лабораторія світлофора */
+.traffic-stage { padding: 20px; display: grid; grid-template-columns: auto 1fr; gap: 24px; background: var(--pcb-deep); border-radius: 12px; align-items: center; }
+@media (max-width: 760px) { .traffic-stage { grid-template-columns: 1fr; justify-items: center; } }
+.traffic-housing { width: 70px; background: #1B2226; border: 4px solid #334155; border-radius: 20px; padding: 12px 10px; display: flex; flex-direction: column; gap: 12px; align-items: center; box-shadow: inset 0 4px 10px rgba(0,0,0,0.6); }
+.lamp-circle { width: 44px; height: 44px; border-radius: 50%; background: #2B1818; transition: background .12s, box-shadow .12s; }
+.lamp-circle.red-lit { background: #EF4444; box-shadow: 0 0 24px rgba(239, 68, 68, 0.85); }
+.lamp-circle.yellow-lit { background: #EAB308; box-shadow: 0 0 24px rgba(234, 179, 8, 0.85); }
+.lamp-circle.green-lit { background: #22C55E; box-shadow: 0 0 24px rgba(34, 197, 94, 0.85); }
+.phase-card { background: var(--pcb-panel); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.phase-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: #7CE2EE; }
+.phase-code { background: #06171B; border-radius: 6px; padding: 12px; font-family: var(--mono); font-size: 12px; color: #CFE6E5; margin: 0; overflow-x: auto; }
+</style>
+<link rel="stylesheet" href="../../assets/lesson.css">
 </head>
 <body data-lesson="m1-l03" data-root="../../">
 
-<header class="site-header">
-  <div class="wrap">
-    <div class="crumbs" id="crumbs"></div>
-    <h1>УРОК 03 · Розумний світлофор: кілька світлодіодів і масиви</h1>
-    <p>Керуємо кількома пристроями одночасно. Дізнаємося, як масиви та цикли рятують інженера від нескінченного копіпасту, і створюємо автоматичне міське перехрестя.</p>
-    <div class="meta">
-      <span class="pill">⏱ ~60–80 хв</span>
-      <span class="pill">🧠 Потрібні Уроки 01 і 02</span>
-      <span class="pill">💻 Wokwi або набір ТЕКО</span>
-    </div>
+<nav class="topbar" aria-label="Навігація курсом">
+  <div class="crumbs">
+    <a href="../../index.html">Карта курсу</a>
+    <span aria-hidden="true">/</span>
+    <span>Модуль 1. Основи Arduino</span>
+    <span aria-hidden="true">/</span>
+    <span class="crumb-current">Урок 1.3</span>
   </div>
-</header>
-
-<main>
-
-  <!-- ===== ГАЧОК ===== -->
-  <p class="lead">Один світлодіод — це маяк або ліхтарик. Але в реальних системах (роботи, автомобілі, промислові верстати) контролер одночасно керує <strong>десятками індикаторів, двигунів і датчиків</strong>.</p>
-  <p class="lead">Сьогодні ти створиш справжній <strong>міський світлофор</strong> з усіма його правилами: червоний, червоний+жовтий, зелений, блимання зеленого та жовтий. А головне — навчишся писати професійний код без повторення однакових рядків за допомогою <strong>масивів</strong> і <strong>циклів for</strong>.</p>
-
-  <div class="box ok">
-    <div class="box-title">🏆 Золоте правило програміста: DRY</div>
-    <strong>DRY = Don't Repeat Yourself (Не повторюй себе).</strong> Якщо ти копіюєш один і той самий рядок у коді 5 разів — зупинись! Справжній інженер змушує комп'ютер робити рутину за допомогою циклів.
+  <div class="topbar-actions">
+    <a class="chip-btn" href="../../index.html">← До карти курсу</a>
   </div>
+</nav>
 
-  <!-- ===== КРОК 0 ===== -->
-  <div class="step"><span class="num">0</span><h2>Спробуй прямо тут: віртуальне перехрестя</h2></div>
-  <p>Перед тобою модель міського світлофора. Запусти авторежим або клацай «Наступна фаза», щоб розібратися в послідовності сигналів та побачити код кожної фази:</p>
-
-  <div class="trafficsim" id="trafficsim">
-    <div class="trafficsim-stage">
-      <div class="traffic-housing">
-        <div class="traffic-lamp red" id="lamp-red"></div>
-        <div class="traffic-lamp yellow" id="lamp-yellow"></div>
-        <div class="traffic-lamp green" id="lamp-green"></div>
-      </div>
-
-      <div style="flex:1;min-width:260px">
-        <div class="traffic-phase-desc" id="traffic-desc">ФАЗА 1: Червоний сигнал (Стоп)</div>
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-          <button class="btn" id="traffic-auto-btn">▶ Запустити авторежим</button>
-          <button class="btn alt" id="traffic-next-btn">⏭ Наступна фаза вручну</button>
-        </div>
-        <pre id="traffic-code" style="font-size:0.86rem"></pre>
-      </div>
-    </div>
+<section class="hero">
+  <div>
+    <p class="kicker">МОДУЛЬ 1 · ОСНОВИ ARDUINO · УРОК 03</p>
+    <h1>Розумний світлофор: кілька світлодіодів і масиви C++</h1>
+    <p class="promise">Як керувати десятками пристроїв без нескінченного копіпасту. Створюємо реальне міське перехрестя за допомогою масивів та циклу for.</p>
+    <ul class="facts">
+      <li>⏱ 60–80 хвилин</li>
+      <li>🧠 Потрібні Уроки 01 і 02</li>
+      <li>💻 Wokwi або набір ТЕКО</li>
+    </ul>
   </div>
 
-  <div class="box mission">
-    <div class="box-title">🎯 Твоя інженерна місія на сьогодні</div>
-    <ol style="margin:6px 0 0 18px;padding:0">
-      <li>Зібрати на макетній платі Wokwi схему з <strong>3 світлодіодів</strong> (червоний, жовтий, зелений) із загальною шиною «землі» (GND).</li>
-      <li>Опанувати <strong>масиви C++</strong> та цикл <code>for</code>, скоротивши налаштування пінів до 2 лаконічних рядків.</li>
-      <li>Запрограмувати повний цикл роботи світлофора з блиманням зеленого сигналу.</li>
-    </ol>
-  </div>
-
-  <h3>📖 Інженерний словничок уроку</h3>
-  <dl class="glossary">
-    <dt>Масив (Array)</dt>
-    <dd>Впорядкований ланцюжок однакових змінних. Як коробка для яєць або шафа з пронумерованими шухлядами: в одну змінну з ім'ям <code>ledPins</code> ми можемо покласти номери <code>{12, 11, 10}</code>.</dd>
-
-    <dt>Індекс елемента (Index)</dt>
-    <dd>Порядковий номер елемента в масиві. <strong>Увага: у програмуванні рахунок ЗАВЖДИ починається з нуля!</strong> Перший елемент — це <code>[0]</code>, другий — <code>[1]</code>, третій — <code>[2]</code>.</dd>
-
-    <dt>Цикл for</dt>
-    <dd>Спеціальна конструкція для повторення дій визначену кількість разів. Наприклад, щоб налаштувати всі три піни, ми пишемо цикл від 0 до 2.</dd>
-
-    <dt>Шина живлення (Breadboard Rails)</dt>
-    <dd>Довгі сині та червоні лінії з боків макетної плати. До них підключають GND або +5V, щоб роздати живлення одразу на багато компонентів за допомогою одного дроту.</dd>
-  </dl>
-
-  <!-- ===== КРОК 1 ===== -->
-  <div class="step"><span class="num">1</span><h2>Збираємо схему у Wokwi: 3 світлодіоди на макетці</h2></div>
-  <p>Щоб підключити 3 світлодіоди, нам знадобиться спільний мінус (GND). Використаємо довгу шину макетної плати (синій ряд із позначкою «-»):</p>
-
-  <div class="figure">
-    <svg viewBox="0 0 600 240" width="100%" height="auto" style="max-width:600px;background:#f8fafc;border-radius:8px">
-      <!-- Breadboard Base -->
-      <rect x="30" y="30" width="540" height="180" rx="12" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="2"/>
-      
-      <!-- Ground Rail -->
-      <line x1="60" y1="50" x2="540" y2="50" stroke="#3b82f6" stroke-width="4" stroke-dasharray="6,4"/>
-      <text x="45" y="54" fill="#1d4ed8" font-weight="bold" font-size="12">-</text>
-      <text x="300" y="44" fill="#3b82f6" font-size="11" text-anchor="middle">Спільна шина «Земля» (GND)</text>
-
-      <!-- Arduino connection to GND rail -->
-      <path d="M 60 50 L 60 10 L 20 10" stroke="#0f172a" stroke-width="3" fill="none"/>
-      <text x="15" y="14" fill="#0f172a" font-weight="bold" font-size="11" text-anchor="end">До піна GND на Arduino</text>
-
-      <!-- LED Red -->
-      <circle cx="150" cy="110" r="18" fill="#ef4444"/>
-      <text x="150" y="115" fill="#fff" font-weight="bold" font-size="12" text-anchor="middle">R</text>
-      <text x="150" y="145" fill="#0f172a" font-size="11" text-anchor="middle">Червоний</text>
-      <rect x="140" y="160" width="20" height="10" fill="#f59e0b" stroke="#b45309"/>
-      <text x="150" y="185" fill="#475569" font-size="10" text-anchor="middle">220 Ом → Пін 12</text>
-      <line x1="145" y1="50" x2="145" y2="92" stroke="#0f172a" stroke-width="2"/>
-
-      <!-- LED Yellow -->
-      <circle cx="300" cy="110" r="18" fill="#eab308"/>
-      <text x="300" y="115" fill="#fff" font-weight="bold" font-size="12" text-anchor="middle">Y</text>
-      <text x="300" y="145" fill="#0f172a" font-size="11" text-anchor="middle">Жовтий</text>
-      <rect x="290" y="160" width="20" height="10" fill="#f59e0b" stroke="#b45309"/>
-      <text x="300" y="185" fill="#475569" font-size="10" text-anchor="middle">220 Ом → Пін 11</text>
-      <line x1="295" y1="50" x2="295" y2="92" stroke="#0f172a" stroke-width="2"/>
-
-      <!-- LED Green -->
-      <circle cx="450" cy="110" r="18" fill="#22c55e"/>
-      <text x="450" y="115" fill="#fff" font-weight="bold" font-size="12" text-anchor="middle">G</text>
-      <text x="450" y="145" fill="#0f172a" font-size="11" text-anchor="middle">Зелений</text>
-      <rect x="440" y="160" width="20" height="10" fill="#f59e0b" stroke="#b45309"/>
-      <text x="450" y="185" fill="#475569" font-size="10" text-anchor="middle">220 Ом → Пін 10</text>
-      <line x1="445" y1="50" x2="445" y2="92" stroke="#0f172a" stroke-width="2"/>
+  <figure class="hero-board">
+    <svg viewBox="0 0 520 250" role="img" aria-label="Схема підключення світлофора з 3 світлодіодами та спільною шиною GND">
+      <rect x="10" y="10" width="500" height="230" rx="12" fill="#0C2A31" stroke="#0E6673" stroke-width="2"/>
+      <!-- Макетна плата -->
+      <g transform="translate(30, 30)">
+        <rect width="460" height="190" rx="8" fill="#11353E" stroke="#1E7E8C" stroke-width="1.5"/>
+        <!-- Шина GND -->
+        <line x1="30" y1="35" x2="430" y2="35" stroke="#0284C7" stroke-width="4"/>
+        <text x="230" y="25" fill="#38BDF8" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle">СПІЛЬНА ШИНА «ЗЕМЛЯ» (GND RAIL)</text>
+        <!-- Червоний світлодіод -->
+        <g transform="translate(70, 60)">
+          <circle cx="30" cy="30" r="18" fill="#EF4444"/>
+          <text x="30" y="35" fill="#FFF" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" text-anchor="middle">R</text>
+          <rect x="18" y="70" width="24" height="12" rx="2" fill="#F59E0B" stroke="#B45309"/>
+          <text x="30" y="100" fill="#A9C6CA" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle">Пін 12</text>
+          <line x1="30" y1="-25" x2="30" y2="12" stroke="#64748B" stroke-width="2"/>
+        </g>
+        <!-- Жовтий світлодіод -->
+        <g transform="translate(200, 60)">
+          <circle cx="30" cy="30" r="18" fill="#EAB308"/>
+          <text x="30" y="35" fill="#FFF" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" text-anchor="middle">Y</text>
+          <rect x="18" y="70" width="24" height="12" rx="2" fill="#F59E0B" stroke="#B45309"/>
+          <text x="30" y="100" fill="#A9C6CA" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle">Пін 11</text>
+          <line x1="30" y1="-25" x2="30" y2="12" stroke="#64748B" stroke-width="2"/>
+        </g>
+        <!-- Зелений світлодіод -->
+        <g transform="translate(330, 60)">
+          <circle cx="30" cy="30" r="18" fill="#22C55E"/>
+          <text x="30" y="35" fill="#FFF" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" text-anchor="middle">G</text>
+          <rect x="18" y="70" width="24" height="12" rx="2" fill="#F59E0B" stroke="#B45309"/>
+          <text x="30" y="100" fill="#A9C6CA" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle">Пін 10</text>
+          <line x1="30" y1="-25" x2="30" y2="12" stroke="#64748B" stroke-width="2"/>
+        </g>
+      </g>
     </svg>
-    <figcaption>Схема розведення трьох світлодіодів: катоди (короткі ніжки) йдуть у спільну шину GND, аноди через резистори 220 Ом — до пінів 12, 11, 10</figcaption>
-  </div>
+  </figure>
+</section>
 
-  <ol>
-    <li>Відкрий новий проєкт <a href="https://wokwi.com/projects/new/arduino-uno" target="_blank" rel="noopener">Wokwi: Arduino Uno</a>.</li>
-    <li>Додай <strong>3 світлодіоди</strong>: Червоний, Жовтий, Зелений (клікни на світлодіод, щоб вибрати колір у меню).</li>
-    <li>Додай <strong>3 резистори</strong> номіналом <code>220</code> Ом.</li>
-    <li>З'єднай чорними дротами катоди світлодіодів із шиною <strong>GND</strong> на Arduino.</li>
-    <li>З'єднай аноди світлодіодів через резистори з цифровими пінами:
-      <ul>
-        <li>Червоний → пін <strong>12</strong></li>
-        <li>Жовтий → пін <strong>11</strong></li>
-        <li>Зелений → пін <strong>10</strong></li>
-      </ul>
-    </li>
-  </ol>
+<div class="layout">
+  <aside class="toc" aria-label="Зміст заняття">
+    <div class="toc-sticky">
+      <p class="toc-title">Зміст заняття</p>
+      <ol>
+        <li><a href="#s1" class="active"><b>01</b> Принцип DRY</a></li>
+        <li><a href="#s2"><b>02</b> Лабораторія світлофора</a></li>
+        <li><a href="#s3"><b>03</b> Спільна шина живлення</a></li>
+        <li><a href="#s4"><b>04</b> Що таке масив C++</a></li>
+        <li><a href="#s5"><b>05</b> Цикл for</a></li>
+        <li><a href="#s6"><b>06</b> Алгоритм перехрестя</a></li>
+        <li><a href="#s7"><b>07</b> AI-ментор: Структури</a></li>
+        <li><a href="#s8"><b>08</b> Чек-ліст уроку</a></li>
+      </ol>
+      <div class="meter">
+        <div class="meter-head">
+          <span>Прогрес уроку</span>
+          <b id="meter-val">0%</b>
+        </div>
+        <div class="meter-bar"><span id="meter-fill" style="width:0%"></span></div>
+      </div>
+    </div>
+  </aside>
 
-  <!-- ===== КРОК 2 ===== -->
-  <div class="step"><span class="num">2</span><h2>Магія масивів та циклу for</h2></div>
-  <p>Як налаштувати піни 12, 11, 10 на вихід? Початківець напише:</p>
+  <main>
+    <!-- Крок 01 -->
+    <section class="step" id="s1">
+      <div class="step-head">
+        <span class="step-num">01</span>
+        <div>
+          <h2>Золотий закон програміста: принцип DRY</h2>
+          <p class="sub-lead">Don't Repeat Yourself (Не повторюй себе) — як писати код без хаосу.</p>
+        </div>
+      </div>
 
-  <div class="codewrap">
-<pre>// ❌ Початковий підхід (багато однакових рядків)
-pinMode(12, OUTPUT);
-pinMode(11, OUTPUT);
-pinMode(10, OUTPUT);</pre>
-  </div>
+      <p>Один світлодіод — це простий ліхтарик або маяк. Але в реальних мейкерських системах (роботизовані візки, маніпулятори, матричні дисплеї) мікроконтролер одночасно керує <strong>десятками індикаторів та приводів</strong>.</p>
+      <p>Якщо для налаштування трьох пінів копіювати рядок <code>pinMode()</code> тричі — це ще можна терпіти. Але якщо компонентів стає 8, 16 чи 64? Справжній інженер змушує комп'ютер виконувати рутину за допомогою <strong>масивів (Arrays)</strong> та <strong>циклів for</strong>.</p>
 
-  <p>А якщо у нас 16 світлодіодів у матриці? Писати 16 рядків? Ні! Інженер використовує <strong>масив</strong> і <strong>цикл for</strong>:</p>
+      <div class="callout safe">
+        <b>💡 Де це працює у 3D-принтері:</b>
+        <p>Крокові двигуни осей Snapmaker A350 (X, Y, Z, Extruder) керуються послідовністю імпульсів на 4 піни кожен. Замість сотень окремих рядків у прошивці верстата працює один компактний масив пінів, по якому циклічно пробігає алгоритм крокування!</p>
+      </div>
+    </section>
 
-  <div class="codewrap">
-<pre>//  Інженерний підхід: масив і цикл
-const int ledPins[] = {12, 11, 10}; // список пінів світлофора
+    <!-- Крок 02 -->
+    <section class="step" id="s2">
+      <div class="step-head">
+        <span class="step-num">02</span>
+        <div>
+          <h2>Лабораторія 1: Віртуальне перехрестя та фази світлофора</h2>
+          <p class="sub-lead">Запусти автоматичний цикл або перемикай фази вручну, спостерігаючи за кодом кожної фази.</p>
+        </div>
+      </div>
 
-for (int i = 0; i &lt; 3; i++) {
-  pinMode(ledPins[i], OUTPUT);      // налаштує піни 12, 11, 10 автоматично!
-}</pre>
-  </div>
+      <div class="lab">
+        <div class="lab-head">
+          <div>
+            <h3>Інтерактивний світлофор: Піни 12 (R), 11 (Y), 10 (G)</h3>
+            <p>Спостерігай за послідовністю: Червоний → Червоний+Жовтий → Зелений → Блимання → Жовтий.</p>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn-primary" id="traffic-auto-btn" type="button" style="padding:6px 12px;font-size:12px">▶ Запустити авторежим</button>
+            <button class="chip-btn" id="traffic-next-btn" type="button" style="padding:6px 12px;font-size:12px">⏭ Наступна фаза</button>
+          </div>
+        </div>
 
-  <h3>Як читати цикл <code>for (int i = 0; i &lt; 3; i++)</code>:</h3>
-  <table>
-    <tr><th>Частина циклу</th><th>Що це означає</th></tr>
-    <tr><td><code>int i = 0;</code></td><td><strong>Старт:</strong> створюємо лічильник <code>i</code> зі значенням 0.</td></tr>
-    <tr><td><code>i &lt; 3;</code></td><td><strong>Умова:</strong> крутимо цикл, доки <code>i</code> менше 3 (тобто для значень 0, 1, 2).</td></tr>
-    <tr><td><code>i++</code></td><td><strong>Крок:</strong> після кожного кола збільшуємо <code>i</code> на 1.</td></tr>
-    <tr><td><code>ledPins[i]</code></td><td>Дістаємо значення: коли <code>i=0</code> — беремо 12; коли <code>i=1</code> — беремо 11; коли <code>i=2</code> — беремо 10.</td></tr>
-  </table>
+        <div class="traffic-stage">
+          <div class="traffic-housing">
+            <div class="lamp-circle red-lit" id="lamp-r"></div>
+            <div class="lamp-circle" id="lamp-y"></div>
+            <div class="lamp-circle" id="lamp-g"></div>
+          </div>
 
-  <!-- ===== КРОК 3 ===== -->
-  <div class="step"><span class="num">3</span><h2>Повний код справжнього світлофора</h2></div>
-  <p>Скопіюй цей скетч у Wokwi. Тут реалізовано повний український стандарт: фаза попередження перед рухом та блимаючий зелений сигнал перед зупинкою!</p>
+          <div class="phase-card">
+            <div class="phase-title" id="phase-label">ФАЗА 1: Червоний сигнал (Стоп)</div>
+            <pre class="phase-code" id="phase-code-view">// Фаза 1: Червоний пін 12 = HIGH, решта = LOW
+digitalWrite(ledPins[0], HIGH);
+digitalWrite(ledPins[1], LOW);
+digitalWrite(ledPins[2], LOW);
+delay(3000);</pre>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <div class="codewrap">
-    <button class="copy-btn" data-target="code-traffic-full">Копіювати</button>
-<pre id="code-traffic-full">// Урок 03: Розумний міський світлофор
-const int PIN_RED = 12;
-const int PIN_YELLOW = 11;
-const int PIN_GREEN = 10;
+    <!-- Крок 03 -->
+    <section class="step" id="s3">
+      <div class="step-head">
+        <span class="step-num">03</span>
+        <div>
+          <h2>Спільна шина «Земля» (GND Rail) на макетній платі</h2>
+          <p class="sub-lead">Як роздати мінус живлення одразу на багато компонентів за допомогою одного дроту.</p>
+        </div>
+      </div>
 
-// Масив усіх пінів світлофора
-const int ledPins[] = {PIN_RED, PIN_YELLOW, PIN_GREEN};
-const int NUM_LEDS = 3;
+      <p>На платі Arduino Uno є лише 3 контакти з позначкою GND. Якщо підключати кожен світлодіод окремим дротом у плату — контакти швидко закінчаться.</p>
+      <p>Для цього використовують довгі лінії з боків макетної плати (позначені синьою смугою та знаком «-»). Один чорний дріт від піна GND на Arduino підключається до цієї шини, і тепер <strong>усі 50 отворів цієї смужки стають контактами «землі»</strong>!</p>
+    </section>
 
-// Зручна функція: вимкнути всі вогні одразу
-void allOff() {
-  for (int i = 0; i &lt; NUM_LEDS; i++) {
-    digitalWrite(ledPins[i], LOW);
-  }
-}
+    <!-- Крок 04 -->
+    <section class="step" id="s4">
+      <div class="step-head">
+        <span class="step-num">04</span>
+        <div>
+          <h2>Що таке масив у C++: нумерація з нуля</h2>
+          <p class="sub-lead">Зберігання списку пінів в одній спільній змінній.</p>
+        </div>
+      </div>
+
+      <p>Масив — це впорядкований ланцюжок однакових змінних. Можна уявити його як коробку для деталей із пронумерованими відділеннями:</p>
+
+      <div class="callout safe">
+        <b>📦 Оголошення масиву номерів пінів:</b>
+        <p><code>const int ledPins[3] = {12, 11, 10};</code></p>
+        <p style="margin-top:6px;font-size:14px"><strong>Увага: у програмуванні індекси ЗАВЖДИ рахуються з нуля:</strong></p>
+        <ul style="margin:4px 0 0 18px;font-family:var(--mono);font-size:13px">
+          <li><code>ledPins[0]</code> — це число 12 (Червоний світлодіод)</li>
+          <li><code>ledPins[1]</code> — це число 11 (Жовтий світлодіод)</li>
+          <li><code>ledPins[2]</code> — це число 10 (Зелений світлодіод)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Крок 05 -->
+    <section class="step" id="s5">
+      <div class="step-head">
+        <span class="step-num">05</span>
+        <div>
+          <h2>Цикл for: налаштування всіх пінів за 2 рядки</h2>
+          <p class="sub-lead">Як перетворити одноманітний код на елегантну інженерну конструкцію.</p>
+        </div>
+      </div>
+
+      <div class="codewrap">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-family:var(--mono);font-size:12px;color:#A9C6CA">setup_with_for.ino</span>
+          <button class="copy-btn" data-target="code-for-loop" type="button">📋 Скопіювати код</button>
+        </div>
+<pre id="code-for-loop">const int ledPins[3] = {12, 11, 10};
 
 void setup() {
-  // Налаштовуємо всі піни світлофора одним циклом
-  for (int i = 0; i &lt; NUM_LEDS; i++) {
+  // Цикл for повторюється для i = 0, 1, 2:
+  for (int i = 0; i &lt; 3; i++) {
+    pinMode(ledPins[i], OUTPUT);
+  }
+}</pre>
+      </div>
+
+      <p>Цикл <code>for (int i = 0; i &lt; 3; i++)</code> читається так: <em>«створи лічильник i зі значенням 0; повторюй поки i менше 3; після кожного проходу збільшуй i на одиницю»</em>.</p>
+    </section>
+
+    <!-- Крок 06 -->
+    <section class="step" id="s6">
+      <div class="step-head">
+        <span class="step-num">06</span>
+        <div>
+          <h2>Повний код міського світлофора з блиманням зеленого</h2>
+          <p class="sub-lead">Повноцінний алгоритм згідно з правилами дорожнього руху.</p>
+        </div>
+      </div>
+
+      <div class="codewrap">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-family:var(--mono);font-size:12px;color:#A9C6CA">traffic_light.ino</span>
+          <button class="copy-btn" data-target="code-traffic-full" type="button">📋 Скопіювати код</button>
+        </div>
+<pre id="code-traffic-full">const int ledPins[3] = {12, 11, 10}; // 0: Red, 1: Yellow, 2: Green
+
+void setup() {
+  for (int i = 0; i &lt; 3; i++) {
     pinMode(ledPins[i], OUTPUT);
   }
 }
 
 void loop() {
-  // 1. ЧЕРВОНИЙ: проїзд заборонено (3 секунди)
-  allOff();
-  digitalWrite(PIN_RED, HIGH);
+  // 1. Червоний сигнал (Стоп) - 3 секунди
+  digitalWrite(ledPins[0], HIGH);
+  digitalWrite(ledPins[1], LOW);
+  digitalWrite(ledPins[2], LOW);
   delay(3000);
 
-  // 2. ЧЕРВОНИЙ + ЖОВТИЙ: приготуватися до руху (1 секунда)
-  digitalWrite(PIN_YELLOW, HIGH);
+  // 2. Червоний + Жовтий (Увага) - 1 секунда
+  digitalWrite(ledPins[1], HIGH);
   delay(1000);
 
-  // 3. ЗЕЛЕНИЙ: рух дозволено (3 секунди)
-  allOff();
-  digitalWrite(PIN_GREEN, HIGH);
+  // 3. Зелений сигнал (Рух) - 3 секунди
+  digitalWrite(ledPins[0], LOW);
+  digitalWrite(ledPins[1], LOW);
+  digitalWrite(ledPins[2], HIGH);
   delay(3000);
 
-  // 4. ЗЕЛЕНИЙ БЛИМАЄ: попередження про завершення (3 спалахи)
-  for (int i = 0; i &lt; 3; i++) {
-    digitalWrite(PIN_GREEN, LOW);
-    delay(350);
-    digitalWrite(PIN_GREEN, HIGH);
-    delay(350);
+  // 4. Зелений блимає 3 рази
+  for (int b = 0; b &lt; 3; b++) {
+    digitalWrite(ledPins[2], LOW);
+    delay(400);
+    digitalWrite(ledPins[2], HIGH);
+    delay(400);
   }
 
-  // 5. ЖОВТИЙ: увага, зупинитися (1.5 секунди)
-  allOff();
-  digitalWrite(PIN_YELLOW, HIGH);
+  // 5. Жовтий сигнал (Приготуватися) - 1.5 секунди
+  digitalWrite(ledPins[2], LOW);
+  digitalWrite(ledPins[1], HIGH);
   delay(1500);
-
-  // Цикл завершується і починається знову з червоного!
+  digitalWrite(ledPins[1], LOW);
 }</pre>
-  </div>
+      </div>
+    </section>
 
-  <p>Запусти симуляцію у Wokwi та спостерігай за плавним переходом вогнів. Зверни увагу, як охайно функція <code>allOff()</code> очищає стан світлофора перед кожною новою фазою!</p>
+    <!-- Крок 07 -->
+    <section class="step" id="s7">
+      <div class="step-head">
+        <span class="step-num">07</span>
+        <div>
+          <h2>AI-ментор: рефакторинг коду через структури</h2>
+          <p class="sub-lead">Як професійні розробники прошивок описують стани світлофора таблицею даних.</p>
+        </div>
+      </div>
 
-  <!-- ===== КРОК 4 ===== -->
-  <div class="step"><span class="num">4</span><h2>Лабораторія «Зламай його» (Break-It Challenge)</h2></div>
-  <p>Як зламати світлофор, щоб краще зрозуміти помилки? Спробуй ці три інженерні пастки:</p>
+      <div class="callout ai">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
+          <b>🤖 Шаблон промпту для створення таблиці станів (State Machine):</b>
+          <button class="copy-btn" data-target="ai-traffic-prompt" type="button">📋 Скопіювати промпт</button>
+        </div>
+        <pre id="ai-traffic-prompt" style="font-size:13px;line-height:1.5;background:var(--pcb-deep);padding:12px;border-radius:6px;color:#CFE6E5;overflow-x:auto">Я написав прошивку світлофора для Arduino з трьома світлодіодами через delay() та окремі виклики digitalWrite.
+Завдання: покращити архітектуру коду.
+Покажи, як організувати фази світлофора у вигляді масиву структур (struct Phase { bool r, y, g; unsigned long duration; }), щоб головний цикл loop() став коротким скінченним автоматом (Finite State Machine).
+Поясни переваги такого підходу для масштабування на перехрестя з пішохідним переходом.</pre>
+      </div>
+    </section>
 
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="tab-t1">Злам 1: Вихід за межі масиву</button>
-    <button class="tab-btn" data-tab="tab-t2">Злам 2: Підступний знак &lt;=</button>
-    <button class="tab-btn" data-tab="tab-t3">Злам 3: Без функції allOff()</button>
-  </div>
+    <!-- Крок 08 -->
+    <section class="step" id="s8">
+      <div class="step-head">
+        <span class="step-num final">08</span>
+        <div>
+          <h2>Чек-ліст уроку та підсумок</h2>
+          <p class="sub-lead">Познач засвоєні концепції. Пункт симулятора активується під час тестування стенду.</p>
+        </div>
+      </div>
 
-  <div class="panel active" id="tab-t1">
-    <h4>Експеримент: Спробуй звернутися до <code>ledPins[3]</code></h4>
-    <p>У нашому масиві 3 елементи: з індексами <code>0, 1, 2</code>. Що станеться, якщо написати <code>digitalWrite(ledPins[3], HIGH);</code>?</p>
-    <p><strong>Чому це небезпечно:</strong> У C++ елемента з індексом <code>3</code> не існує! Arduino прочитає випадкове сміття з сусідньої комірки пам'яті й може подати сигнал на зовсім несподіваний пін або зависнути. Це одна з найчастіших помилок початківців!</p>
-  </div>
+      <ul class="checklist">
+        <li><label><input type="checkbox" class="check" data-key="m1-l03:dry"> Зрозуміло інженерний принцип DRY та небезпеку дублювання коду</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m1-l03:sim"> Пройдено повний цикл перемикання фаз у вбудованому тренажері світлофора</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m1-l03:gnd"> Засвоєно підключення спільної шини GND на макетній платі</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m1-l03:array"> Опановано синтаксис масивів C++ та індексацію від 0 до 2</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m1-l03:for"> Застосовано цикл for для лаконічного налаштування групи пінів</label></li>
+      </ul>
 
-  <div class="panel" id="tab-t2">
-    <h4>Експеримент: Напиши в циклі <code>i &lt;= NUM_LEDS</code> замість <code>i &lt; NUM_LEDS</code></h4>
-    <p>Знак «менше або дорівнює» змусить цикл виконатися 4 рази (для i=0, 1, 2 і 3).</p>
-    <p><strong>Результат:</strong> Цикл спробує налаштувати неіснуючий 4-й пін. Пам'ятай: для масиву довжиною <code>N</code> умова завжди сувора: <code>i &lt; N</code>.</p>
-  </div>
+      <div id="lesson-footer"></div>
 
-  <div class="panel" id="tab-t3">
-    <h4>Експеримент: Закоментуй виклик <code>allOff()</code> перед увімкненням зеленого</h4>
-    <p>Постав дві похилі риски <code>// allOff();</code> перед зеленим сигналом.</p>
-    <p><strong>Результат:</strong> У тебе одночасно горітимуть і червоний, і жовтий, і зелений вогні — справжня аварійна ситуація на дорозі! Завжди переконуйся, що попередній стан скинуто.</p>
-  </div>
-
-  <!-- ===== КРОК 5 ===== -->
-  <div class="step"><span class="num">5</span><h2>Рівні майстерності: обери свій челендж</h2></div>
-
-  <div class="grid">
-    <div class="card">
-      <h4>🟢 Рівень 1: Explorer</h4>
-      <p><strong>Нічний режим (Жовтий маяк).</strong> Додай у код режим, коли світлофор постійно блимає лише жовтим вогнем раз на секунду (як світлофори вночі при нерегульованому русі).</p>
-    </div>
-    <div class="card">
-      <h4>🟡 Рівень 2: Builder</h4>
-      <p><strong>Світлофор пішохода.</strong> Додай ще 2 світлодіоди (Червоний і Зелений пішохідний). Коли авто їдуть — пішоходам горить червоний. Коли авто стоять на червоному — пішоходам загоряється зелений.</p>
-    </div>
-    <div class="card">
-      <h4>🟠 Рівень 3: Maker</h4>
-      <p><strong>Кнопка виклику пішохода.</strong> Додай кнопку з Уроку 02. За замовчуванням авто завжди горить зелений. Коли пішохід натискає кнопку — через 2 секунди плавно вмикається жовтий, потім червоний, і пішохід може безпечно перейти дорогу.</p>
-    </div>
-    <div class="card">
-      <h4>🔴 Рівень 4: Master</h4>
-      <p><strong>Звуковий супровід (Buzzer).</strong> Додай п'єзодинамік (Buzzer) з набору ТЕКО, який пікає рідко під час очікування і часто під час дозволеного зеленого переходу (для незрячих пішоходів).</p>
-    </div>
-  </div>
-
-  <!-- ===== КРОК 6 ===== -->
-  <div class="step"><span class="num">6</span><h2>Перевір себе</h2></div>
-  <details>
-    <summary>1. З якого номера починається нумерація елементів у масиві C++?</summary>
-    <p>З нуля: перший елемент має індекс <code>0</code>, другий — <code>1</code>, третій — <code>2</code>.</p>
-  </details>
-  <details>
-    <summary>2. Навіщо потрібен цикл <code>for</code> при роботі зі світлофором?</summary>
-    <p>Щоб не дублювати однаковий код налаштування або вимкнення світлодіодів, а автоматично виконати команду для кожного піна з масиву.</p>
-  </details>
-  <details>
-    <summary>3. Що означає скорочення DRY у розробці?</summary>
-    <p><strong>Don't Repeat Yourself</strong> («Не повторюй себе») — фундаментальний принцип проектування програм, згідно з яким код не повинен містити дублювання однакових блоків.</p>
-  </details>
-  <details>
-    <summary>4. Чому всі світлодіоди можна підключити до одного піна GND?</summary>
-    <p>GND — це загальна шина мінуса («земля»). Струм повертається через неї до джерела живлення, тому всі компоненти можуть мати спільну точку з'єднання з землею.</p>
-  </details>
-
-  <!-- ===== БОНУС ===== -->
-  <div class="step bonus"><span class="num">★</span><h2>Бонус: Світлофор на платі ТЕКО <span class="badge-bonus">за бажанням</span></h2></div>
-  <div class="box ok" style="margin-bottom:14px">
-    <div class="box-title">🔌 Збирання схеми у лабораторії</div>
-    Якщо плата ТЕКО підключається вперше, обов'язково перевір драйвер: <a href="../00-diagnostic/lesson-setup.html" target="_blank"><strong>Посібник із налаштування Arduino IDE та драйвера CH340 &rarr;</strong></a>
-  </div>
-  <p>Візьми макетну плату ТЕКО, 3 світлодіоди (червоний, жовтий, зелений) та 3 резистори 220 Ом. З'єднай довгу синю шину з піном GND плати. Тепер у тебе є власний настільний дорожній світлофор!</p>
-
-  <!-- ===== ЗАВЕРШЕННЯ ===== -->
-  <div class="step"><span class="num">✓</span><h2>Завершення уроку та чек-ліст успіху</h2></div>
-  <p><strong>Обов'язкові завдання для заліку:</strong></p>
-  <ul class="checklist">
-    <li><label><input type="checkbox" class="check" data-key="m1-l03-sim"> Досліджено віртуальний світлофор на цій сторінці</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l03-wokwi"> Зібрано схему з 3 світлодіодів зі спільною шиною GND у Wokwi</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l03-array"> У коді <code>setup()</code> застосовано масив і цикл <code>for</code></label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l03-full"> Світлофор працює з усіма фазами та блимаючим зеленим сигналом</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l03-break"> Виконано експеримент у лабораторії "Зламай його"</label></li>
-  </ul>
-
-  <p><strong>Творчий інженерний бонус:</strong></p>
-  <ul class="checklist">
-    <li><label><input type="checkbox" class="check" data-key="m1-l03-pedestrian" data-bonus> Додано кнопку запиту переходу або нічний режим блимання</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l03-teko" data-bonus> Світлофор зібрано на макетці ТЕКО з кольоровими світлодіодами</label></li>
-  </ul>
-
-  <div class="box mission">
-    <div class="box-title">📸 Збережи для портфоліо</div>
-    Зроби скріншот або коротку анімацію/відео свого світлофора під час симуляції у Wokwi. Додай файл коду до своєї папки проєктів курсу.
-  </div>
-
-  <div id="lesson-footer"></div>
-
-  <div class="box ai">
-    <div class="box-title">👀 Що далі? Урок 04</div>
-    В Уроці 04 ми перейдемо від дискретних сигналів (вкл/викл) до <strong>плавних аналогових величин</strong>: познайомимося з потенціометром (крутилкою), аналогово-цифровим перетворювачем (АЦП) і шиpoint-імпульсною модуляцією (ШІМ) для плавного регулювання яскравості світла!
-  </div>
-
-</main>
-
-<footer>КПКТА імені Бадрі Лолашвілі · Курс «Arduino + 3D CAD + 3D Друк + AI + Maker»</footer>
+      <div class="callout safe" style="margin-top:24px">
+        <b>🎉 Модуль 1 майже підкорено!</b>
+        <p>Ти вмієш керувати окремими виходами, слухати входи кнопки та об'єднувати пристрої в групи. Наступні кроки — аналогові сигнали, ШІМ та зв'язок через Serial Monitor.</p>
+      </div>
+    </section>
+  </main>
+</div>
 
 <script src="../../assets/course.js"></script>
-<script src="../../assets/app.js"></script>
-<script src="../../assets/trafficsim.js"></script>
+<script src="../../assets/lesson.js"></script>
+<script>
+/* Логіка інтерактивного світлофора Уроку 1.3 */
+(function() {
+  var lampR = document.getElementById("lamp-r");
+  var lampY = document.getElementById("lamp-y");
+  var lampG = document.getElementById("lamp-g");
+  var phaseLabel = document.getElementById("phase-label");
+  var phaseCodeView = document.getElementById("phase-code-view");
+  var autoBtn = document.getElementById("traffic-auto-btn");
+  var nextBtn = document.getElementById("traffic-next-btn");
+
+  var phases = [
+    {
+      title: "ФАЗА 1: Червоний сигнал (Стоп)",
+      r: true, y: false, g: false, dur: 3000,
+      code: "// Фаза 1: Червоний (Пін 12)\ndigitalWrite(ledPins[0], HIGH);\ndigitalWrite(ledPins[1], LOW);\ndigitalWrite(ledPins[2], LOW);"
+    },
+    {
+      title: "ФАЗА 2: Червоний + Жовтий (Увага перед рухом)",
+      r: true, y: true, g: false, dur: 1200,
+      code: "// Фаза 2: Червоний + Жовтий\ndigitalWrite(ledPins[0], HIGH);\ndigitalWrite(ledPins[1], HIGH);\ndigitalWrite(ledPins[2], LOW);"
+    },
+    {
+      title: "ФАЗА 3: Зелений сигнал (Рух дозволено)",
+      r: false, y: false, g: true, dur: 3000,
+      code: "// Фаза 3: Зелений (Пін 10)\ndigitalWrite(ledPins[0], LOW);\ndigitalWrite(ledPins[1], LOW);\ndigitalWrite(ledPins[2], HIGH);"
+    },
+    {
+      title: "ФАЗА 4: Зелений блимає (Закінчення руху)",
+      r: false, y: false, g: true, dur: 1500,
+      code: "// Фаза 4: Циклічне блимання зеленого\nfor (int b = 0; b < 3; b++) {\n  digitalWrite(ledPins[2], !digitalRead(ledPins[2]));\n  delay(400);\n}"
+    },
+    {
+      title: "ФАЗА 5: Жовтий сигнал (Приготуватися до зупинки)",
+      r: false, y: true, g: false, dur: 1500,
+      code: "// Фаза 5: Жовтий (Пін 11)\ndigitalWrite(ledPins[0], LOW);\ndigitalWrite(ledPins[1], HIGH);\ndigitalWrite(ledPins[2], LOW);"
+    }
+  ];
+
+  var curPhase = 0;
+  var autoInterval = null;
+
+  function renderPhase(idx) {
+    var p = phases[idx];
+    phaseLabel.textContent = p.title;
+    phaseCodeView.textContent = p.code;
+    lampR.className = p.r ? "lamp-circle red-lit" : "lamp-circle";
+    lampY.className = p.y ? "lamp-circle yellow-lit" : "lamp-circle";
+    lampG.className = p.g ? "lamp-circle green-lit" : "lamp-circle";
+
+    if (window.LessonKit) {
+      window.LessonKit.setCheck("m1-l03:dry", true);
+      window.LessonKit.setCheck("m1-l03:sim", true);
+    }
+  }
+
+  function advancePhase() {
+    curPhase = (curPhase + 1) % phases.length;
+    renderPhase(curPhase);
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", function() {
+      if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+        autoBtn.textContent = "▶ Запустити авторежим";
+      }
+      advancePhase();
+    });
+  }
+
+  if (autoBtn) {
+    autoBtn.addEventListener("click", function() {
+      if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+        autoBtn.textContent = "▶ Запустити авторежим";
+      } else {
+        autoBtn.textContent = "⏸ Зупинити авторежим";
+        advancePhase();
+        autoInterval = setInterval(advancePhase, 2000);
+      }
+    });
+  }
+})();
+</script>
 </body>
 </html>

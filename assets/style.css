@@ -177,6 +177,18 @@ h3 { font-size: 18px; font-weight: 700; margin: 20px 0 8px; }
   0%, 100% { opacity: .35; }
   50% { opacity: 1; }
 }
+.board-node-link {
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .15s ease, filter .15s ease;
+}
+.board-node-link:hover rect {
+  filter: drop-shadow(0 0 8px rgba(42, 161, 178, .75));
+  stroke-width: 2.4px;
+}
+.board-node-link:hover text {
+  fill: #FFFFFF;
+}
 .board-telemetry {
   display: flex;
   align-items: center;
@@ -642,4 +654,486 @@ footer {
   .hero { padding: 18px 16px 28px; }
   .layout { padding: 0 16px 56px; }
   .lesson-row .tm, .lesson-row .go-arrow { display: none; }
+}
+
+/* ==========================================================================
+   ВІТРИНА ФІНАЛЬНИХ MAKER-ГАДЖЕТІВ (МОДУЛЬ 4)
+   ========================================================================== */
+.mod-showcase {
+  margin-top: 18px;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, rgba(14, 102, 115, .08) 0%, rgba(14, 102, 115, .02) 100%);
+  border: 1px solid rgba(14, 102, 115, .2);
+  border-radius: 12px;
+}
+.showcase-head h4 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: var(--pcb-deep);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.showcase-sub {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+.showcase-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .03);
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.showcase-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--pcb);
+  box-shadow: 0 6px 16px rgba(14, 102, 115, .1);
+}
+.showcase-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.showcase-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+.showcase-card-head h5 {
+  margin: 0;
+  font: 700 14px var(--body);
+  color: var(--ink);
+  line-height: 1.3;
+}
+.showcase-tag {
+  display: inline-block;
+  font: 600 11px var(--mono);
+  color: var(--copper);
+  background: #FEF7EE;
+  padding: 1px 7px;
+  border-radius: 4px;
+  margin-top: 3px;
+}
+.showcase-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 0 10px;
+  flex-grow: 1;
+}
+.showcase-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.spec-pill {
+  font: 500 11.5px var(--mono);
+  background: #E8F2F1;
+  color: var(--pcb-deep);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   ПАСПОРТ ДОСЯГНЕНЬ СТУДЕНТА (ДЛЯ ВИКЛАДАЧА)
+   ========================================================================== */
+.passport-action-wrap {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+.passport-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font: 700 13px var(--body);
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #0E6673 0%, #0C2A31 100%);
+  border: 1px solid #1E5460;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(14, 102, 115, .25);
+  transition: all .15s ease;
+}
+.passport-btn:hover {
+  background: linear-gradient(135deg, #137786 0%, #11353E 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(14, 102, 115, .35);
+}
+
+/* Модальне вікно паспорта */
+.passport-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 42, 49, .75);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.passport-modal-backdrop[hidden] {
+  display: none;
+}
+.passport-dialog {
+  background: #FFFFFF;
+  border-radius: 16px;
+  max-width: 680px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.passport-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+.passport-brand .passport-logo {
+  font: 700 11px var(--mono);
+  color: var(--copper);
+  letter-spacing: .08em;
+  display: block;
+}
+.passport-header h3 {
+  margin: 2px 0 0;
+  font-size: 19px;
+  color: var(--pcb-deep);
+}
+.passport-close {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.passport-close:hover {
+  background: #E8F2F1;
+  color: var(--ink);
+}
+.passport-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 580px) {
+  .passport-inputs { grid-template-columns: 1fr; }
+}
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.input-field label {
+  font: 600 12px var(--body);
+  color: var(--muted);
+}
+.input-field input {
+  padding: 8px 12px;
+  font: 500 14px var(--body);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  outline: none;
+  transition: border-color .15s;
+}
+.input-field input:focus {
+  border-color: var(--pcb);
+  box-shadow: 0 0 0 3px rgba(14, 102, 115, .15);
+}
+
+/* Картка сертифіката (темний інженерний стиль) */
+.passport-card {
+  background: #0C2A31;
+  color: #E2EDED;
+  border: 2px solid #1A4B56;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, .4);
+  position: relative;
+  overflow: hidden;
+}
+.passport-card::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-image:
+    linear-gradient(rgba(14, 102, 115, .15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 102, 115, .15) 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+}
+.passport-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+  padding-bottom: 14px;
+}
+.passport-cert-no {
+  font: 600 11px var(--mono);
+  color: #7CE2EE;
+  letter-spacing: .05em;
+  margin-bottom: 4px;
+}
+.student-display-name {
+  margin: 0;
+  font-size: 20px;
+  font-family: var(--display);
+  color: #FFFFFF;
+}
+.student-display-meta {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: #92B2B8;
+}
+.passport-score-badge {
+  text-align: right;
+  background: rgba(17, 53, 62, .9);
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #236574;
+}
+.score-num {
+  font: 800 24px var(--mono);
+  color: #4ADE80;
+  display: block;
+  line-height: 1;
+}
+.score-label {
+  font: 600 11px var(--body);
+  color: #A3CAD0;
+  text-transform: uppercase;
+}
+.passport-progress-summary {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+.passport-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 8px;
+  background: rgba(17, 53, 62, .5);
+  border-radius: 4px;
+  border-left: 3px solid #55666E;
+}
+.passport-item.done {
+  border-left-color: #4ADE80;
+  background: rgba(26, 75, 86, .6);
+}
+.passport-item-title {
+  color: #E2EDED;
+}
+.passport-item-status {
+  font: 600 11px var(--mono);
+  color: #A3CAD0;
+}
+.passport-item.done .passport-item-status {
+  color: #4ADE80;
+}
+.passport-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  padding-top: 12px;
+  font-size: 11.5px;
+  color: #7A9CA2;
+}
+.passport-card-footer .footer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--mono);
+}
+.passport-seal {
+  border: 2px dashed #B9761C;
+  border-radius: 50%;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FBBF24;
+  font: 800 8.5px var(--mono);
+  letter-spacing: .08em;
+  transform: rotate(-10deg);
+}
+.passport-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-copy-report, .btn-print-report {
+  flex: 1;
+  min-width: 220px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font: 700 13px var(--body);
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-copy-report {
+  background: #0E6673;
+  color: #FFFFFF;
+  border: 1px solid #094B54;
+}
+.btn-copy-report:hover {
+  background: #117887;
+}
+.btn-print-report {
+  background: #F2F5F4;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.btn-print-report:hover {
+  background: #E2EDED;
+}
+.passport-status-hint {
+  font-size: 13px;
+  color: var(--ok);
+  min-height: 18px;
+}
+
+/* Кнопки синхронізації та перенесення прогресу */
+.offline-sync-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.sync-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 10px;
+  font: 600 12px var(--body);
+  background: var(--surface);
+  color: var(--pcb-deep);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s;
+}
+.sync-btn:hover {
+  background: #E8F2F1;
+  border-color: var(--pcb);
+}
+
+/* Баланс: Теорія / Симуляція vs Реальне залізо */
+.passport-balance-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 14px 0;
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 580px) {
+  .passport-balance-grid { grid-template-columns: 1fr; }
+}
+.balance-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(17, 53, 62, .85);
+  border: 1px solid #1E5460;
+}
+.balance-card.theory { border-left: 3px solid #F59E0B; }
+.balance-card.hardware { border-left: 3px solid #10B981; }
+.balance-icon { font-size: 20px; line-height: 1; }
+.balance-label { font-size: 11.5px; color: #A3CAD0; font-weight: 500; }
+.balance-val { font: 700 13.5px var(--mono); color: #FFFFFF; margin-top: 2px; }
+
+/* Відображення нотаток / артефактів студента в елементі паспорта */
+.passport-item-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.passport-item-note {
+  font: 12px var(--mono);
+  color: #7CE2EE;
+  background: rgba(12, 42, 49, .6);
+  padding: 4px 8px;
+  border-radius: 4px;
+  word-break: break-all;
+  margin-top: 2px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .passport-modal-backdrop, .passport-dialog, .passport-card, .passport-card * {
+    visibility: visible;
+  }
+  .passport-modal-backdrop {
+    position: static;
+    background: transparent;
+    padding: 0;
+  }
+  .passport-dialog {
+    box-shadow: none;
+    padding: 0;
+    max-width: 100%;
+  }
+  .passport-inputs, .passport-header button, .passport-actions, .passport-status-hint {
+    display: none !important;
+  }
+  .passport-card {
+    border: 2px solid #000;
+    color: #000 !important;
+    background: #FFF !important;
+    box-shadow: none;
+  }
+  .student-display-name, .student-display-meta, .passport-cert-no {
+    color: #000 !important;
+  }
+  .passport-item {
+    background: transparent !important;
+    border: 1px solid #DDD !important;
+    color: #000 !important;
+  }
 }

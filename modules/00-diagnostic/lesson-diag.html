@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 0.2: Вхідна діагностика (6 інженерних компетентностей) · КПКТА</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+  <style>
+    .diag-radar-wrap {
+      background: var(--pcb-deep, #0C2A31);
+      border: 1px solid #1E5460;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 18px 0;
+      color: #E2EDED;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .diag-radar-wrap { grid-template-columns: 1fr; }
+    }
+    .diag-radar-svg { max-width: 240px; margin: 0 auto; display: block; }
+    .diag-role-card {
+      background: rgba(17, 53, 62, .75);
+      border: 1px solid #285A66;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .diag-role-card h4 { margin: 0 0 6px; color: #4ADE80; font-size: 16px; }
+    .diag-role-card p { font-size: 13.5px; color: #B3D2D6; margin: 0; line-height: 1.5; }
+    .quiz-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line, #D3DEDB);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 14px 0;
+      transition: border-color .15s;
+    }
+    .quiz-card.ok { border-color: #1F8A5B; background: #F4FAF7; }
+    .quiz-card h4 { margin: 0 0 10px; font-size: 15px; color: var(--ink, #14232B); }
+    .quiz-opts { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+    .quiz-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid var(--line, #D3DEDB);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all .15s;
+    }
+    .quiz-opt:hover { background: #E8F2F1; border-color: var(--pcb, #0E6673); }
+    .quiz-opt.selected { background: #E7F2F0; border-color: var(--pcb, #0E6673); font-weight: 600; }
+    .quiz-feedback {
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 8px;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok { background: #E8F7EE; color: #124A30; border: 1px solid #A3E0BA; }
+    .quiz-feedback.err { background: #FDE8E8; color: #9B1C1C; border: 1px solid #F8B4B4; }
+    .caliper-sim {
+      background: var(--pcb-deep, #0C2A31);
+      border-radius: 10px;
+      padding: 18px;
+      color: #FFF;
+      margin: 16px 0;
+      border: 1px solid #1E5460;
+    }
+    .caliper-scale {
+      font-family: var(--mono, monospace);
+      font-size: 24px;
+      color: #4ADE80;
+      font-weight: 700;
+      text-align: center;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body class="lesson-page" data-lesson="m0-l02">
+
+<nav class="topbar" aria-label="Навігація курсом">
+  <div class="crumbs">
+    <a href="../../index.html">Карта курсу</a>
+    <span aria-hidden="true">/</span><span>Блок 0. Старт і діагностика</span>
+  </div>
+  <a href="lesson-setup.html">Урок 0.3: Налаштування IDE →</a>
+</nav>
+
+<header class="hero">
+  <div>
+    <p class="kicker">Блок 0 · Урок 0.2</p>
+    <h1>Вхідна діагностика: 6 інженерних компетентностей</h1>
+    <p class="promise">Визнач свої сильні сторони перед початком практики: електроніка, код, 3D-друк, штангенциркуль, пошук несправностей та безпека в лабораторії.</p>
+    <ul class="facts">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>40 хв інтерактивний тест</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>Без оцінок: для формування команди</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Миттєвий радар компетентностей</li>
+    </ul>
+  </div>
+  <figure class="hero-board" style="margin:0">
+    <svg class="board" viewBox="0 0 320 220" role="img" aria-label="Радарний графік інженерних компетенцій">
+      <rect width="320" height="220" rx="12" fill="#0C2A31" stroke="#1A4B56" stroke-width="1.5"/>
+      <!-- Радарні кола -->
+      <circle cx="160" cy="110" r="80" fill="none" stroke="#1E5460" stroke-width="1" stroke-dasharray="3,3"/>
+      <circle cx="160" cy="110" r="50" fill="none" stroke="#1E5460" stroke-width="1" stroke-dasharray="3,3"/>
+      <circle cx="160" cy="110" r="20" fill="none" stroke="#1E5460" stroke-width="1"/>
+      <!-- Осі -->
+      <line x1="160" y1="20" x2="160" y2="200" stroke="#1A4B56" stroke-width="1.5"/>
+      <line x1="80" y1="65" x2="240" y2="155" stroke="#1A4B56" stroke-width="1.5"/>
+      <line x1="80" y1="155" x2="240" y2="65" stroke="#1A4B56" stroke-width="1.5"/>
+      <!-- Полігон компетенцій (зразок) -->
+      <polygon points="160,35 225,85 210,145 160,175 105,140 100,80" fill="rgba(74, 222, 128, 0.25)" stroke="#4ADE80" stroke-width="2.5"/>
+      <circle cx="160" cy="35" r="4" fill="#4ADE80"/>
+      <circle cx="225" cy="85" r="4" fill="#4ADE80"/>
+      <circle cx="210" cy="145" r="4" fill="#4ADE80"/>
+      <circle cx="160" cy="175" r="4" fill="#4ADE80"/>
+      <circle cx="105" cy="140" r="4" fill="#4ADE80"/>
+      <circle cx="100" cy="80" r="4" fill="#4ADE80"/>
+      <!-- Підписи осей -->
+      <text x="160" y="16" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#7CE2EE">ЕЛЕКТРОНІКА</text>
+      <text x="245" y="70" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="9" fill="#7CE2EE">КОД C++</text>
+      <text x="235" y="165" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="9" fill="#7CE2EE">3D-ДРУК</text>
+      <text x="160" y="212" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#7CE2EE">ВИМІРЮВАННЯ</text>
+      <text x="65" y="165" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9" fill="#7CE2EE">ДЕБАГ</text>
+      <text x="65" y="70" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9" fill="#7CE2EE">БЕЗПЕКА</text>
+    </svg>
+    <figcaption>Твій особистий радар інженерних суперсил за 6 напрямками</figcaption>
+  </figure>
+</header>
+
+<div class="layout">
+  <aside class="toc" aria-label="Зміст уроку">
+    <ol>
+      <li><a href="#s0"><b>0</b>Мета діагностики</a></li>
+      <li><a href="#s1"><b>1</b>Електрика та ланцюги</a></li>
+      <li><a href="#s2"><b>2</b>Логіка та алгоритми</a></li>
+      <li><a href="#s3"><b>3</b>Вимірювання (CAD)</a></li>
+      <li><a href="#s4"><b>4</b>3D-друк і міцність</a></li>
+      <li><a href="#s5"><b>5</b>Пошук несправностей</a></li>
+      <li><a href="#s6"><b>6</b>Безпека майстерні</a></li>
+      <li><a href="#s7"><b>★</b>Твій профіль</a></li>
+      <li><a href="#s8"><b>✓</b>Завершення</a></li>
+    </ol>
+    <div class="meter"><p>Чек-лист: <b id="meter-text">0 з 6</b></p><div class="bar"><span id="meter-bar"></span></div></div>
+  </aside>
+
+  <main>
+    <div class="prose">
+      <p class="lead">Створення Maker-гаджетів — це командна робота. Хтось краще пише алгоритми, хтось проєктує точні корпуси, а хтось розбирається у схемах. Ця діагностика не ставить «двійок» чи «п'ятірок»: її завдання — показати твої природні схильності та допомогти визначити твою роль у підсумковому проєкті.</p>
+    </div>
+
+    <!-- ===== 0 ===== -->
+    <section class="step" id="s0">
+      <div class="step-head"><span class="step-num">0</span><h2>Як влаштовано тест</h2></div>
+      <div class="callout safe">
+        <b>💡 Головне правило</b>
+        <p>Не шукай правильні відповіді навмання. Обирай варіант, у якому є впевненість. Після кожного розділу з'явиться докладне пояснення фізичного явища чи принципу роботи.</p>
+      </div>
+    </section>
+
+    <!-- ===== 1 ===== -->
+    <section class="step" id="s1">
+      <div class="step-head"><span class="step-num">1</span><h2>Компетентність 1: Електричні кола та струм</h2></div>
+      <div class="prose">
+        <p>Мікроконтролер Arduino живиться від напруги <code>5V</code>, а світлодіоди з набору ТЕКО зазвичай витримують струм не більше <code>20 мА</code> (0.02 А).</p>
+      </div>
+
+      <div class="quiz-card" id="q1">
+        <h4>Питання 1.1: Що станеться, якщо підключити звичайний червоний світлодіод до 5V без резистора?</h4>
+        <div class="quiz-opts">
+          <label class="quiz-opt"><input type="radio" name="q1" value="a"> Він світитиметься дуже тьмяно</label>
+          <label class="quiz-opt"><input type="radio" name="q1" value="b"> Через світлодіод пройде надвеликий струм, кристал миттєво перегріється і згорить</label>
+          <label class="quiz-opt"><input type="radio" name="q1" value="c"> Нічого не станеться, оскільки 5V — це безпечна напруга</label>
+        </div>
+        <button class="btn ok-btn btn-check-quiz" data-q="q1" data-correct="b">Перевірити відповідь</button>
+        <div class="quiz-feedback" id="q1-fb"></div>
+      </div>
+    </section>
+
+    <!-- ===== 2 ===== -->
+    <section class="step" id="s2">
+      <div class="step-head"><span class="step-num">2</span><h2>Компетентність 2: Алгоритми та C++ логіка</h2></div>
+      <div class="prose">
+        <p>У мікроконтролерах код виконується циклічно. Подивись на фрагмент коду для кнопки з підтяжкою <code>INPUT_PULLUP</code>:</p>
+      </div>
+      <pre><code>int state = digitalRead(2);
+if (state == LOW) {
+  digitalWrite(13, HIGH);
+} else {
+  digitalWrite(13, LOW);
+}</code></pre>
+
+      <div class="quiz-card" id="q2">
+        <h4>Питання 2.1: Коли загориться світлодіод на піні 13?</h4>
+        <div class="quiz-opts">
+          <label class="quiz-opt"><input type="radio" name="q2" value="a"> Коли кнопку натиснуто (контакт замикається на GND)</label>
+          <label class="quiz-opt"><input type="radio" name="q2" value="b"> Коли кнопку відпущено</label>
+          <label class="quiz-opt"><input type="radio" name="q2" value="c"> Світлодіод горить постійно незалежно від кнопки</label>
+        </div>
+        <button class="btn ok-btn btn-check-quiz" data-q="q2" data-correct="a">Перевірити відповідь</button>
+        <div class="quiz-feedback" id="q2-fb"></div>
+      </div>
+    </section>
+
+    <!-- ===== 3 ===== -->
+    <section class="step" id="s3">
+      <div class="step-head"><span class="step-num">3</span><h2>Компетентність 3: Точні вимірювання та CAD-допуски</h2></div>
+      <div class="prose">
+        <p>Для моделювання корпуса у Tinkercad або Fusion 360 потрібно обміряти плату Arduino штангенциркулем.</p>
+      </div>
+
+      <div class="quiz-card" id="q3">
+        <h4>Питання 3.1: Якщо діаметр гвинта кріплення M3 становить рівно 3.0 мм, який діаметр отвору слід закласти в 3D-моделі для вільного проходження гвинта з урахуванням розширення пластику PLA?</h4>
+        <div class="quiz-opts">
+          <label class="quiz-opt"><input type="radio" name="q3" value="a"> Рівно 3.0 мм (стик у стик)</label>
+          <label class="quiz-opt"><input type="radio" name="q3" value="b"> 2.6 мм (щоб трималося міцніше)</label>
+          <label class="quiz-opt"><input type="radio" name="q3" value="c"> 3.3–3.4 мм (технологічний зазор на усадку та допуск сопла)</label>
+        </div>
+        <button class="btn ok-btn btn-check-quiz" data-q="q3" data-correct="c">Перевірити відповідь</button>
+        <div class="quiz-feedback" id="q3-fb"></div>
+      </div>
+    </section>
+
+    <!-- ===== 4 ===== -->
+    <section class="step" id="s4">
+      <div class="step-head"><span class="step-num">4</span><h2>Компетентність 4: 3D-друк та механічна міцність</h2></div>
+      <div class="prose">
+        <p>FDM-друк на верстаті Snapmaker A350 створює деталь пошарово з розплавленої нитки пластику.</p>
+      </div>
+
+      <div class="quiz-card" id="q4">
+        <h4>Питання 4.1: Деталь у вигляді довгого важеля роборуки відчуває навантаження на злам. Як її правильно орієнтувати на столі принтера?</h4>
+        <div class="quiz-opts">
+          <label class="quiz-opt"><input type="radio" name="q4" value="a"> Покласти плазом уздовж столу, щоб волокна пластику йшли вздовж зусилля</label>
+          <label class="quiz-opt"><input type="radio" name="q4" value="b"> Поставити вертикально, як стовпчик (шари поперек навантаження)</label>
+          <label class="quiz-opt"><input type="radio" name="q4" value="c"> Орієнтація деталі взагалі не впливає на міцність пластику</label>
+        </div>
+        <button class="btn ok-btn btn-check-quiz" data-q="q4" data-correct="a">Перевірити відповідь</button>
+        <div class="quiz-feedback" id="q4-fb"></div>
+      </div>
+    </section>
+
+    <!-- ===== 5 ===== -->
+    <section class="step" id="s5">
+      <div class="step-head"><span class="step-num">5</span><h2>Компетентність 5: Алгоритм пошуку помилок (Troubleshooting)</h2></div>
+      <div class="prose">
+        <p>Ти підключаєш Arduino Uno до комп'ютера, але світлодіод ON не загорівся, а комп'ютер видає звук вимкнення пристрою.</p>
+      </div>
+
+      <div class="quiz-card" id="q5">
+        <h4>Питання 5.1: Яка дія має бути ПЕРШОЮ за правилами безпеки та діагностики?</h4>
+        <div class="quiz-opts">
+          <label class="quiz-opt"><input type="radio" name="q5" value="a"> Спробувати перепрошити плату іншим скетчем</label>
+          <label class="quiz-opt"><input type="radio" name="q5" value="b"> Негайно від'єднати USB-кабель: це симптом короткого замикання (КЗ)</label>
+          <label class="quiz-opt"><input type="radio" name="q5" value="c"> Постукати платою по столу, щоб контакт відновився</label>
+        </div>
+        <button class="btn ok-btn btn-check-quiz" data-q="q5" data-correct="b">Перевірити відповідь</button>
+        <div class="quiz-feedback" id="q5-fb"></div>
+      </div>
+    </section>
+
+    <!-- ===== 6 ===== -->
+    <section class="step" id="s6">
+      <div class="step-head"><span class="step-num">6</span><h2>Компетентність 6: Інженерна безпека в лабораторії</h2></div>
+      <div class="prose">
+        <p>У нашій лабораторії працюють 3D-принтери з гарячими соплами (205–250°C), лазерні модулі та рухомі лінійні модулі Snapmaker A350.</p>
+      </div>
+
+      <div class="quiz-card" id="q6">
+        <h4>Питання 6.1: Що суворо заборонено робити під час активного руху осей верстата Snapmaker?</h4>
+        <div class="quiz-opts">
+          <label class="quiz-opt"><input type="radio" name="q6" value="a"> Спостерігати за друком крізь захисні дверцята Enclosure</label>
+          <label class="quiz-opt"><input type="radio" name="q6" value="b"> Засовувати руки в робочу зону верстата та торкатися сопла чи напрямних</label>
+          <label class="quiz-opt"><input type="radio" name="q6" value="c"> Перевіряти температуру на сенсорному екрані контролера</label>
+        </div>
+        <button class="btn ok-btn btn-check-quiz" data-q="q6" data-correct="b">Перевірити відповідь</button>
+        <div class="quiz-feedback" id="q6-fb"></div>
+      </div>
+    </section>
+
+    <!-- Рубрика: Де це працює в реальному залізі -->
+    <div class="callout hardware">
+      <b>🔗 Де це працює в реальному залізі</b>
+      <p>Сучасна інженерія — це синтез дисциплін. У провідних R&D-лабораторіях (Boston Dynamics, SpaceX, виробники БПЛА):</p>
+      <ul>
+        <li><strong>Міждисциплінарний розподіл:</strong> 3D-конструктор повинен розуміти розміри плати та тепловиділення компонентів, а програміст мікроконтролерів — знати фізику роботи приводів та допустимі навантаження на пластик.</li>
+        <li><strong>Культура відмовостійкості:</strong> перш ніж запускати серію або дорогий дослідний зразок, перевіряють усі ланцюги живлення на КЗ, оскільки одна помилка в полярності спалює рідкісні чипи.</li>
+      </ul>
+    </div>
+
+    <!-- AI Callout -->
+    <div class="callout ai">
+      <b>🤖 Спитай ШІ як персонального ментора</b>
+      <p>Отримай пораду щодо розвитку слабких або сильних сторін за підсумком діагностики:</p>
+      <div class="prompt-box">
+        <p id="ai-prompt-m0-l02"><em>«Я проходжу вхідну діагностику в мейкер-лабораторії коледжу. Я добре розумію 3D-друк та моделювання, але маю труднощі з кодом Arduino C++ та електричними схемами. Склади для мене план із 3 практичних вправ для швидкого старту.»</em></p>
+        <button class="copy-btn" data-target="ai-prompt-m0-l02">📋 Скопіювати промпт</button>
+      </div>
+    </div>
+
+    <!-- ===== 7 ===== -->
+    <section class="step" id="s7">
+      <div class="step-head"><span class="step-num bonus">★</span><h2>Підсумок: Твій інженерний профіль</h2></div>
+      <div class="diag-radar-wrap">
+        <div>
+          <svg class="diag-radar-svg" id="result-radar-svg" viewBox="0 0 240 240" role="img">
+            <circle cx="120" cy="120" r="90" fill="none" stroke="#1E5460" stroke-width="1" stroke-dasharray="3,3"/>
+            <circle cx="120" cy="120" r="60" fill="none" stroke="#1E5460" stroke-width="1" stroke-dasharray="3,3"/>
+            <circle cx="120" cy="120" r="30" fill="none" stroke="#1E5460" stroke-width="1"/>
+            <polygon id="radar-poly" points="120,120 120,120 120,120 120,120 120,120 120,120" fill="rgba(74, 222, 128, 0.3)" stroke="#4ADE80" stroke-width="2"/>
+            <text x="120" y="20" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#7CE2EE">ЕЛЕКТРОНІКА</text>
+            <text x="210" y="70" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="8" fill="#7CE2EE">КОД C++</text>
+            <text x="210" y="180" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="8" fill="#7CE2EE">3D-ДРУК</text>
+            <text x="120" y="230" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#7CE2EE">ВИМІРЮВАННЯ</text>
+            <text x="30" y="180" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8" fill="#7CE2EE">ДЕБАГ</text>
+            <text x="30" y="70" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8" fill="#7CE2EE">БЕЗПЕКА</text>
+          </svg>
+        </div>
+        <div class="diag-role-card">
+          <div style="font-family:var(--mono);font-size:11px;color:#7CE2EE;margin-bottom:4px">РЕКОМЕНДОВАНА ПРОЄКТНА РОЛЬ</div>
+          <h4 id="role-title">Пройди всі 6 питань для розрахунку</h4>
+          <p id="role-desc">Після проходження всіх питань тут з'явиться аналіз твоїх сильних сторін для вибору фінального Maker-проєкту в Модулі 4.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 8 ===== -->
+    <section class="step" id="s8">
+      <div class="step-head"><span class="step-num final">✓</span><h2>Завершення: збережи свій успіх</h2></div>
+      <p><strong>Обов'язково для проходження уроку</strong></p>
+      <ul class="checklist">
+        <li><label><input type="checkbox" class="check" data-key="circuits" disabled><span>Пройдено блок 1: Електричні кола та закон Ома</span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="code" disabled><span>Пройдено блок 2: Логіка мікроконтролера та C++</span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="cad" disabled><span>Пройдено блок 3: Вимірювання та інженерні допуски</span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="print" disabled><span>Пройдено блок 4: 3D-друк та орієнтація шарів</span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="debug" disabled><span>Пройдено блок 5: Діагностика короткого замикання (КЗ)</span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="safety" disabled><span>Пройдено блок 6: Безпека роботи з верстатами</span></label></li>
+      </ul>
+
+      <div class="done-row">
+        <button class="btn-done" id="done-btn">Позначити урок пройденим</button>
+        <span id="done-hint"></span>
+      </div>
+
+      <div class="callout next">
+        <b>У наступному уроці</b>
+        <p>Тепер, коли стартовий рівень зрозумілий, час підготувати робоче місце: встановити Arduino IDE 2.x, налаштувати порт та драйвер CH340 для плати ТЕКО.</p>
+        <p><a href="lesson-setup.html">Перейти до Уроку 0.3: Налаштування IDE →</a></p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>КПКТА імені Бадрі Лолашвілі · Курс «Адаптивна цифрова майстерня» · 2026</footer>
+
+<script src="../../assets/lesson.js"></script>
+<script>
+(function() {
+  "use strict";
+  var scores = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0 };
+  var checkKeys = {
+    q1: "circuits",
+    q2: "code",
+    q3: "cad",
+    q4: "print",
+    q5: "debug",
+    q6: "safety"
+  };
+
+  // Пояснення відповідей
+  var explanations = {
+    q1: {
+      ok: "Правильно! Без струмообмежувального резистора внутрішній опір світлодіода дуже малий, що призводить до струму понад 100 мА і теплового пробою кристала.",
+      err: "Неправильно. Напруга 5V вища за пряме падіння напруги на червоному світлодіоді (близько 2.0V). Без резистора струм перевищить допустимий у 5-10 разів, і кристал згорить."
+    },
+    q2: {
+      ok: "Правильно! У режимі INPUT_PULLUP пін підтягнутий до 5V резистором. Натискання кнопки з'єднує його з GND (0V, LOW).",
+      err: "Зверни увагу на умову: if (state == LOW). При підтяжці INPUT_PULLUP ненатиснута кнопка видає HIGH, а натиснута замикає пін на GND, тобто дає LOW."
+    },
+    q3: {
+      ok: "Правильно! Сопло 0.4 мм дещо розплющує пластик, через що внутрішні отвори виходять на 0.2-0.3 мм вужчими за модель. Зазор 3.3-3.4 мм дає вільний хід гвинта M3.",
+      err: "Увага: у 3D-друці отвір діаметром 3.0 мм надрукується приблизно 2.7-2.8 мм через розширення нитки, тому гвинт М3 не пролізе без свердління."
+    },
+    q4: {
+      ok: "Правильно! Анізотропія міцності: спайка між шарами Z завжди слабша на 30-50%, ніж монолітна нитка, покладена в площині XY.",
+      err: "Якщо надрукувати деталь вертикально, шари підуть перпендикулярно важелю. При першому ж навантаженні важіль розколеться по межі шарів."
+    },
+    q5: {
+      ok: "Правильно! Звук відключення USB і згаслий світлодіод ON — ознака спрацьовування захисту комп'ютера від перевантаження по струму (КЗ). Потрібно миттєво знеструмити схему.",
+      err: "Перепрошивка не допоможе при апаратному короткому замиканні! Необхідно негайно вийняти кабель, щоб не пошкодити USB-порт комп'ютера."
+    },
+    q6: {
+      ok: "Правильно! Сопло нагріте до 205-250°C, а лінійні модулі мають великий крутний момент і здатні травмувати пальці.",
+      err: "Категорично заборонено торкатися рухомих частин і гарячого сопла! Це призводить до серйозних опіків та механічних травм."
+    }
+  };
+
+  document.querySelectorAll(".btn-check-quiz").forEach(function(btn) {
+    btn.onclick = function() {
+      var qId = btn.getAttribute("data-q");
+      var correct = btn.getAttribute("data-correct");
+      var selected = document.querySelector('input[name="' + qId + '"]:checked');
+      var fb = document.getElementById(qId + "-fb");
+      if (!selected) {
+        fb.className = "quiz-feedback show err";
+        fb.textContent = "Будь ласка, обери варіант відповіді перед перевіркою!";
+        return;
+      }
+
+      var isOk = (selected.value === correct);
+      scores[qId] = isOk ? 1 : 0.5; // навіть за спробу з помилкою зараховується база
+      fb.className = "quiz-feedback show " + (isOk ? "ok" : "err");
+      fb.textContent = isOk ? explanations[qId].ok : explanations[qId].err;
+
+      // Автоматичне проставлення чек-бокса в завершальному чек-листі
+      var cKey = checkKeys[qId];
+      var chk = document.querySelector('input.check[data-key="' + cKey + '"]');
+      if (chk) {
+        chk.disabled = false;
+        chk.checked = true;
+        chk.dispatchEvent(new Event("change"));
+      }
+
+      updateRadar();
+    };
+  });
+
+  function updateRadar() {
+    var total = 0;
+    var count = 0;
+    var keys = ["q1", "q2", "q3", "q4", "q5", "q6"];
+    keys.forEach(function(k) {
+      if (scores[k] > 0) count++;
+      total += scores[k];
+    });
+
+    // Оновлення радарного полігону SVG
+    var poly = document.getElementById("radar-poly");
+    if (poly) {
+      // 6 точок радара (центр 120, 120, радіус до 85)
+      var cx = 120, cy = 120, maxR = 85;
+      var angles = [-90, -30, 30, 90, 150, 210]; // 6 осей у градусах
+      var pts = [];
+      angles.forEach(function(deg, idx) {
+        var rad = deg * Math.PI / 180;
+        var qKey = keys[idx];
+        var val = scores[qKey] || 0.2; // базовий мінімум
+        var r = maxR * val;
+        var x = cx + r * Math.cos(rad);
+        var y = cy + r * Math.sin(rad);
+        pts.push(Math.round(x) + "," + Math.round(y));
+      });
+      poly.setAttribute("points", pts.join(" "));
+    }
+
+    if (count === 6) {
+      var roleTitle = document.getElementById("role-title");
+      var roleDesc = document.getElementById("role-desc");
+      if (roleTitle && roleDesc) {
+        if (scores.q2 === 1 && scores.q1 === 1) {
+          roleTitle.textContent = "Embedded & Firmware Engineer (Програміст мікроконтролерів)";
+          roleDesc.textContent = "У тебе чудово розвинене алгоритмічне мислення та розуміння фізики сигналів. Твоя ідеальна роль у фінальній команді — архітектура коду, взаємодія з датчиками та дебаг логіки.";
+        } else if (scores.q3 === 1 && scores.q4 === 1) {
+          roleTitle.textContent = "Mechanical & CAD Specialist (3D-конструктор пристроїв)";
+          roleDesc.textContent = "Твоя сильна сторона — просторова уява, інженерні допуски та адитивне виробництво. Ти зможеш спроєктувати міцний корпус і рухомі механізми маніпулятора під верстат Snapmaker A350.";
+        } else {
+          roleTitle.textContent = "Systems Integrator & QA (Системний інженер / Схемотехнік)";
+          roleDesc.textContent = "Твій козир — уважність до деталей, діагностика помилок та комплексний підхід до безпеки. Ти зможеш зібрати пристрій без коротких замикань і скоординувати команду.";
+        }
+      }
+    }
+  }
+})();
+</script>
+</body>
+</html>

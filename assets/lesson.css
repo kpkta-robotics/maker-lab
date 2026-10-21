@@ -208,7 +208,83 @@ figure.fig figcaption { font-size: 15px; color: var(--muted); margin-top: 10px; 
 .done-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 24px 0; }
 .btn-done { font: 600 16px var(--body); color: #fff; background: var(--ok); border: 0; border-radius: 10px; padding: 12px 20px; cursor: pointer; }
 .btn-done:disabled { background: #A7B6B3; cursor: not-allowed; }
-.done-row span { color: var(--muted); font-size: 15px; }
+/* ---------- Maker Artifact Box (Для гуртка та самостійної роботи) ---------- */
+.maker-artifact-box {
+  margin: 24px 0 16px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--copper);
+  border-radius: var(--radius-s);
+  max-width: 720px;
+}
+.artifact-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.artifact-head b {
+  color: var(--copper);
+  font-size: 15px;
+}
+.artifact-tag {
+  font: 600 11.5px var(--mono);
+  background: #FEF7EE;
+  color: var(--copper);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.artifact-sub {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.artifact-input {
+  width: 100%;
+  min-height: 65px;
+  padding: 10px 12px;
+  font: 14px var(--body);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  resize: vertical;
+  outline: none;
+  background: #FAFCFB;
+}
+.artifact-input:focus {
+  border-color: var(--pcb);
+  background: #FFF;
+  box-shadow: 0 0 0 3px rgba(14, 102, 115, .12);
+}
+.artifact-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.btn-copy-lesson-report {
+  font: 600 13px var(--body);
+  background: #E8F2F1;
+  color: var(--pcb-deep);
+  border: 1px solid #B8D6D4;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-copy-lesson-report:hover {
+  background: var(--pcb);
+  color: #FFF;
+  border-color: var(--pcb);
+}
+.artifact-saved-hint {
+  font-size: 12.5px;
+  color: var(--ok);
+  font-weight: 500;
+}
 
 footer { border-top: 1px solid var(--line); padding: 24px; text-align: center; font-size: 14px; color: var(--muted); }
 

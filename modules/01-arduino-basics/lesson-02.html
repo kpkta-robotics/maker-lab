@@ -3,348 +3,461 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Урок 02 — Кнопка та цифровий вхід (INPUT_PULLUP) | Адаптивна цифрова майстерня</title>
-<link rel="stylesheet" href="../../assets/style.css">
+<title>Урок 1.2: Кнопка та INPUT_PULLUP | Адаптивна цифрова майстерня</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Унікальні стилі уроку кнопки */
+.hero { max-width: 1240px; margin: 0 auto; padding: 24px 24px 56px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.hero .kicker { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+.hero h1 { font-size: clamp(34px, 5.5vw, 60px); font-weight: 700; margin: 0 0 20px; line-height: 1.15; }
+.hero .promise { font-size: 20px; line-height: 1.5; max-width: 32ch; margin: 0 0 28px; }
+.hero-board svg { width: 100%; height: auto; filter: drop-shadow(0 18px 28px rgba(12, 42, 49, .22)); }
+
+/* Лабораторія тактової кнопки */
+.btn-sim-stage { padding: 20px; display: flex; flex-direction: column; gap: 16px; background: var(--pcb-deep); border-radius: 12px; }
+.btn-interactive-row { display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: center; background: var(--pcb-panel); padding: 18px; border-radius: 10px; }
+@media (max-width: 700px) { .btn-interactive-row { grid-template-columns: 1fr; justify-items: center; } }
+.push-big-btn { width: 90px; height: 90px; border-radius: 50%; background: #1B2226; border: 4px solid #3B464C; position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; touch-action: manipulation; transition: transform .05s, border-color .15s; outline: none; }
+.push-big-btn .cap { width: 62px; height: 62px; border-radius: 50%; background: #E5383B; box-shadow: 0 6px 0 #991B1B, 0 10px 16px rgba(0,0,0,0.4); transition: transform .05s, box-shadow .05s; }
+.push-big-btn:active .cap, .push-big-btn.pressed .cap { transform: translateY(5px); box-shadow: 0 1px 0 #991B1B, 0 4px 8px rgba(0,0,0,0.4); background: #DC2626; }
+.pin-telemetry { font-family: var(--mono); font-size: 13px; line-height: 1.6; }
+.pin-telemetry b { font-size: 15px; color: #7CE2EE; }
+.led-box-indicator { width: 50px; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.bulb-lamp { width: 36px; height: 36px; border-radius: 50%; background: #5B2C2C; transition: background .1s, box-shadow .1s; }
+.bulb-lamp.lit { background: #FF5A5C; box-shadow: 0 0 20px rgba(255, 90, 92, 0.8); }
+
+/* Тренажер брязкоту контактів */
+.bounce-stage { background: var(--pcb-panel); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.wave-svg { width: 100%; height: 90px; background: #06171B; border-radius: 6px; }
+</style>
+<link rel="stylesheet" href="../../assets/lesson.css">
 </head>
 <body data-lesson="m1-l02" data-root="../../">
 
-<header class="site-header">
-  <div class="wrap">
-    <div class="crumbs" id="crumbs"></div>
-    <h1>УРОК 02 · Кнопка та цифровий вхід (INPUT_PULLUP)</h1>
-    <p>Навчимо плату відчувати дотик людини. Створюємо кишеньковий ліхтарик, розумний вимикач і дізнаємося, чому кнопка без підтяжки перетворюється на радіоантену.</p>
-    <div class="meta">
-      <span class="pill">⏱ ~50 хв</span>
-      <span class="pill">🧠 Базується на Уроці 01</span>
-      <span class="pill">💻 Симулятор Wokwi або набір ТЕКО</span>
-    </div>
+<nav class="topbar" aria-label="Навігація курсом">
+  <div class="crumbs">
+    <a href="../../index.html">Карта курсу</a>
+    <span aria-hidden="true">/</span>
+    <span>Модуль 1. Основи Arduino</span>
+    <span aria-hidden="true">/</span>
+    <span class="crumb-current">Урок 1.2</span>
   </div>
-</header>
-
-<main>
-
-  <!-- ===== ГАЧОК ===== -->
-  <p class="lead">В Уроці 01 плата лише віддавала накази: <em>«увімкни світло — зачекай — вимкни»</em>. Вона була схожа на заведений механічний годинник, який нічого не бачить навколо.</p>
-  <p class="lead">Справжня магія мікроконтролерів починається тоді, коли пристрій починає <strong>відчувати зовнішній світ</strong>. Сьогодні ти під'єднаєш до Arduino кнопку й навчиш плату реагувати на команду людини. Але тут на тебе чекає головний сюрприз електроніки: звичайна кнопка вимагає особливого підходу!</p>
-
-  <div class="box ok">
-    <div class="box-title">🛡 Лабораторія без страху</div>
-    У симуляторі Wokwi ти можеш експериментувати з будь-якими контактами та режимами. Жодна деталь не перегорить і нічого не зіпсується.
+  <div class="topbar-actions">
+    <a class="chip-btn" href="../../index.html">← До карти курсу</a>
   </div>
+</nav>
 
-  <!-- ===== КРОК 0 ===== -->
-  <div class="step"><span class="num">0</span><h2>Спробуй прямо тут: віртуальна тактова кнопка</h2></div>
-  <p>Потренуйся на інтерактивному стенді нижче. Затисни червону кнопку мишкою або торкнися пальцем на смартфоні. Зверни увагу, як змінюється напруга на вході піна!</p>
-
-  <div class="buttonsim" id="buttonsim">
-    <div class="buttonsim-stage">
-      <div class="push-btn-box">
-        <button class="push-btn" id="sim-btn" tabindex="0">
-          <div class="btn-cap"></div>
-        </button>
-        <div style="font-size:0.85rem;color:#94a3b8">Тисни або затискай мене</div>
-      </div>
-
-      <div class="pin-monitor">
-        <div style="color:#38bdf8;font-weight:700;margin-bottom:6px">Пін 2 (INPUT_PULLUP):</div>
-        <div id="sim-pin-val"><span class="val high">HIGH (5V / PULLUP)</span></div>
-        <div style="margin-top:10px;color:#cbd5e1;font-size:0.85rem">Стан світлодіода (Пін 13):</div>
-        <div id="sim-led-state" style="font-weight:700;color:#94a3b8">НЕ СВІТИТЬСЯ (LOW)</div>
-      </div>
-
-      <div class="ledsim-stage" style="padding:0">
-        <div class="led" id="sim-btn-led"></div>
-      </div>
-    </div>
-
-    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-      <button class="btn" id="mode-momentary">Режим 1: Світить поки тримаєш (Тактовий)</button>
-      <button class="btn alt" id="mode-toggle">Режим 2: Клік — увімкнув, клік — вимкнув (Тригер)</button>
-    </div>
-
-    <pre id="sim-btn-code"></pre>
-    <div style="font-size:0.85rem;color:#94a3b8;margin-top:8px">💡 <strong>Чому при натисканні з'являється LOW, а не HIGH?</strong> Читаємо пояснення нижче!</div>
+<section class="hero">
+  <div>
+    <p class="kicker">МОДУЛЬ 1 · ОСНОВИ ARDUINO · УРОК 02</p>
+    <h1>Кнопка та цифровий вхід (INPUT_PULLUP)</h1>
+    <p class="promise">Навчимо плату відчувати дотик людини. Збираємо розумний ліхтарик, дізнаємося таємницю підтягувального резистора та приборкуємо брязкіт контактів.</p>
+    <ul class="facts">
+      <li>⏱ 50 хвилин</li>
+      <li>🧠 Базується на Уроці 01</li>
+      <li>💻 Симулятор Wokwi або набір ТЕКО</li>
+    </ul>
   </div>
 
-  <div class="box mission">
-    <div class="box-title">🎯 Твоя інженерна місія на сьогодні</div>
-    <ol style="margin:6px 0 0 18px;padding:0">
-      <li>Зібрати в симуляторі схему з тактовою кнопкою та світлодіодом усього за <strong>2 дроти</strong> без зовнішніх резисторів.</li>
-      <li>Дізнатися таємницю режиму <code>INPUT_PULLUP</code> і чому без нього пін починає "ловити радіостанції".</li>
-      <li>Написати код для розумного ліхтарика та вимикача-тригера.</li>
-    </ol>
-  </div>
-
-  <h3>📖 Інженерний словничок уроку</h3>
-  <dl class="glossary">
-    <dt>INPUT (Вхід)</dt>
-    <dd>Режим піна, коли Arduino слухає зовнішній сигнал (як вухо людини), а не подає струм.</dd>
-
-    <dt>INPUT_PULLUP (Вхід із підтягуванням)</dt>
-    <dd>Спеціальний режим Arduino: мікроконтролер сам підключає всередині чипа крихітний резистор до +5V. Коли кнопку відпущено — на вході стабільні 5 вольт (<code>HIGH</code>). Коли кнопку натискають і замикають на GND — струм стікає в землю і на вході стає 0 вольт (<code>LOW</code>).</dd>
-
-    <dt>digitalRead(pin)</dt>
-    <dd>Команда прочитати цифровий стан: повертає або <code>HIGH</code> (є напруга), або <code>LOW</code> (напруги немає / 0V).</dd>
-
-    <dt>Зворотна логіка (Active LOW)</dt>
-    <dd>Логіка роботи, коли активна дія (натискання) відповідає сигналу <code>LOW</code>, а спокій — <code>HIGH</code>.</dd>
-
-    <dt>Брязкіт контактів (Contact Bounce)</dt>
-    <dd>Механічна особливість будь-якої кнопки: коли металеві пластинки стикаються, вони мікроскопічно пружинять кілька мілісекунд, викликаючи 10–50 хибних натискань за мить.</dd>
-  </dl>
-
-  <!-- ===== КРОК 1 ===== -->
-  <div class="step"><span class="num">1</span><h2>Головна пастка кнопки: проблема «плаваючого входу»</h2></div>
-  <p>Здавалося б, підключити кнопку найпростіше: подати 5V через кнопку на пін Arduino. Натиснув — пішло 5V, відпустив — нічого не йде. Але в мікроконтролерах <strong>«нічого не йде» не означає 0 Вольт!</strong></p>
-
-  <div class="box warn">
-    <div class="box-title">⚡ Що таке плаваючий стан (Floating Pin)?</div>
-    Коли контакт кнопки розімкнений, пін Arduino висить у повітрі, як крихітна радіоантена. Він починає ловити електромагнітні наведення з кімнати, статичний заряд від твоїх пальців і випадково перемикатися між 0 і 1 сотні разів на секунду! Світлодіод блиматиме хаотично, навіть якщо кнопку ніхто не чіпає.
-  </div>
-
-  <p>Щоб цього уникнути, інженери минулого ставили додатковий <strong>підтягувальний резистор (Pull-up)</strong> на 10 кОм. Але розробники Arduino зробили подарунок: <strong>цей резистор уже вмонтований усередині процесора!</strong> Достатньо лише вказати в коді чарівне слово <code>INPUT_PULLUP</code>.</p>
-
-  <div class="figure">
-    <svg viewBox="0 0 540 200" width="100%" height="auto" style="max-width:540px;background:#f8fafc;border-radius:8px">
-      <!-- Arduino Chip side -->
-      <rect x="20" y="20" width="190" height="160" rx="10" fill="#0369a1" />
-      <text x="115" y="50" fill="#fff" font-weight="bold" text-anchor="middle" font-size="14">Arduino (всередині)</text>
-      <text x="115" y="75" fill="#bae6fd" text-anchor="middle" font-size="12">+5V живлення</text>
-      <!-- Resistor -->
-      <rect x="95" y="85" width="40" height="16" fill="#f59e0b" stroke="#b45309" stroke-width="1.5" />
-      <text x="115" y="97" fill="#000" font-weight="bold" text-anchor="middle" font-size="9">~30 кОм</text>
-      <line x1="115" y1="78" x2="115" y2="85" stroke="#38bdf8" stroke-width="3" />
-      <line x1="115" y1="101" x2="115" y2="135" stroke="#38bdf8" stroke-width="3" />
-      <!-- Pin Out -->
-      <circle cx="210" cy="135" r="7" fill="#38bdf8" stroke="#0284c7" stroke-width="2" />
-      <text x="180" y="130" fill="#fff" font-size="12" font-weight="bold">Пін 2</text>
-      
-      <!-- External wire -->
-      <line x1="217" y1="135" x2="310" y2="135" stroke="#0284c7" stroke-width="4" />
-      
-      <!-- Button -->
-      <rect x="310" y="105" width="80" height="60" rx="8" fill="#334155" />
-      <circle cx="350" cy="135" r="14" fill="#e11d48" />
-      <text x="350" y="95" fill="#1e293b" font-size="12" font-weight="bold" text-anchor="middle">Тактова кнопка</text>
-      
-      <!-- Ground wire -->
-      <line x1="390" y1="135" x2="470" y2="135" stroke="#0f172a" stroke-width="4" />
-      <rect x="470" y="120" width="50" height="30" rx="4" fill="#0f172a" />
-      <text x="495" y="140" fill="#fff" font-weight="bold" text-anchor="middle" font-size="12">GND</text>
-      
-      <!-- Annotation -->
-      <text x="270" y="185" fill="#475569" font-size="11" text-anchor="middle">Натиснуто = замкнено на GND (LOW) | Відпущено = підтягнуто до 5V (HIGH)</text>
+  <figure class="hero-board">
+    <svg viewBox="0 0 520 240" role="img" aria-label="Схема підключення кнопки з внутрішньою підтяжкою INPUT_PULLUP">
+      <!-- Плата -->
+      <rect x="10" y="10" width="500" height="220" rx="12" fill="#0C2A31" stroke="#0E6673" stroke-width="2"/>
+      <!-- Внутрішня зона MCU -->
+      <g transform="translate(25, 30)">
+        <rect width="210" height="175" rx="8" fill="#11353E" stroke="#1E7E8C" stroke-width="1.5"/>
+        <text x="105" y="30" fill="#7CE2EE" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" text-anchor="middle">ВНУТРІШНІСТЬ ATmega328P</text>
+        <text x="105" y="55" fill="#38BDF8" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" text-anchor="middle">+5V Внутрішня шина</text>
+        <!-- Резистор ~30кОм -->
+        <rect x="85" y="70" width="40" height="18" rx="3" fill="#F59E0B" stroke="#B45309" stroke-width="1.5"/>
+        <text x="105" y="83" fill="#451A03" font-family="JetBrains Mono, monospace" font-size="10" font-weight="800" text-anchor="middle">30 кОм</text>
+        <line x1="105" y1="58" x2="105" y2="70" stroke="#38BDF8" stroke-width="2.5"/>
+        <line x1="105" y1="88" x2="105" y2="135" stroke="#38BDF8" stroke-width="2.5"/>
+        <!-- Пін 2 -->
+        <circle cx="210" cy="135" r="8" fill="#38BDF8" stroke="#0284C7" stroke-width="2"/>
+        <text x="175" y="130" fill="#FFFFFF" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">Пін 2</text>
+      </g>
+      <!-- Синій провід до кнопки -->
+      <path d="M 235 165 H 320" stroke="#0284C7" stroke-width="4" fill="none"/>
+      <!-- Кнопка -->
+      <g transform="translate(320, 130)">
+        <rect width="70" height="55" rx="6" fill="#1E293B" stroke="#475569" stroke-width="2"/>
+        <circle cx="35" cy="27" r="16" fill="#E5383B"/>
+        <text x="35" y="-8" fill="#F2F5F4" font-family="Golos Text, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Кнопка</text>
+      </g>
+      <!-- Чорний провід до GND -->
+      <path d="M 390 165 H 460" stroke="#64748B" stroke-width="4" fill="none"/>
+      <rect x="460" y="148" width="45" height="34" rx="4" fill="#06171B" stroke="#334155" stroke-width="1.5"/>
+      <text x="482" y="170" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" text-anchor="middle">GND</text>
+      <!-- Пояснювальний напис -->
+      <text x="260" y="222" fill="#A9C6CA" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle">НАТИСНУТО = 0V (LOW) · ВІДПУЩЕНО = 5V (HIGH) · БЕЗ ЗОВНІШНІХ РЕЗИСТОРІВ</text>
     </svg>
-    <figcaption>Схема роботи INPUT_PULLUP: внутрішній резистор тримає 5V, поки кнопку не замкнуть на «землю» (GND)</figcaption>
-  </div>
+  </figure>
+</section>
 
-  <!-- ===== КРОК 2 ===== -->
-  <div class="step"><span class="num">2</span><h2>Збираємо схему у Wokwi (Всього 2 дроти!)</h2></div>
-  <p>Завдяки режиму <code>INPUT_PULLUP</code> схема підключення кнопки стає найпростішою у світі:</p>
+<div class="layout">
+  <aside class="toc" aria-label="Зміст заняття">
+    <div class="toc-sticky">
+      <p class="toc-title">Зміст заняття</p>
+      <ol>
+        <li><a href="#s1" class="active"><b>01</b> Відчуття світу (Вхід)</a></li>
+        <li><a href="#s2"><b>02</b> Лабораторія тактової кнопки</a></li>
+        <li><a href="#s3"><b>03</b> Пастка «плаваючого входу»</a></li>
+        <li><a href="#s4"><b>04</b> Збірка схеми у Wokwi</a></li>
+        <li><a href="#s5"><b>05</b> Перший код: Ліхтарик</a></li>
+        <li><a href="#s6"><b>06</b> Брязкіт контактів та тригер</a></li>
+        <li><a href="#s7"><b>07</b> AI-ментор: Дебаунс</a></li>
+        <li><a href="#s8"><b>08</b> Чек-ліст та міст до 3D-друку</a></li>
+      </ol>
+      <div class="meter">
+        <div class="meter-head">
+          <span>Прогрес уроку</span>
+          <b id="meter-val">0%</b>
+        </div>
+        <div class="meter-bar"><span id="meter-fill" style="width:0%"></span></div>
+      </div>
+    </div>
+  </aside>
 
-  <ol>
-    <li>Відкрий свій збережений проєкт із першого уроку або створіть новий: <a href="https://wokwi.com/projects/new/arduino-uno" target="_blank" rel="noopener">Wokwi: Arduino Uno</a>.</li>
-    <li>Натисни кнопку <strong>«+»</strong> угорі по центру екрана та обери компонент <strong>Pushbutton</strong> (кнопка).</li>
-    <li>З'єднай дротами:
-      <ul>
-        <li>Один контакт кнопки (наприклад, <strong>1.l</strong>) з'єднай із цифровим піном <strong>2</strong> на Arduino (вибери синій або зелений дріт).</li>
-        <li>Протилежний контакт кнопки (наприклад, <strong>2.l</strong>) з'єднай із піном <strong>GND</strong> на Arduino (чорний дріт).</li>
-      </ul>
-    </li>
-    <li>Світлодіод на піні <strong>13</strong> у нас уже є (використовуємо вбудований світлодіод <code>LED_BUILTIN</code> або свій світлодіод із резистором з Уроку 01).</li>
-  </ol>
+  <main>
+    <!-- Крок 01 -->
+    <section class="step" id="s1">
+      <div class="step-head">
+        <span class="step-num">01</span>
+        <div>
+          <h2>Вхідний сигнал: як мікроконтролер відчуває зовнішній світ</h2>
+          <p class="sub-lead">Перехід від сліпого виконання команд до реагування на дію людини.</p>
+        </div>
+      </div>
 
-  <!-- ===== КРОК 3 ===== -->
-  <div class="step"><span class="num">3</span><h2>Перший код: Кишеньковий ліхтарик</h2></div>
-  <p>Давай напишемо програму: світлодіод вмикається, коли ми натискаємо й утримуємо кнопку, і гасне, коли відпускаємо.</p>
+      <p>В Уроці 01 плата лише віддавала накази у зовнішній світ: <em>«увімкни світлодіод → зачекай → вимкни»</em>. Вона працювала як заведений годинник, не помічаючи, що відбувається навколо.</p>
+      <p>Справжні інженерні пристрої (від кнопки вмикання смартфона до датчиків паркування авто чи кінцевиків 3D-принтера) починаються з <strong>цифрових входів (INPUT)</strong>. Сьогодні ми під'єднаємо до Arduino кнопку й навчимо плату фіксувати натискання. Але звичайна кнопка вимагає розуміння важливого фізичного явища!</p>
 
-  <div class="codewrap">
-    <button class="copy-btn" data-target="code-button-basic">Копіювати</button>
-<pre id="code-button-basic">// Урок 02: Проста кнопка з INPUT_PULLUP
-const int BUTTON_PIN = 2;   // Кнопка підключена до піна 2
-const int LED_PIN = 13;     // Світлодіод підключений до піна 13
+      <div class="callout safe">
+        <b>💡 Де це застосовується у верстаті Snapmaker A350:</b>
+        <p>Кінцеві вимикачі (Endstops), які визначають нульову точку сопла 3D-принтера по осях X, Y, Z перед кожним друком — це точно такі ж тактові кнопки, підключені в режимі <code>INPUT_PULLUP</code>! Коли металева каретка доїжджає до краю осі, вона натискає кнопку й замикає вхід на землю (GND).</p>
+      </div>
+    </section>
+
+    <!-- Крок 02 -->
+    <section class="step" id="s2">
+      <div class="step-head">
+        <span class="step-num">02</span>
+        <div>
+          <h2>Лабораторія 1: Віртуальна кнопка та зворотна логіка</h2>
+          <p class="sub-lead">Затисни червону кнопку мишкою або пальцем на екрані та подивись на показники піна.</p>
+        </div>
+      </div>
+
+      <div class="lab">
+        <div class="lab-head">
+          <div>
+            <h3>Інтерактивний стенд: Тактова кнопка + Пін 2 (INPUT_PULLUP)</h3>
+            <p>Обирай режим: «Тактовий» (світить поки тримаєш) або «Тригер» (клік — увімкнув, клік — вимкнув).</p>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn-primary" id="mode-momentary" type="button" style="padding:6px 12px;font-size:12px">Режим 1: Тактовий</button>
+            <button class="chip-btn" id="mode-toggle" type="button" style="padding:6px 12px;font-size:12px">Режим 2: Тригер</button>
+          </div>
+        </div>
+
+        <div class="btn-sim-stage">
+          <div class="btn-interactive-row">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div class="push-big-btn" id="sim-push-btn" tabindex="0">
+                <div class="cap"></div>
+              </div>
+              <small style="color:#94A3B8;font-family:var(--mono);font-size:11px">Затисни кнопку</small>
+            </div>
+
+            <div class="pin-telemetry">
+              <div>Вхідний пін 2: <b id="pin-readout" style="color:#4ADE80">HIGH (5V / Підтягнуто)</b></div>
+              <div style="margin-top:6px">Стан світлодіода (Пін 13): <b id="led-readout" style="color:#94A3B8">LOW (Не світиться)</b></div>
+              <div style="margin-top:6px;color:#8FB0B4;font-size:12px">Активний режим: <span id="mode-label" style="color:#F2F5F4">Тактовий ліхтарик</span></div>
+            </div>
+
+            <div class="led-box-indicator">
+              <div class="bulb-lamp" id="sim-bulb"></div>
+              <span style="font-family:var(--mono);font-size:10px;color:#8FB0B4;margin-top:6px">LED 13</span>
+            </div>
+          </div>
+
+          <pre id="sim-code-preview" style="background:#06171B;padding:12px;border-radius:6px;font-family:var(--mono);font-size:12px;color:#CFE6E5;margin:0;overflow-x:auto">// Натискання замикає пін 2 на GND:
+if (digitalRead(2) == LOW) {
+  digitalWrite(13, HIGH); // Світиться
+} else {
+  digitalWrite(13, LOW);  // Гасне
+}</pre>
+        </div>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px">Зверни увагу на <strong>зворотну логіку (Active LOW)</strong>: у режимі підтяжки ненатиснута кнопка дає <code>HIGH</code>, а при натисканні струм стікає в землю і значення стає <code>LOW</code>.</p>
+    </section>
+
+    <!-- Крок 03 -->
+    <section class="step" id="s3">
+      <div class="step-head">
+        <span class="step-num">03</span>
+        <div>
+          <h2>Пастка кнопки: проблема «плаваючого входу» (Floating Pin)</h2>
+          <p class="sub-lead">Чому не можна підключати кнопку просто «в повітря» без підтяжки.</p>
+        </div>
+      </div>
+
+      <p>Здавалося б, найпростіша схема — подати 5V через кнопку на пін. Натискання — іде 5V, відпускання — нічого не йде. Але в цифровій мікроелектроніці <strong>«нічого не йде» не означає 0 Вольт!</strong></p>
+
+      <div class="callout warn">
+        <b>⚡ Плаваючий контакт — це радіоантена</b>
+        <p>Коли контакт кнопки розімкнено, пін Arduino висить у повітрі. Він починає вловлювати електромагнітні наведення від проводів у стінах, статичний заряд від пальців і випадково перемикатися між 0 і 1 сотні разів на секунду! Світлодіод блиматиме хаотично, навіть якщо до кнопки ніхто не торкається.</p>
+      </div>
+
+      <p>Щоб на вході завжди був чіткий рівень напруги, інженери ставлять <strong>підтягувальний резистор (Pull-up)</strong> на 10–30 кОм до лінії +5V. Розробники мікроконтролера ATmega328P вмонтували такі резистори всередину самого чипа на кожному піні! Достатньо лише написати в налаштуваннях одне слово: <code>pinMode(2, INPUT_PULLUP);</code>.</p>
+    </section>
+
+    <!-- Крок 04 -->
+    <section class="step" id="s4">
+      <div class="step-head">
+        <span class="step-num">04</span>
+        <div>
+          <h2>Збираємо схему у Wokwi: всього 2 дроти без зайвих деталей</h2>
+          <p class="sub-lead">Завдяки INPUT_PULLUP схема кнопки стає рекордно простою.</p>
+        </div>
+      </div>
+
+      <ol>
+        <li>Відкрий симулятор: <a href="https://wokwi.com/projects/new/arduino-uno" target="_blank" rel="noopener">Wokwi Arduino Uno ↗</a>.</li>
+        <li>Натисни кнопку <strong>«+»</strong> угорі та додай компонент <strong>Pushbutton</strong>.</li>
+        <li>З'єднай лише два контакти:
+          <ul style="margin-top:6px">
+            <li>Один контакт кнопки (пін <strong>1.l</strong>) з'єднай із цифровим піном <strong>2</strong> на платі (синій дріт);</li>
+            <li>Діагональний контакт кнопки (пін <strong>2.l</strong>) з'єднай із піном <strong>GND</strong> на платі (чорний дріт).</li>
+          </ul>
+        </li>
+        <li>Світлодіод використовуємо вбудований на піні 13 (позначений буквою <strong>L</strong>) або свій з Уроку 01.</li>
+      </ol>
+    </section>
+
+    <!-- Крок 05 -->
+    <section class="step" id="s5">
+      <div class="step-head">
+        <span class="step-num">05</span>
+        <div>
+          <h2>Перший код: Кишеньковий ліхтарик</h2>
+          <p class="sub-lead">Читання стану піна за допомогою digitalRead() та логічна перевірка if-else.</p>
+        </div>
+      </div>
+
+      <div class="codewrap">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-family:var(--mono);font-size:12px;color:#A9C6CA">lesson_02_button.ino</span>
+          <button class="copy-btn" data-target="code-button-basic" type="button">📋 Скопіювати код</button>
+        </div>
+<pre id="code-button-basic">const int BUTTON_PIN = 2; // Кнопка на піні 2
+const int LED_PIN = 13;    // Світлодіод L на піні 13
 
 void setup() {
-  // Налаштовуємо пін світлодіода на ВИХІД (подавати сигнал)
   pinMode(LED_PIN, OUTPUT);
-
-  // Налаштовуємо пін кнопки на ВХІД із ВНУТРІШНЬОЮ ПІДТЯЖКОЮ
+  // Вмикаємо вхід з внутрішнім резистором підтяжки до +5V:
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 }
 
 void loop() {
-  // Зчитуємо стан піна 2 (отримуємо або LOW, або HIGH)
+  // Зчитуємо стан піна (HIGH або LOW):
   int buttonState = digitalRead(BUTTON_PIN);
 
-  // Оскільки у нас INPUT_PULLUP:
-  // LOW  = кнопка натиснута (замкнена на GND)
-  // HIGH = кнопка відпущена (підтягнута до 5V)
+  // Оскільки активна дія замикає пін на GND:
   if (buttonState == LOW) {
-    digitalWrite(LED_PIN, HIGH); // Увімкнути світлодіод
+    digitalWrite(LED_PIN, HIGH); // Світло увімкнено
   } else {
-    digitalWrite(LED_PIN, LOW);  // Вимкнути світлодіод
+    digitalWrite(LED_PIN, LOW);  // Світло вимкнено
   }
 }</pre>
-  </div>
+      </div>
 
-  <p>Встав код у вікно Wokwi та натисни зелену кнопку <strong>▶ Запустити</strong>. Клікни мишкою на червону кнопку в симуляторі й тримай її: світлодіод яскраво світиться!</p>
+      <h3>Розбір ключових рядків:</h3>
+      <table>
+        <thead><tr><th>Команда</th><th>Інженерний зміст</th></tr></thead>
+        <tbody>
+          <tr><td><code>pinMode(BUTTON_PIN, INPUT_PULLUP);</code></td><td>Налаштовує пін на прослуховування сигналу та підключає внутрішній резистор 30 кОм до +5V.</td></tr>
+          <tr><td><code>int buttonState = digitalRead(BUTTON_PIN);</code></td><td>Вимірює напругу: повертає <code>HIGH</code> (~5V) або <code>LOW</code> (0V) та зберігає у змінну.</td></tr>
+          <tr><td><code>if (buttonState == LOW)</code></td><td>Перевіряє умову: якщо кнопку замкнено на «землю» — виконується блок увімкнення світла.</td></tr>
+        </tbody>
+      </table>
+    </section>
 
-  <h3>Розбираємо код по рядках:</h3>
-  <table>
-    <tr><th>Рядок коду</th><th>Що це робить людською мовою</th></tr>
-    <tr><td><code>pinMode(BUTTON_PIN, INPUT_PULLUP);</code></td><td>«Увімкни пін 2 як слухача і підключи до нього внутрішній резистор до 5V».</td></tr>
-    <tr><td><code>int buttonState = digitalRead(BUTTON_PIN);</code></td><td>Створюємо комірку пам'яті <code>buttonState</code> і записуємо в неї поточний стан піна (HIGH чи LOW).</td></tr>
-    <tr><td><code>if (buttonState == LOW)</code></td><td>«ЯКЩО стан кнопки дорівнює LOW (тобто пальчик натиснув кнопку)...»</td></tr>
-    <tr><td><code>else</code></td><td>«...В ІНШОМУ ВИПАДКУ (якщо кнопку відпустили)...»</td></tr>
-  </table>
+    <!-- Крок 06 -->
+    <section class="step" id="s6">
+      <div class="step-head">
+        <span class="step-num">06</span>
+        <div>
+          <h2>Брязкіт контактів (Contact Bounce) та вимикач-тригер</h2>
+          <p class="sub-lead">Чому механічні контакти пружинять і як усунути хибні спрацьовування програмно.</p>
+        </div>
+      </div>
 
-  <!-- ===== КРОК 4 ===== -->
-  <div class="step"><span class="num">4</span><h2>Лабораторія «Зламай його» (Break-It Challenge)</h2></div>
-  <p>Справжній інженер розуміє код найкраще тоді, коли сам його зламає й побачить причину несправності. Зроби ці три експерименти:</p>
+      <p>Спробуймо зробити справжній вимикач люстри: один клік — світло ввімкнулося і горить далі, другий клік — світло згасло. Для цього потрібна змінна пам'яті попереднього стану кнопки.</p>
+      <p>Але тут проявляється фізика металу: коли дві пружні пластинки стикаються, вони мікроскопічно пружинять протягом 2–5 мілісекунд. Для людини це 1 клік, а мікроконтролер, який виконує 16 мільйонів операцій на секунду, встигає зафіксувати <strong>10–30 окремих перемикань</strong>!</p>
 
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="tab-b1">Злам 1: Вимикаємо PULLUP</button>
-    <button class="tab-btn" data-tab="tab-b2">Злам 2: Одне дорівнює '=' замість '=='</button>
-    <button class="tab-btn" data-tab="tab-b3">Злам 3: Зниклий блок else</button>
-  </div>
+      <div class="lab">
+        <div class="lab-head">
+          <div>
+            <h3>Осцилограф брязкоту: реальний сигнал проти фільтрованого</h3>
+            <p>Подивись на форму електричного сигналу в момент зіткнення металевих контактів.</p>
+          </div>
+        </div>
+        <div class="bounce-stage">
+          <svg class="wave-svg" viewBox="0 0 500 80" aria-label="Графік напруги з брязкотом контактів">
+            <!-- 5V лінія -->
+            <path d="M 20 20 H 120 L 125 60 L 130 20 L 135 60 L 140 25 L 145 60 L 150 20 L 155 60 H 480" stroke="#E5383B" stroke-width="2.5" fill="none"/>
+            <text x="30" y="16" fill="#38BDF8" font-family="JetBrains Mono, monospace" font-size="10">5V (HIGH)</text>
+            <text x="30" y="72" fill="#64748B" font-family="JetBrains Mono, monospace" font-size="10">0V (LOW)</text>
+            <text x="140" y="75" fill="#E5383B" font-family="JetBrains Mono, monospace" font-size="10">← 5 мс брязкоту (Bounce)</text>
+          </svg>
+          <p style="font-size:13px;color:#A9C6CA;margin:0"><strong>Програмне лікування (Debounce):</strong> пауза <code>delay(50);</code> після першого зафіксованого переходу дозволяє контактам повністю заспокоїтися перед наступним зчитуванням.</p>
+        </div>
+      </div>
+    </section>
 
-  <div class="panel active" id="tab-b1">
-    <h4>Експеримент: Заміни <code>INPUT_PULLUP</code> на звичайний <code>INPUT</code></h4>
-    <p>Зміни в <code>setup()</code> рядок на: <code>pinMode(BUTTON_PIN, INPUT);</code> і запусти симуляцію.</p>
-    <p><strong>Що відбувається:</strong> Світлодіод може взагалі не реагувати або зависати у свіченні, тому що вхід «повис у повітрі». Тепер ти на власні очі бачиш, навіщо потрібен резистор підтяжки!</p>
-  </div>
+    <!-- Крок 07 -->
+    <section class="step" id="s7">
+      <div class="step-head">
+        <span class="step-num">07</span>
+        <div>
+          <h2>AI-ментор: створення надійного антидребезгу без delay()</h2>
+          <p class="sub-lead">Професійний підхід: використання millis() для роботи кнопки без затримки всієї програми.</p>
+        </div>
+      </div>
 
-  <div class="panel" id="tab-b2">
-    <h4>Експеримент: Напиши <code>if (buttonState = LOW)</code></h4>
-    <p>Заміни подвійне дорівнює <code>==</code> на одне дорівнює <code>=</code>.</p>
-    <p><strong>Що станеться:</strong> Одне дорівнює <code>=</code> — це дія <em>«записати значення»</em>, а не <em>«перевірити рівність»</em>. Arduino видасть попередження або умова спрацьовуватиме неправильно. Для перевірки умов у мові C++ ЗАВЖДИ використовують подвійне <code>==</code>!</p>
-  </div>
+      <div class="callout ai">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
+          <b>🤖 Шаблон промпту для створення неблокуючого тригера кнопки:</b>
+          <button class="copy-btn" data-target="ai-debounce-prompt" type="button">📋 Скопіювати промпт</button>
+        </div>
+        <pre id="ai-debounce-prompt" style="font-size:13px;line-height:1.5;background:var(--pcb-deep);padding:12px;border-radius:6px;color:#CFE6E5;overflow-x:auto">Я пишу прошивку Arduino для тактової кнопки на піні 2 (режим INPUT_PULLUP).
+Завдання: створити перемикач-тригер світлодіода на піні 13 (один клік вмикає, наступний вимикає).
+Вимоги до коду:
+1. Обов'язковий програмний захист від брязкоту контактів (debounce).
+2. Заборонено використовувати delay(), оскільки пристрій одночасно повинен виконувати плавне регулювання чи інші задачі.
+3. Використай таймер millis() та відстеження зміни стану кнопки з HIGH на LOW (falling edge).
+Поясни логіку збереження попереднього стану кнопки (lastButtonState).</pre>
+      </div>
+    </section>
 
-  <div class="panel" id="tab-b3">
-    <h4>Експеримент: Видали блок <code>else { digitalWrite(LED_PIN, LOW); }</code></h4>
-    <p>Залиш тільки частину з <code>if</code>, запусти проєкт і натисни кнопку один раз.</p>
-    <p><strong>Що відбувається:</strong> Світлодіод увімкнувся... і більше ніколи не вимикається! Чому? Бо мікроконтролер виконує лише те, що йому прямо наказали. Якщо ти не наказав вимкнути при відпусканні — він триматиме світло вічно.</p>
-  </div>
+    <!-- Крок 08 -->
+    <section class="step" id="s8">
+      <div class="step-head">
+        <span class="step-num final">08</span>
+        <div>
+          <h2>Чек-ліст уроку та підсумок</h2>
+          <p class="sub-lead">Познач виконані етапи. Пункт симулятора активується під час взаємодії зі стендом.</p>
+        </div>
+      </div>
 
-  <!-- ===== КРОК 5 ===== -->
-  <div class="step"><span class="num">5</span><h2>Рівні майстерності: обери свій челендж</h2></div>
+      <ul class="checklist">
+        <li><label><input type="checkbox" class="check" data-key="m1-l02:pullup"> Зрозуміло принцип INPUT_PULLUP та чому ненатиснута кнопка дає HIGH</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m1-l02:sim"> Випробувано роботу кнопки в обох режимах у вбудованій лабораторії стенду</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m1-l02:wokwi"> Зібрано схему з 2 дротів та запущено скетч кишенькового ліхтарика у Wokwi</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m1-l02:bounce"> З'ясовано фізичну причину брязкоту контактів та спосіб його усунення</label></li>
+        <li><label><input type="checkbox" class="check" data-key="m1-l02:endstop"> Зрозуміло зв'язок: як тактова кнопка працює кінцевиком осей верстата Snapmaker</label></li>
+      </ul>
 
-  <div class="grid">
-    <div class="card">
-      <h4>🟢 Рівень 1: Explorer</h4>
-      <p><strong>Інвертор сигналізації.</strong> Перероби код так, щоб світлодіод горів постійно («чергове світло»), а коли натискаєш кнопку — він ГАСНУВ (сигнал тривоги).</p>
-    </div>
-    <div class="card">
-      <h4>🟡 Рівень 2: Builder</h4>
-      <p><strong>Кнопка-вимикач (Toggle).</strong> Зроби так, щоб не треба було тримати кнопку пальцем. Один клік — увімкнув світло, другий клік — вимкнув (як торшер у кімнаті).</p>
-    </div>
-    <div class="card">
-      <h4>🟠 Рівень 3: Maker</h4>
-      <p><strong>Подолання брязкоту (Debounce).</strong> Додай після зчитування кнопки невелику затримку <code>delay(50)</code> і перевір, наскільки стабільніше став перемикатися стан.</p>
-    </div>
-    <div class="card">
-      <h4>🔴 Рівень 4: Master</h4>
-      <p><strong>Перемикач режимів маяка.</strong> Якщо кнопку не чіпають — світлодіод повільно блимає (1 раз на секунду). Якщо кнопку затиснули — він починає блимати в режимі тривоги SOS!</p>
-    </div>
-  </div>
+      <div id="lesson-footer"></div>
 
-  <details>
-    <summary>💡 Підказка та готовий код для Рівня 2 (Кнопка-вимикач)</summary>
-    <p>Щоб запам'ятати стан, потрібна логічна змінна (прапорець) типу <code>bool</code>, яка може бути або <code>true</code> (вкл), або <code>false</code> (викл):</p>
-    <div class="codewrap">
-      <button class="copy-btn" data-target="code-toggle-helper">Копіювати</button>
-<pre id="code-toggle-helper">const int BUTTON_PIN = 2;
-const int LED_PIN = 13;
-bool ledState = false; // Початковий стан: вимкнено
-
-void setup() {
-  pinMode(LED_PIN, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-}
-
-void loop() {
-  // Якщо зловили натискання
-  if (digitalRead(BUTTON_PIN) == LOW) {
-    ledState = !ledState; // Змінюємо стан на протилежний (! означає "НЕ")
-    digitalWrite(LED_PIN, ledState ? HIGH : LOW);
-    
-    delay(250); // Пауза проти брязкоту контактів і повторного спрацювання
-    while (digitalRead(BUTTON_PIN) == LOW) {
-      // Чекаємо, доки людина прибере палець з кнопки
-    }
-  }
-}</pre>
-    </div>
-  </details>
-
-  <!-- ===== КРОК 6 ===== -->
-  <div class="step"><span class="num">6</span><h2>Перевір себе</h2></div>
-  <details>
-    <summary>1. Чому при використанні <code>INPUT_PULLUP</code> натиснута кнопка дає <code>LOW</code>, а не <code>HIGH</code>?</summary>
-    <p>Тому що кнопка підключається між піном і землею (GND). Коли контакт замикається, напруга стікає в 0V (землю), що для мікроконтролера є сигналом LOW.</p>
-  </details>
-  <details>
-    <summary>2. Що станеться, якщо підключити кнопку до піна з режимом <code>INPUT</code> без резистора?</summary>
-    <p>Пін опиниться у «плаваючому» стані (Floating). Він вловлюватиме електромагнітний шум навколишнього середовища і випадково видаватиме то 0, то 1.</p>
-  </details>
-  <details>
-    <summary>3. Що таке «брязкіт контактів» (Bounce)?</summary>
-    <p>Це механічне пружиніння контактів кнопки під час натискання. Замість одного перемикання плата може вловити декілька мікроімпульсів протягом 5–20 мілісекунд.</p>
-  </details>
-  <details>
-    <summary>4. Чим <code>digitalRead()</code> відрізняється від <code>digitalWrite()</code>?</summary>
-    <p><code>digitalRead()</code> — це <strong>вхід</strong> (читаємо значення з піна), а <code>digitalWrite()</code> — це <strong>вихід</strong> (віддаємо наказ встановити напругу).</p>
-  </details>
-
-  <!-- ===== БОНУС ===== -->
-  <div class="step bonus"><span class="num">★</span><h2>Бонус: Складаємо наживо з набору ТЕКО <span class="badge-bonus">за бажанням</span></h2></div>
-  <div class="box ok" style="margin-bottom:14px">
-    <div class="box-title">🔌 Підключення плати ТЕКО до комп'ютера</div>
-    Якщо це твоє перше підключення плати або Arduino IDE не знаходить порт, скористайся інструкцією: <a href="../00-diagnostic/lesson-setup.html" target="_blank"><strong>Посібник із налаштування Arduino IDE та драйвера CH340 &rarr;</strong></a>
-  </div>
-  <p>Якщо маєш поруч реальну плату Arduino та макетну плату з набору ТЕКО:</p>
-  <ol>
-    <li>Знайди маленьку квадратну тактову кнопку з 4 ніжками. Вона вставляється в центр макетної плати так, щоб перекривати розділову канавку.</li>
-    <li>Одним дротом-перемичкою (jump wire) з'єднай ніжку кнопки з піном <strong>2</strong> на платі Arduino Uno.</li>
-    <li>Другим дротом з'єднай сусідню ніжку кнопки з роз'ємом <strong>GND</strong> на платі.</li>
-    <li>Підключи USB-кабель до комп'ютера, завантаж скетч через Arduino IDE й переконайся: нічого зайвого, всього два дроти — і все працює бездоганно!</li>
-  </ol>
-
-  <!-- ===== ЗАВЕРШЕННЯ ===== -->
-  <div class="step"><span class="num">✓</span><h2>Завершення уроку та чек-ліст успіху</h2></div>
-  <p><strong>Обов'язкові завдання для заліку:</strong></p>
-  <ul class="checklist">
-    <li><label><input type="checkbox" class="check" data-key="m1-l02-sim"> Протестовано віртуальну кнопку в симуляторі на сторінці</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l02-wokwi"> Зібрано схему з тактовою кнопкою у Wokwi на піні 2</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l02-flash"> Кишеньковий ліхтарик працює: світлодіод світиться, коли тримаєш кнопку</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l02-break"> Виконано експерименти в лабораторії "Зламай його" (Break-It)</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l02-toggle"> Успішно виконано челендж: працює вимикач-тригер або інвертор</label></li>
-  </ul>
-
-  <p><strong>Творчий інженерний бонус:</strong></p>
-  <ul class="checklist">
-    <li><label><input type="checkbox" class="check" data-key="m1-l02-quiz" data-bonus> Є відповіді на всі 4 питання самоперевірки</label></li>
-    <li><label><input type="checkbox" class="check" data-key="m1-l02-teko" data-bonus> Схему зібрано на фізичній платі ТЕКО у майстерні</label></li>
-  </ul>
-
-  <div class="box mission">
-    <div class="box-title">📸 Збережи для портфоліо</div>
-    Зроби скріншот зібраної схеми у Wokwi (клавіші <code>Win + Shift + S</code>), збережи файл коду та запиши у щоденник одне відкриття: <em>«Чому вільний пін мікроконтролера поводиться як радіоприймач і як це виправляє INPUT_PULLUP»</em>.
-  </div>
-
-  <div id="lesson-footer"></div>
-
-  <div class="box ai">
-    <div class="box-title">👀 Що далі? Урок 03</div>
-    В Уроці 03 ми перейдемо до керування кількома пристроями одночасно: створимо справжній <strong>розумний світлофор</strong> (червоний, жовтий, зелений), дізнаємося про масиви пінів і навчимося писати компактний код за допомогою циклів <code>for</code>.
-  </div>
-
-</main>
-
-<footer>КПКТА імені Бадрі Лолашвілі · Курс «Arduino + 3D CAD + 3D Друк + AI + Maker»</footer>
+      <div class="callout safe" style="margin-top:24px">
+        <b>🚀 Наступний крок: Керування багатьма пристроями</b>
+        <p>Тепер плата вміє відчувати команду людини. У наступному занятті об'єднаємо світлодіоди в складні системи:</p>
+        <ul style="margin:8px 0 0 18px">
+          <li><a href="lesson-03.html">Модуль 1 · Урок 03: Розумний світлофор, кілька світлодіодів та масиви C++</a>.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</div>
 
 <script src="../../assets/course.js"></script>
-<script src="../../assets/app.js"></script>
-<script src="../../assets/buttonsim.js"></script>
+<script src="../../assets/lesson.js"></script>
+<script>
+/* Логіка інтерактивного стенду Уроку 1.2 */
+(function() {
+  var pushBtn = document.getElementById("sim-push-btn");
+  var pinVal = document.getElementById("pin-readout");
+  var ledVal = document.getElementById("led-readout");
+  var bulb = document.getElementById("sim-bulb");
+  var modeMomBtn = document.getElementById("mode-momentary");
+  var modeTogBtn = document.getElementById("mode-toggle");
+  var modeLabel = document.getElementById("mode-label");
+  var codePreview = document.getElementById("sim-code-preview");
+
+  var isToggleMode = false;
+  var isLedOn = false;
+
+  function setMode(toggle) {
+    isToggleMode = toggle;
+    if (toggle) {
+      modeTogBtn.className = "btn-primary";
+      modeTogBtn.style.padding = "6px 12px";
+      modeTogBtn.style.fontSize = "12px";
+      modeMomBtn.className = "chip-btn";
+      modeMomBtn.style.padding = "6px 12px";
+      modeMomBtn.style.fontSize = "12px";
+      modeLabel.textContent = "Тригер (Клік вмикає / вимикає)";
+      codePreview.textContent = "// Режим тригера зі збереженням стану:\nif (buttonPressed) {\n  ledState = !ledState;\n  digitalWrite(13, ledState);\n}";
+    } else {
+      modeMomBtn.className = "btn-primary";
+      modeMomBtn.style.padding = "6px 12px";
+      modeMomBtn.style.fontSize = "12px";
+      modeTogBtn.className = "chip-btn";
+      modeTogBtn.style.padding = "6px 12px";
+      modeTogBtn.style.fontSize = "12px";
+      modeLabel.textContent = "Тактовий ліхтарик (Світить поки тримаєш)";
+      codePreview.textContent = "// Натискання замикає пін 2 на GND:\nif (digitalRead(2) == LOW) {\n  digitalWrite(13, HIGH); // Світиться\n} else {\n  digitalWrite(13, LOW);  // Гасне\n}";
+      isLedOn = false;
+      updateVisuals(false);
+    }
+  }
+
+  function updateVisuals(isPressed) {
+    if (isToggleMode) {
+      pinVal.innerHTML = isPressed ? "<span style='color:var(--signal)'>LOW (0V / Замкнено на GND)</span>" : "<span style='color:#4ADE80'>HIGH (5V / Підтягнуто)</span>";
+      ledVal.innerHTML = isLedOn ? "<span style='color:#4ADE80'>HIGH (СВІТИТЬСЯ)</span>" : "<span style='color:#94A3B8'>LOW (Не світиться)</span>";
+      bulb.className = isLedOn ? "bulb-lamp lit" : "bulb-lamp";
+    } else {
+      pinVal.innerHTML = isPressed ? "<span style='color:var(--signal)'>LOW (0V / Замкнено на GND)</span>" : "<span style='color:#4ADE80'>HIGH (5V / Підтягнуто)</span>";
+      ledVal.innerHTML = isPressed ? "<span style='color:#4ADE80'>HIGH (СВІТИТЬСЯ)</span>" : "<span style='color:#94A3B8'>LOW (Не світиться)</span>";
+      bulb.className = isPressed ? "bulb-lamp lit" : "bulb-lamp";
+    }
+  }
+
+  if (modeMomBtn && modeTogBtn) {
+    modeMomBtn.addEventListener("click", function() { setMode(false); });
+    modeTogBtn.addEventListener("click", function() { setMode(true); });
+  }
+
+  function handlePressStart() {
+    pushBtn.classList.add("pressed");
+    if (isToggleMode) {
+      isLedOn = !isLedOn;
+    }
+    updateVisuals(true);
+    if (window.LessonKit) {
+      window.LessonKit.setCheck("m1-l02:pullup", true);
+      window.LessonKit.setCheck("m1-l02:sim", true);
+    }
+  }
+
+  function handlePressEnd() {
+    pushBtn.classList.remove("pressed");
+    updateVisuals(false);
+  }
+
+  if (pushBtn) {
+    pushBtn.addEventListener("mousedown", handlePressStart);
+    window.addEventListener("mouseup", handlePressEnd);
+    pushBtn.addEventListener("touchstart", function(e) { e.preventDefault(); handlePressStart(); });
+    window.addEventListener("touchend", handlePressEnd);
+  }
+})();
+</script>
 </body>
 </html>
