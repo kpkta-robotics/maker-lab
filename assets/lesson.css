@@ -286,6 +286,61 @@ figure.fig figcaption { font-size: 15px; color: var(--muted); margin-top: 10px; 
   font-weight: 500;
 }
 
+/* ---------- AI Prompt Box & Copy Buttons ---------- */
+.prompt-box {
+  position: relative;
+  background: var(--pcb-deep, #0C2A31);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-s, 8px);
+  padding: 14px 16px;
+  margin: 12px 0 16px;
+}
+.prompt-box p {
+  margin: 0 0 12px;
+  font-family: var(--body, 'Golos Text', sans-serif);
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: #E8F3F2;
+}
+.prompt-box pre {
+  margin: 0 0 12px;
+  font-family: var(--mono, 'JetBrains Mono', monospace);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #CFE6E5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--pcb-panel, #11353E);
+  color: #DCEAE8;
+  border: 1px solid #285A66;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font: 600 12.5px var(--mono, 'JetBrains Mono', monospace);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+.copy-btn:hover {
+  background: var(--pcb, #0E6673);
+  color: #FFFFFF;
+  border-color: #38BDF8;
+  transform: translateY(-1px);
+}
+.copy-btn:active {
+  transform: translateY(0);
+}
+.copy-btn.copied {
+  background: #1F8A5B !important;
+  color: #FFFFFF !important;
+  border-color: #4ADE80 !important;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
+
 footer { border-top: 1px solid var(--line); padding: 24px; text-align: center; font-size: 14px; color: var(--muted); }
 
 /* ---------- responsive ---------- */

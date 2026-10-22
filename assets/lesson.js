@@ -133,8 +133,72 @@
     var btn = document.getElementById("done-btn");
     if (btn) btn.addEventListener("click", function () { var st = load(); st.done[LESSON] = true; save(st); refreshProgress(); });
     setupArtifactWidget();
+    setupCopyButtons();
     refreshProgress();
   })();
+
+  /* ---------- універсальні кнопки копіювання (.copy-btn) ---------- */
+  function setupCopyButtons() {
+    function copyValue(text, btn) {
+      var orig = btn.innerHTML;
+      var feedback = function () {
+        btn.classList.add("copied");
+        btn.innerHTML = "✓ Скопійовано!";
+        setTimeout(function () {
+          btn.classList.remove("copied");
+          btn.innerHTML = orig;
+        }, 2000);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(feedback).catch(function () {
+          fallbackCopy(text, feedback);
+        });
+      } else {
+        fallbackCopy(text, feedback);
+      }
+    }
+
+    function fallbackCopy(text, cb) {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        var ok = document.execCommand("copy");
+        if (ok && cb) cb();
+        else if (!ok) prompt("Скопіюй вручну:", text);
+      } catch (err) {
+        prompt("Скопіюй вручну:", text);
+      }
+      document.body.removeChild(ta);
+    }
+
+    document.querySelectorAll(".copy-btn, [data-copy-target]").forEach(function (btn) {
+      if (btn.dataset.copyBound) return;
+      btn.dataset.copyBound = "true";
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var targetId = btn.getAttribute("data-target") || btn.getAttribute("data-copy-target");
+        var targetEl = targetId ? document.getElementById(targetId) : null;
+        if (!targetEl) return;
+        var text = targetEl.innerText || targetEl.textContent || "";
+        var cleanText = text.trim().replace(/^«|»$/g, "").trim();
+        copyValue(cleanText, btn);
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupCopyButtons);
+  } else {
+    setupCopyButtons();
+  }
 
   /* ---------- підсвічування змісту під час прокручування ---------- */
   if ("IntersectionObserver" in window) {
