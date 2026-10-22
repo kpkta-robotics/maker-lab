@@ -29,10 +29,65 @@
       background: rgba(17, 53, 62, .75);
       border: 1px solid #285A66;
       border-radius: 10px;
-      padding: 16px;
+      padding: 18px;
     }
     .diag-role-card h4 { margin: 0 0 6px; color: #4ADE80; font-size: 16px; }
     .diag-role-card p { font-size: 13.5px; color: #B3D2D6; margin: 0; line-height: 1.5; }
+    .diag-score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: var(--mono, monospace);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .diag-score-badge.pending { background: rgba(12, 42, 49, 0.7); color: #8FB0B4; border: 1px solid #1E5460; }
+    .diag-score-badge.low { background: rgba(229, 56, 59, 0.2); color: #FF6B6D; border: 1px solid #E5383B; }
+    .diag-score-badge.mid { background: rgba(242, 166, 90, 0.2); color: #F2A65A; border: 1px solid #F2A65A; }
+    .diag-score-badge.high { background: rgba(74, 222, 128, 0.2); color: #4ADE80; border: 1px solid #4ADE80; }
+    .diag-recs-box {
+      margin-top: 18px;
+      background: var(--surface, #FFFFFF);
+      border: 1px solid var(--line, #D3DEDB);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .diag-recs-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0E6673;
+      margin: 0 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .diag-rec-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .diag-rec-item {
+      font-size: 13.5px;
+      line-height: 1.5;
+      padding: 9px 12px;
+      border-radius: 6px;
+      background: #F4FAF7;
+      border-left: 3px solid #0E6673;
+    }
+    .diag-rec-item a {
+      font-weight: 600;
+      color: #0E6673;
+      text-decoration: underline;
+    }
+    .diag-rec-item a:hover {
+      color: #1F8A5B;
+    }
     .quiz-card {
       background: #FFFFFF;
       border: 1px solid var(--line, #D3DEDB);
@@ -326,11 +381,12 @@ if (state == LOW) {
           </svg>
         </div>
         <div class="diag-role-card">
-          <div style="font-family:var(--mono);font-size:11px;color:#7CE2EE;margin-bottom:4px">РЕКОМЕНДОВАНА ПРОЄКТНА РОЛЬ</div>
-          <h4 id="role-title">Пройди всі 6 питань для розрахунку</h4>
-          <p id="role-desc">Після проходження всіх питань тут з'явиться аналіз твоїх сильних сторін для вибору фінального Maker-проєкту в Модулі 4.</p>
+          <div class="diag-score-badge pending" id="diag-score-badge">Пройдено: 0 з 6 питань</div>
+          <h4 id="role-title">Очікування відповідей...</h4>
+          <p id="role-desc">Дай відповідь на всі 6 запитань вище, щоб система побудувала інженерний профіль та сформувала персональні рекомендації щодо доопрацювання матеріалу.</p>
         </div>
       </div>
+      <div id="diag-recs-container"></div>
     </section>
 
     <!-- ===== 8 ===== -->
@@ -368,6 +424,8 @@ if (state == LOW) {
 (function() {
   "use strict";
   var scores = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0 };
+  var answered = { q1: false, q2: false, q3: false, q4: false, q5: false, q6: false };
+
   var checkKeys = {
     q1: "circuits",
     q2: "code",
@@ -375,6 +433,46 @@ if (state == LOW) {
     q4: "print",
     q5: "debug",
     q6: "safety"
+  };
+
+  // Рекомендації щодо доопрацювання матеріалу при помилці
+  var recommendations = {
+    q1: {
+      topic: "Електричні кола та закон Ома",
+      link: "../01-arduino-basics/lesson-01.html",
+      lesson: "Урок 1.1: Перший сигнал і маяк SOS",
+      tip: "Зверни увагу на розділ №2: як розрахувати резистор 220 Ом для обмеження струму, щоб не спалити світлодіод."
+    },
+    q2: {
+      topic: "Логіка мікроконтролера та C++",
+      link: "../01-arduino-basics/lesson-02.html",
+      lesson: "Урок 1.2: Кнопка та INPUT_PULLUP",
+      tip: "Зверни увагу на підтягувальний резистор: при натисканні кнопка замикає пін на GND, тому digitalRead повертає LOW."
+    },
+    q3: {
+      topic: "3D CAD та інженерні допуски",
+      link: "../02-3d-printing/guide-a350.html",
+      lesson: "Посібник Snapmaker A350",
+      tip: "Врахуй розширення пластику соплом 0.4 мм: для вільного ходу гвинта M3 діаметр отвору в моделі має бути 3.3–3.4 мм."
+    },
+    q4: {
+      topic: "3D-друк та анізотропія міцності",
+      link: "../02-3d-printing/lesson-01.html",
+      lesson: "Урок 2.1: Анатомія Snapmaker та перший шар",
+      tip: "Пам'ятай про орієнтацію шарів: деталь під навантаженням на злам не можна друкувати вертикально, бо шари Z розколються."
+    },
+    q5: {
+      topic: "Діагностика короткого замикання (КЗ)",
+      link: "lesson-safety.html",
+      lesson: "Урок 0.1: Техніка безпеки мейкера",
+      tip: "Засвой симптом аварії: згаслий діод ON та звук вимкнення USB свідчать про спрацьовування захисту — негайно висмикуй кабель."
+    },
+    q6: {
+      topic: "Безпека роботи з верстатами",
+      link: "lesson-safety.html",
+      lesson: "Урок 0.1: Техніка безпеки (розділ 3D-друку)",
+      tip: "Ніколи не торкайся гарячого сопла (200–250°C) та рухомих кареток верстата під час друку або калібрування."
+    }
   };
 
   // Пояснення відповідей
@@ -418,7 +516,8 @@ if (state == LOW) {
       }
 
       var isOk = (selected.value === correct);
-      scores[qId] = isOk ? 1 : 0.5; // навіть за спробу з помилкою зараховується база
+      scores[qId] = isOk ? 1 : 0;
+      answered[qId] = true;
       fb.className = "quiz-feedback show " + (isOk ? "ok" : "err");
       fb.textContent = isOk ? explanations[qId].ok : explanations[qId].err;
 
@@ -436,12 +535,13 @@ if (state == LOW) {
   });
 
   function updateRadar() {
-    var total = 0;
-    var count = 0;
     var keys = ["q1", "q2", "q3", "q4", "q5", "q6"];
+    var answeredCount = 0;
+    var totalCorrect = 0;
+
     keys.forEach(function(k) {
-      if (scores[k] > 0) count++;
-      total += scores[k];
+      if (answered[k]) answeredCount++;
+      totalCorrect += scores[k];
     });
 
     // Оновлення радарного полігону SVG
@@ -454,28 +554,80 @@ if (state == LOW) {
       angles.forEach(function(deg, idx) {
         var rad = deg * Math.PI / 180;
         var qKey = keys[idx];
-        var val = scores[qKey] || 0.2; // базовий мінімум
-        var r = maxR * val;
+        var isAnswered = answered[qKey];
+        var isCorrect = scores[qKey] === 1;
+        var r = !isAnswered ? 15 : (isCorrect ? maxR : 8);
         var x = cx + r * Math.cos(rad);
         var y = cy + r * Math.sin(rad);
         pts.push(Math.round(x) + "," + Math.round(y));
       });
       poly.setAttribute("points", pts.join(" "));
+      poly.setAttribute("fill", totalCorrect <= 2 ? "rgba(229, 56, 59, 0.25)" : (totalCorrect <= 4 ? "rgba(242, 166, 90, 0.25)" : "rgba(74, 222, 128, 0.3)"));
+      poly.setAttribute("stroke", totalCorrect <= 2 ? "#E5383B" : (totalCorrect <= 4 ? "#F2A65A" : "#4ADE80"));
     }
 
-    if (count === 6) {
-      var roleTitle = document.getElementById("role-title");
-      var roleDesc = document.getElementById("role-desc");
-      if (roleTitle && roleDesc) {
-        if (scores.q2 === 1 && scores.q1 === 1) {
-          roleTitle.textContent = "Embedded & Firmware Engineer (Програміст мікроконтролерів)";
-          roleDesc.textContent = "У тебе чудово розвинене алгоритмічне мислення та розуміння фізики сигналів. Твоя ідеальна роль у фінальній команді — архітектура коду, взаємодія з датчиками та дебаг логіки.";
-        } else if (scores.q3 === 1 && scores.q4 === 1) {
-          roleTitle.textContent = "Mechanical & CAD Specialist (3D-конструктор пристроїв)";
-          roleDesc.textContent = "Твоя сильна сторона — просторова уява, інженерні допуски та адитивне виробництво. Ти зможеш спроєктувати міцний корпус і рухомі механізми маніпулятора під верстат Snapmaker A350.";
+    var scoreBadge = document.getElementById("diag-score-badge");
+    var roleTitle = document.getElementById("role-title");
+    var roleDesc = document.getElementById("role-desc");
+    var recsBox = document.getElementById("diag-recs-container");
+
+    if (scoreBadge) {
+      if (answeredCount < 6) {
+        scoreBadge.className = "diag-score-badge pending";
+        scoreBadge.textContent = "Пройдено: " + answeredCount + " з 6 питань";
+      } else {
+        var pct = Math.round(totalCorrect / 6 * 100);
+        if (totalCorrect <= 2) {
+          scoreBadge.className = "diag-score-badge low";
+          scoreBadge.textContent = "Результат: " + totalCorrect + " з 6 правильних (" + pct + "%) — Початковий рівень";
+        } else if (totalCorrect <= 4) {
+          scoreBadge.className = "diag-score-badge mid";
+          scoreBadge.textContent = "Результат: " + totalCorrect + " з 6 правильних (" + pct + "%) — Практик-дослідник";
         } else {
-          roleTitle.textContent = "Systems Integrator & QA (Системний інженер / Схемотехнік)";
-          roleDesc.textContent = "Твій козир — уважність до деталей, діагностика помилок та комплексний підхід до безпеки. Ти зможеш зібрати пристрій без коротких замикань і скоординувати команду.";
+          scoreBadge.className = "diag-score-badge high";
+          scoreBadge.textContent = "Результат: " + totalCorrect + " з 6 правильних (" + pct + "%) — Впевнений мейкер";
+        }
+      }
+    }
+
+    if (answeredCount === 6 && roleTitle && roleDesc) {
+      if (totalCorrect <= 2) {
+        roleTitle.textContent = "Рівень: Стажер майстерні (Trainee Maker)";
+        roleDesc.textContent = "Базові інженерні поняття наразі потребують ретельного вивчення. Працювати зі справжніми платами ТЕКО та верстатом Snapmaker A350 самостійно поки що зарано через високий ризик пошкодження компонентів. Необхідно відпрацювати схеми у віртуальному симуляторі Wokwi та опрацювати теми з індивідуального маршруту нижче.";
+      } else if (totalCorrect <= 4) {
+        roleTitle.textContent = "Рівень: Дослідник-практик (Apprentice Maker)";
+        roleDesc.textContent = "Є хороша основа в окремих напрямках, проте виявлено прогалини в безпеці або теорії. Доопрацюй вказані нижче теми перед переходом до самостійного проєктування гаджетів.";
+      } else {
+        roleTitle.textContent = "Рівень: Впевнений мейкер (Ready Maker)";
+        roleDesc.textContent = "Відмінна інженерна інтуїція та розуміння фізики процесів. Твоїх знань достатньо для безпечної роботи в майстерні з платами ТЕКО та верстатом Snapmaker A350.";
+      }
+
+      // Формування персональних рекомендацій щодо доопрацювання
+      if (recsBox) {
+        var wrongKeys = keys.filter(function(k) { return scores[k] === 0; });
+        if (wrongKeys.length === 0) {
+          recsBox.innerHTML =
+            '<div class="diag-recs-box" style="border-color:#4ADE80;background:#F4FAF7">' +
+              '<div class="diag-recs-title" style="color:#1F8A5B">🎉 Бездоганний результат: 6 з 6!</div>' +
+              '<p style="margin:0;font-size:14px;color:#12442E;line-height:1.5">' +
+                'Усі 6 запитань вхідної діагностики пройдено без жодної помилки. ' +
+                'У тебе є надійний теоретичний і практичний фундамент. Час переходити до налаштування плати та робочого місця в Уроці 0.3!' +
+              '</p>' +
+            '</div>';
+        } else {
+          var itemsHtml = wrongKeys.map(function(k) {
+            var rec = recommendations[k];
+            return '<li class="diag-rec-item">' +
+              '<b>' + rec.topic + ':</b> опрацюй <a href="' + rec.link + '">' + rec.lesson + '</a> — ' + rec.tip +
+            '</li>';
+          }).join("");
+
+          recsBox.innerHTML =
+            '<div class="diag-recs-box">' +
+              '<div class="diag-recs-title">📚 Індивідуальний маршрут доопрацювання (' + wrongKeys.length + ' з 6 тем потребують уваги):</div>' +
+              '<p style="margin:0 0 12px;font-size:13.5px;color:var(--muted)">Зверни увагу на теми, де допущено помилки. Опрацюй вказані матеріали перед початком роботи зі справжнім залізом:</p>' +
+              '<ul class="diag-rec-list">' + itemsHtml + '</ul>' +
+            '</div>';
         }
       }
     }
