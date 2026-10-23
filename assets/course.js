@@ -26,6 +26,7 @@ window.COURSE = {
           path: "modules/00-diagnostic/lesson-setup.html" }
       ],
       resources: [
+        { type: "doc", title: "Електричні кола та закон Ома: Інженерний довідник", url: "modules/00-diagnostic/guide-circuits.html", tag: "Довідник" },
         { type: "tool", title: "Arduino IDE 2.x (Офіційний сайт)", url: "https://www.arduino.cc/en/software", tag: "Програма" },
         { type: "doc", title: "Драйвер CH340 для клонів Arduino (WCH)", url: "https://sparks.gogo.co.nz/ch340.html", tag: "Драйвер" }
       ]
@@ -169,6 +170,12 @@ window.COURSE = {
     {
       category: "📦 3D-моделі та документація курсу",
       items: [
+        {
+          title: "Електричні кола та закон Ома: Інженерний довідник",
+          desc: "Власна база знань майстерні: гідравлічна модель струму, інтерактивний трикутник Ома, калькулятор резистора LED, подільник напруги та смужки маркування.",
+          url: "modules/00-diagnostic/guide-circuits.html",
+          badge: "База знань"
+        },
         {
           title: "Snapmaker A350: Інтерактивний посібник оператора",
           desc: "Власна база знань майстерні: золотий профіль PLA у Luban, пошук несправностей, універсальний калькулятор партійного друку та квіз.",

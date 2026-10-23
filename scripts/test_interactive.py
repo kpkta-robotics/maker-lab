@@ -61,7 +61,7 @@ class ElementCollector(HTMLParser):
             self.styles.append(attrs_dict["href"])
 
         classes = attrs_dict.get("class", "").split()
-        if "copy-btn" in classes or "data-target" in attrs_dict or "data-copy-target" in attrs_dict:
+        if "copy-btn" in classes or "data-copy-target" in attrs_dict:
             self.copy_btns.append(attrs_dict)
 
         if tag == "input" and attrs_dict.get("type") == "checkbox" and "check" in classes:

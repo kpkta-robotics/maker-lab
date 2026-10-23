@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Електричні кола та закон Ома · Інженерний довідник мейкера · КПКТА</title>
+  <!-- Локальні стилі без зовнішніх CDN (автономна робота у майстерні) -->
+  <link rel="stylesheet" href="../../assets/guide.css">
+  <!-- Google Fonts: Unbounded, Golos Text, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #F2F5F4;
+      background-image:
+        linear-gradient(rgba(14, 102, 115, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14, 102, 115, 0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .badge-tag { transition: all 0.2s ease; }
+    .ohm-card { cursor: pointer; transition: all 0.2s ease; }
+    .ohm-card:hover { transform: translateY(-2px); border-color: #0E6673; }
+    .ohm-card.active { border-color: #0E6673; background-color: #E7F2F0; box-shadow: 0 4px 12px rgba(14, 102, 115, 0.15); }
+    .finger-rule-item { cursor: pointer; transition: all 0.2s ease; }
+    .finger-rule-item:hover { transform: translateX(2px); border-color: #0E6673; }
+    .finger-rule-item.active-rule { border-color: #0E6673; background-color: #E7F2F0; box-shadow: 0 2px 8px rgba(14, 102, 115, 0.12); }
+    .resistor-body {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #D9C3A5;
+      border: 2px solid #8A7256;
+      border-radius: 12px;
+      height: 38px;
+      padding: 0 16px;
+      gap: 12px;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .color-band {
+      width: 7px;
+      height: 34px;
+      border-radius: 2px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body class="text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- Навігаційна панель -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center space-x-3">
+          <a href="../../index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-pcb hover:text-pcb-deep transition bg-pcb-light px-3 py-1.5 rounded-lg border border-teal-200">
+            ← Карта курсу
+          </a>
+          <div>
+            <div class="text-[11px] uppercase tracking-wider font-bold text-pcb font-mono">Блок 0 · База знань</div>
+            <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight font-display">Електричні кола та закон Ома</h1>
+          </div>
+        </div>
+
+        <nav class="hidden md:flex space-x-1 lg:space-x-2 text-sm font-medium">
+          <a href="#overview" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Огляд</a>
+          <a href="#ohm-law" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Закон Ома</a>
+          <a href="#led-calc" class="px-3 py-2 rounded-lg bg-teal-50 text-pcb font-semibold border border-teal-200 hover:bg-teal-100 transition flex items-center gap-1">
+            🧮 Калькулятор LED
+          </a>
+          <a href="#circuits" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">З'єднання</a>
+          <a href="#resistors" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Маркування</a>
+          <a href="#safety-kz" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">КЗ та захист</a>
+          <a href="#quiz" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Тест</a>
+        </nav>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="window.print()" title="Роздрукувати довідник" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition text-xs flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            <span class="hidden sm:inline">Друк</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero-блок -->
+  <section class="bg-pcb-deep text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-teal-900">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
+      <div class="space-y-4 max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-800/50 text-teal-200 border border-teal-600/40 text-xs font-semibold font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Фундамент схемотехніки ТЕКО / Arduino Uno
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-bold tracking-tight leading-tight font-display">
+          Електричні кола, закон Ома та розрахунок навантаження
+        </h2>
+        <p class="text-slate-300 text-base leading-relaxed">
+          Практичний інженерний посібник: фізичний зміст напруги (U), струму (I) та опору (R), розрахунок струмообмежувальних резисторів для світлодіодів, інтерактивний калькулятор номіналів та захист від короткого замикання.
+        </p>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <a href="#led-calc" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold transition shadow-lg shadow-amber-500/20 text-sm">
+            🧮 Інтерактивний калькулятор резистора
+          </a>
+          <a href="#ohm-law" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-pcb hover:bg-pcb-hover text-white font-medium transition border border-teal-500/40 text-sm">
+            📐 Трикутник закону Ома
+          </a>
+          <a href="lesson-diag.html" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium transition border border-slate-700 text-sm">
+            ← До вхідної діагностики
+          </a>
+        </div>
+      </div>
+
+      <!-- Швидкі індикатори лабораторії -->
+      <div class="grid grid-cols-2 gap-3 w-full lg:w-80">
+        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 shadow-inner">
+          <div class="text-xs text-slate-400 font-medium">Напруга USB</div>
+          <div class="text-xl font-bold text-teal-300 font-mono mt-1">5.00 В</div>
+          <div class="text-xs text-slate-400 mt-1">Безпечно для тіла</div>
+        </div>
+        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 shadow-inner">
+          <div class="text-xs text-slate-400 font-medium">Струм одного піна</div>
+          <div class="text-xl font-bold text-amber-400 font-mono mt-1">до 20 мА</div>
+          <div class="text-xs text-slate-400 mt-1">Піковий макс: 40 мА</div>
+        </div>
+        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 shadow-inner">
+          <div class="text-xs text-slate-400 font-medium">Базовий резистор LED</div>
+          <div class="text-xl font-bold text-emerald-400 font-mono mt-1">220 Ом</div>
+          <div class="text-xs text-slate-400 mt-1">Черв-Черв-Коричн</div>
+        </div>
+        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 shadow-inner">
+          <div class="text-xs text-slate-400 font-medium">Захист Polyfuse</div>
+          <div class="text-xl font-bold text-rose-400 font-mono mt-1">500 мА</div>
+          <div class="text-xs text-slate-400 mt-1">Самовідновлюваний</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Головний контент -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16 flex-1">
+
+    <!-- РОЗДІЛ 1: Три фундаментальні величини -->
+    <section id="overview" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">01</span>
+          Три фундаментальні величини (Гідравлічна модель)
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Уявити струм набагато легше через аналогію зі звичайним водопроводом</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Напруга -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-lg">
+            ⚡
+          </div>
+          <div class="text-xs font-mono font-bold text-slate-400">ПОЗНАЧЕННЯ: U (або V)</div>
+          <h4 class="font-bold text-slate-900 text-base">Напруга (Voltage) · Вольти [В]</h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            <strong>Гідравлічна аналогія:</strong> це <em>тиск води</em> у трубі або висота водонапірної вежі. Чим вищий тиск, тим сильніше електричні заряди прагнуть рухатися по дротах.
+          </p>
+          <div class="pt-2 border-t border-slate-100 text-xs text-slate-500 font-medium">
+            <span class="text-pcb font-semibold">У лабораторії:</span> 5.0 В (живлення від порту USB) та 3.3 В (живлення датчиків).
+          </div>
+        </div>
+
+        <!-- Струм -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg">
+            🌊
+          </div>
+          <div class="text-xs font-mono font-bold text-slate-400">ПОЗНАЧЕННЯ: I</div>
+          <h4 class="font-bold text-slate-900 text-base">Струм (Current) · Ампери [А] / мА</h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            <strong>Гідравлічна аналогія:</strong> це <em>швидкість потоку води</em> (кількість літрів за секунду). Кількість електронів, які протікають через поперечний переріз провідника за 1 секунду.
+          </p>
+          <div class="pt-2 border-t border-slate-100 text-xs text-slate-500 font-medium">
+            <span class="text-amber-600 font-semibold">Масштаб:</span> 1 А = 1000 мА. Світлодіод споживає 10–20 мА (0.015 А).
+          </div>
+        </div>
+
+        <!-- Опір -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-lg">
+            🛑
+          </div>
+          <div class="text-xs font-mono font-bold text-slate-400">ПОЗНАЧЕННЯ: R</div>
+          <h4 class="font-bold text-slate-900 text-base">Опір (Resistance) · Оми [Ом] / кОм</h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            <strong>Гідравлічна аналогія:</strong> це <em>звуження труби або кран</em>, який чинить перешкоду потоку води. Чим більший опір, тим менший струм здатний пройти за однакової напруги.
+          </p>
+          <div class="pt-2 border-t border-slate-100 text-xs text-slate-500 font-medium">
+            <span class="text-purple-700 font-semibold">Масштаб:</span> 1 кОм = 1000 Ом. Резистор 220 Ом обмежує струм світлодіода.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 2: Закон Ома -->
+    <section id="ohm-law" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">02</span>
+          Закон Ома та «Інженерний трикутник»
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Головне математичне правило електроніки, яке пов'язує напругу, струм та опір</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="lg:col-span-5 flex flex-col items-center">
+          <div class="text-xs font-mono font-bold text-slate-400 mb-3 uppercase tracking-wider">Інженерний трикутник (Клікни на сектор)</div>
+          
+          <svg viewBox="0 0 260 220" class="w-64 max-w-full drop-shadow-sm select-none">
+            <!-- Верхній сектор U -->
+            <polygon id="tri-u" points="130,20 40,110 220,110" fill="#0E6673" stroke="#0C2A31" stroke-width="3" class="cursor-pointer hover:opacity-90 transition"/>
+            <text x="130" y="80" text-anchor="middle" fill="#FFFFFF" font-family="Unbounded, sans-serif" font-size="28" font-weight="700" pointer-events="none">U</text>
+            <text x="130" y="100" text-anchor="middle" fill="#7CE2EE" font-family="JetBrains Mono, monospace" font-size="10" pointer-events="none">Напруга (В)</text>
+
+            <!-- Горизонтальна риска ділення -->
+            <line x1="30" y1="110" x2="230" y2="110" stroke="#0C2A31" stroke-width="4"/>
+
+            <!-- Нижній лівий сектор I -->
+            <polygon id="tri-i" points="40,110 20,200 130,200 130,110" fill="#F2A65A" stroke="#0C2A31" stroke-width="3" class="cursor-pointer hover:opacity-90 transition"/>
+            <text x="75" y="160" text-anchor="middle" fill="#1B2226" font-family="Unbounded, sans-serif" font-size="26" font-weight="700" pointer-events="none">I</text>
+            <text x="75" y="180" text-anchor="middle" fill="#5B3813" font-family="JetBrains Mono, monospace" font-size="10" pointer-events="none">Струм (А)</text>
+
+            <!-- Вертикальна риска множення -->
+            <line x1="130" y1="110" x2="130" y2="200" stroke="#0C2A31" stroke-width="4"/>
+
+            <!-- Нижній правий сектор R -->
+            <polygon id="tri-r" points="130,110 130,200 240,200 220,110" fill="#8B5CF6" stroke="#0C2A31" stroke-width="3" class="cursor-pointer hover:opacity-90 transition"/>
+            <text x="185" y="160" text-anchor="middle" fill="#FFFFFF" font-family="Unbounded, sans-serif" font-size="26" font-weight="700" pointer-events="none">R</text>
+            <text x="185" y="180" text-anchor="middle" fill="#DDD6FE" font-family="JetBrains Mono, monospace" font-size="10" pointer-events="none">Опір (Ом)</text>
+          </svg>
+
+          <!-- Пояснення: Як працює правило «закриття пальцем» -->
+          <div class="w-full mt-5 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-700 space-y-3">
+            <div class="font-bold text-slate-900 flex items-center justify-between font-display text-sm">
+              <span class="flex items-center gap-1.5"><span>👆</span> Як це працює:</span>
+              <span class="text-[10px] font-mono text-slate-400 uppercase">Правило пальця</span>
+            </div>
+            
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Закрий пальцем ту літеру, яку потрібно знайти, і поглянь на дві інші:
+            </p>
+
+            <div class="space-y-2 text-xs">
+              <!-- Шукаємо U -->
+              <div class="finger-rule-item p-2.5 rounded-lg bg-white border border-slate-200/80" data-ohm-rule="u">
+                <div class="font-bold text-pcb flex items-center justify-between">
+                  <span>• Шукаємо Напругу (U):</span>
+                  <span class="font-mono text-[11px] bg-teal-50 text-pcb px-1.5 py-0.5 rounded border border-teal-200">U = I × R</span>
+                </div>
+                <div class="text-slate-600 mt-1 leading-relaxed">
+                  Закриваємо <strong>U</strong>. Літери <strong>I</strong> та <strong>R</strong> залишаються поруч на одному рівні. Це означає, що їх треба <strong>перемножити</strong>:
+                </div>
+                <div class="font-mono text-slate-800 font-semibold mt-1">
+                  U = I × R <span class="font-sans font-normal text-slate-500">(Напруга = Сила струму × Опір)</span>
+                </div>
+              </div>
+
+              <!-- Шукаємо I -->
+              <div class="finger-rule-item p-2.5 rounded-lg bg-white border border-slate-200/80 active-rule" data-ohm-rule="i">
+                <div class="font-bold text-amber-600 flex items-center justify-between">
+                  <span>• Шукаємо Силу струму (I):</span>
+                  <span class="font-mono text-[11px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200">I = U / R</span>
+                </div>
+                <div class="text-slate-600 mt-1 leading-relaxed">
+                  Закриваємо <strong>I</strong>. Літера <strong>U</strong> опиняється над літерою <strong>R</strong>. Це означає <strong>ділення</strong> (горизонтальна риска трикутника діє як риска дробу):
+                </div>
+                <div class="font-mono text-slate-800 font-semibold mt-1">
+                  I = U / R <span class="font-sans font-normal text-slate-500">(Сила струму = Напруга / Опір)</span>
+                </div>
+              </div>
+
+              <!-- Шукаємо R -->
+              <div class="finger-rule-item p-2.5 rounded-lg bg-white border border-slate-200/80" data-ohm-rule="r">
+                <div class="font-bold text-purple-600 flex items-center justify-between">
+                  <span>• Шукаємо Опір (R):</span>
+                  <span class="font-mono text-[11px] bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded border border-purple-200">R = U / I</span>
+                </div>
+                <div class="text-slate-600 mt-1 leading-relaxed">
+                  Закриваємо <strong>R</strong>. Літера <strong>U</strong> опиняється над літерою <strong>I</strong>. Це знову означає <strong>ділення</strong>:
+                </div>
+                <div class="font-mono text-slate-800 font-semibold mt-1">
+                  R = U / I <span class="font-sans font-normal text-slate-500">(Опір = Напруга / Сила струму)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-4">
+          <div id="ohm-explain-box" class="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-pcb uppercase" id="ohm-formula-tag">Формула струму</span>
+              <span class="text-xs text-slate-500 font-mono">I = U / R</span>
+            </div>
+            <h4 class="text-lg font-bold text-slate-900" id="ohm-formula-title">Як знайти силу струму (I):</h4>
+            <p class="text-sm text-slate-600 leading-relaxed" id="ohm-formula-desc">
+              Сила струму прямо пропорційна напрузі та обернено пропорційна опору. Якщо напруга <strong>5 В</strong>, а опір кола становить <strong>220 Ом</strong>:
+            </p>
+            <div class="p-3 bg-white rounded-lg border border-slate-200 font-mono text-sm text-slate-800 font-semibold" id="ohm-formula-example">
+              I = 5 В / 220 Ом = 0.0227 А = 22.7 мА
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" class="ohm-card p-3 rounded-xl border border-slate-200 bg-white text-center active" data-ohm="i">
+              <div class="text-xs text-slate-500 font-mono">Шукаємо</div>
+              <div class="text-base font-bold text-amber-600 font-display">Струм (I)</div>
+            </button>
+            <button type="button" class="ohm-card p-3 rounded-xl border border-slate-200 bg-white text-center" data-ohm="u">
+              <div class="text-xs text-slate-500 font-mono">Шукаємо</div>
+              <div class="text-base font-bold text-pcb font-display">Напругу (U)</div>
+            </button>
+            <button type="button" class="ohm-card p-3 rounded-xl border border-slate-200 bg-white text-center" data-ohm="r">
+              <div class="text-xs text-slate-500 font-mono">Шукаємо</div>
+              <div class="text-base font-bold text-purple-600 font-display">Опір (R)</div>
+            </button>
+          </div>
+
+          <!-- Інженерна пам'ятка Arduino -->
+          <div class="p-4 rounded-xl bg-teal-50/70 border border-teal-200/90 text-xs sm:text-sm text-teal-950 space-y-2">
+            <div class="font-bold font-mono text-pcb text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <span>⚡</span> Інженерні норми мікроконтролера ATmega328P (плата ТЕКО):
+            </div>
+            <ul class="text-xs text-slate-700 space-y-1">
+              <li>• <strong>Логічна напруга піна:</strong> строго <strong>5.0 В</strong> (подача 9 В або 12 В на цифровий пін миттєво спалює контролер).</li>
+              <li>• <strong>Безпечний струм піна:</strong> рекомендовано до <strong>20 мА</strong> (граничний абсолютний максимум 40 мА).</li>
+              <li>• <strong>Загальний струм чіпа:</strong> сумарно через усі піни живлення VCC/GND не більше <strong>200 мА</strong>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 3: Інтерактивний калькулятор резистора світлодіода -->
+    <section id="led-calc" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">03</span>
+          Чому світлодіод згорає без резистора та як його розрахувати
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Нелінійна характеристика p-n переходу та інтерактивний розрахунок баластного опору</p>
+      </div>
+
+      <!-- Пояснення фізики світлодіода -->
+      <div class="bg-amber-50/60 border border-amber-200 p-5 rounded-2xl flex flex-col sm:flex-row gap-4 items-start">
+        <div class="text-2xl mt-1">⚠️</div>
+        <div class="space-y-1 text-sm text-slate-700">
+          <h5 class="font-bold text-slate-900">Головна пастка світлодіода:</h5>
+          <p>
+            Світлодіод — це <strong>напівпровідник</strong>, а не звичайна лампочка з вольфрамовою спіраллю. Поки напруга нижче порогової (близько 1.8–2.0 В), струм не тече взагалі. Але щойно напруга перевищує поріг — внутрішній опір світлодіода <strong>миттєво падає майже до нуля</strong>!
+          </p>
+          <p>
+            Якщо підключити світлодіод до 5V напряму без резистора, струм підскочить до <strong>100–300 мА</strong>. Тоненький кристал перегріється за 0.05 секунди, спалахне білим світлом і назавжди згорить.
+          </p>
+        </div>
+      </div>
+
+      <!-- Інтерактивний калькулятор -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+        <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <div>
+            <span class="text-xs font-mono font-bold text-pcb uppercase">Інженерний інструмент</span>
+            <h4 class="text-xl font-bold text-slate-900 font-display">Калькулятор струмообмежувального резистора (E24)</h4>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-pcb font-mono text-xs font-semibold">
+            R = (Uживл − Vf) / I
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Поле 1: Напруга живлення -->
+          <div class="space-y-2">
+            <label for="calc-vin" class="block text-xs font-mono font-bold text-slate-500 uppercase">1. Напруга живлення (Uживл)</label>
+            <select id="calc-vin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pcb">
+              <option value="5.0" selected>5.0 В (Плата ТЕКО / Arduino Uno USB)</option>
+              <option value="3.3">3.3 В (ESP32 / Raspberry Pi Pico / 3.3V)</option>
+              <option value="9.0">9.0 В (Батарейка «Крона»)</option>
+              <option value="12.0">12.0 В (Блок живлення 12V / Автомобіль)</option>
+            </select>
+            <p class="text-[11px] text-slate-400">Напруга цифрового піна Arduino становить рівно 5.0 В.</p>
+          </div>
+
+          <!-- Поле 2: Колір світлодіода -->
+          <div class="space-y-2">
+            <label for="calc-vled" class="block text-xs font-mono font-bold text-slate-500 uppercase">2. Колір LED (Падіння Vf)</label>
+            <select id="calc-vled" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pcb">
+              <option value="2.0" selected>🔴 Червоний (Vf ≈ 2.0 В)</option>
+              <option value="2.1">🟡 Жовтий / Оранжевий (Vf ≈ 2.1 В)</option>
+              <option value="2.2">🟢 Зелений стандартний (Vf ≈ 2.2 В)</option>
+              <option value="3.0">🔵 Синій яскравий (Vf ≈ 3.0 В)</option>
+              <option value="3.2">⚪ Білий ультраяскравий (Vf ≈ 3.2 В)</option>
+            </select>
+            <p class="text-[11px] text-slate-400">Різні кристали забирають різну напругу на світіння.</p>
+          </div>
+
+          <!-- Поле 3: Бажаний струм -->
+          <div class="space-y-2">
+            <label for="calc-iled" class="block text-xs font-mono font-bold text-slate-500 uppercase">3. Бажаний струм (I)</label>
+            <select id="calc-iled" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pcb">
+              <option value="10">10 мА (Енергоощадний, м'яке світло)</option>
+              <option value="15" selected>15 мА (Оптимальний, безпечно для піна)</option>
+              <option value="20">20 мА (Максимальна безпечна яскравість)</option>
+            </select>
+            <p class="text-[11px] text-slate-400">Пін ATmega328P гарантовано віддає до 20 мА.</p>
+          </div>
+        </div>
+
+        <!-- Результат розрахунку -->
+        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="space-y-1 text-center md:text-left">
+            <div class="text-xs font-mono font-bold text-slate-400 uppercase">Точний розрахунок:</div>
+            <div class="text-2xl font-bold font-mono text-slate-900" id="calc-res-exact">200.0 Ом</div>
+            <div class="text-xs text-slate-500">Залишок напруги на резисторі: <span id="calc-res-vr" class="font-mono font-semibold text-slate-700">3.00 В</span></div>
+          </div>
+
+          <div class="space-y-1 text-center md:text-left">
+            <div class="text-xs font-mono font-bold text-pcb uppercase">Рекомендований номінал з набору ТЕКО:</div>
+            <div class="text-3xl font-bold font-mono text-pcb" id="calc-res-std">220 Ом</div>
+            <div class="text-xs text-slate-500">Потужність розсіювання: <span id="calc-res-pwr" class="font-mono font-semibold text-slate-700">0.041 Вт</span> (норма для 0.25 Вт)</div>
+          </div>
+
+          <!-- Візуальний резистор -->
+          <div class="flex flex-col items-center gap-1.5">
+            <div class="text-xs font-mono text-slate-400">Кольорові смужки:</div>
+            <div class="resistor-body" id="resistor-preview" aria-label="Смужки резистора">
+              <span class="color-band" style="background:#D7262A" title="2 (Червоний)"></span>
+              <span class="color-band" style="background:#D7262A" title="2 (Червоний)"></span>
+              <span class="color-band" style="background:#7A4318" title="10^1 (Коричневий)"></span>
+              <span class="color-band" style="background:#C9A23A" title="Точність ±5% (Золотий)"></span>
+            </div>
+            <div class="text-[11px] font-mono text-slate-500" id="resistor-band-names">Червоний · Червоний · Коричневий · Золотий</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 4: Схеми з'єднання та подільник напруги -->
+    <section id="circuits" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">04</span>
+          Послідовне, паралельне з'єднання та подільник напруги
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Як поводяться напруга та струм у різних типах електричних кіл</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Картка: Послідовне з'єднання -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-900 text-base">Послідовне з'єднання (Series)</h4>
+            <span class="px-2.5 py-0.5 rounded text-xs font-mono bg-teal-50 text-pcb font-semibold">Rзаг = R1 + R2</span>
+          </div>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Деталі підключено ланцюжком одна за одною. <strong>Струм (I) однаковий</strong> у кожній точці кола, а <strong>напруга ділиться</strong> пропорційно опорам.
+          </p>
+          <div class="p-3 bg-slate-50 rounded-xl font-mono text-xs text-slate-700 space-y-1">
+            <div>💡 <strong>Приклад:</strong> 2 резистори по 220 Ом послідовно:</div>
+            <div class="text-pcb font-semibold">Rзаг = 220 + 220 = 440 Ом (струм зменшиться вдвічі)</div>
+          </div>
+        </div>
+
+        <!-- Картка: Паралельне з'єднання -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-900 text-base">Паралельне з'єднання (Parallel)</h4>
+            <span class="px-2.5 py-0.5 rounded text-xs font-mono bg-amber-50 text-amber-700 font-semibold">1/R = 1/R1 + 1/R2</span>
+          </div>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Деталі підключено до однакових точок живлення. <strong>Напруга (U) однакова</strong> на всіх гілках, а <strong>струми додаються</strong>: Iзаг = I1 + I2.
+          </p>
+          <div class="p-3 bg-slate-50 rounded-xl font-mono text-xs text-slate-700 space-y-1">
+            <div>💡 <strong>Приклад:</strong> 2 резистори по 220 Ом паралельно:</div>
+            <div class="text-amber-700 font-semibold">Rзаг = (220 × 220) / (220 + 220) = 110 Ом (струм подвоїться)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Подільник напруги для сенсорів -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h4 class="font-bold text-slate-900 text-base font-display">📐 Подільник напруги (Voltage Divider) — як працюють аналогові сенсори</h4>
+          <span class="font-mono text-xs font-bold text-pcb bg-pcb-light px-2.5 py-1 rounded-md">Vout = Vin × (R2 / (R1 + R2))</span>
+        </div>
+        <p class="text-sm text-slate-600 leading-relaxed">
+          Мікроконтролер Arduino вимірює на аналогових пінах <code>A0–A5</code> виключно <strong>напругу від 0 до 5.0 В</strong>. Він не може напряму виміряти опір фоторезистора чи терморезистора! Щоб перетворити зміну опору в зміну напруги, використовують подільник із двох резисторів:
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1">
+            <span class="font-bold text-slate-900 block text-sm">1. Потенціометр (Урок 1.4)</span>
+            Потенціометр 10 кОм — це вбудований змінний подільник напруги. Ручка переміщує середній контакт, видаючи плавно від 0 В до 5 В.
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1">
+            <span class="font-bold text-slate-900 block text-sm">2. Фоторезистор (LDR)</span>
+            Світло падає на сенсор → його опір падає з 100 кОм до 1 кОм → напруга на вході A0 змінюється, і Arduino «бачить» день або ніч.
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1">
+            <span class="font-bold text-slate-900 block text-sm">3. Кнопка з підтяжкою (Урок 1.2)</span>
+            Режим <code>INPUT_PULLUP</code> вмикає внутрішній резистор 20–50 кОм до 5V, запобігаючи «висінню» піна в повітрі.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 5: Маркування резисторів -->
+    <section id="resistors" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">05</span>
+          Шпаргалка кольорового маркування 4-смугових резисторів
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Як за 2 секунди відрізнити 220 Ом від 10 кОм у коробці з деталями ТЕКО</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- 220 Ом -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-lg font-bold font-mono text-pcb">220 Ом</span>
+            <span class="text-[11px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">Світлодіоди</span>
+          </div>
+          <div class="resistor-body w-full">
+            <span class="color-band" style="background:#D7262A"></span>
+            <span class="color-band" style="background:#D7262A"></span>
+            <span class="color-band" style="background:#7A4318"></span>
+            <span class="color-band" style="background:#C9A23A"></span>
+          </div>
+          <div class="text-xs text-slate-600 font-mono space-y-1">
+            <div><strong>2</strong> (червоний) · <strong>2</strong> (червоний) · <strong>×10¹</strong> (коричневий)</div>
+            <div class="text-slate-400">Точність: ±5% (золотий)</div>
+          </div>
+          <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">
+            Обов'язковий компаньйон для кожного світлодіода на пінах D0–D13.
+          </p>
+        </div>
+
+        <!-- 1 кОм -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-lg font-bold font-mono text-pcb">1 кОм (1000 Ом)</span>
+            <span class="text-[11px] font-mono uppercase px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-bold">Транзистори</span>
+          </div>
+          <div class="resistor-body w-full">
+            <span class="color-band" style="background:#7A4318"></span>
+            <span class="color-band" style="background:#1B2226"></span>
+            <span class="color-band" style="background:#D7262A"></span>
+            <span class="color-band" style="background:#C9A23A"></span>
+          </div>
+          <div class="text-xs text-slate-600 font-mono space-y-1">
+            <div><strong>1</strong> (коричневий) · <strong>0</strong> (чорний) · <strong>×10²</strong> (червоний)</div>
+            <div class="text-slate-400">Точність: ±5% (золотий)</div>
+          </div>
+          <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">
+            Використовується для бази біполярних транзисторів і захисту оптопар.
+          </p>
+        </div>
+
+        <!-- 10 кОм -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-lg font-bold font-mono text-pcb">10 кОм (10000 Ом)</span>
+            <span class="text-[11px] font-mono uppercase px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-bold">Підтяжка кнопок</span>
+          </div>
+          <div class="resistor-body w-full">
+            <span class="color-band" style="background:#7A4318"></span>
+            <span class="color-band" style="background:#1B2226"></span>
+            <span class="color-band" style="background:#EA580C"></span>
+            <span class="color-band" style="background:#C9A23A"></span>
+          </div>
+          <div class="text-xs text-slate-600 font-mono space-y-1">
+            <div><strong>1</strong> (коричневий) · <strong>0</strong> (чорний) · <strong>×10³</strong> (оранжевий)</div>
+            <div class="text-slate-400">Точність: ±5% (золотий)</div>
+          </div>
+          <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">
+            Зовнішній Pull-up / Pull-down резистор для тактових кнопок та фотосенсорів.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 6: Діагностика КЗ та безпека -->
+    <section id="safety-kz" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">06</span>
+          Коротке замикання (КЗ) та робота запобіжника Polyfuse
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">Чому нульовий опір є смертельним для мікросхем і як захищена плата ТЕКО</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <h4 class="font-bold text-slate-900 text-base flex items-center gap-2">
+            <span class="text-rose-500 font-mono">⚡</span> Що відбувається під час КЗ (Short Circuit)?
+          </h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Коли провід <code>5V</code> випадково торкається <code>GND</code> без будь-якого навантаження, опір кола стає майже нульовим: <strong>R ≈ 0.05 Ом</strong>.
+          </p>
+          <div class="p-3 bg-rose-50 border border-rose-200 rounded-xl font-mono text-xs text-rose-800 font-semibold">
+            I = 5 В / 0.05 Ом = 100 А (теоретично!)
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Такий струм миттєво плавить доріжки друкованої плати та спалює транзистори USB-контролера комп'ютера.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <h4 class="font-bold text-slate-900 text-base flex items-center gap-2">
+            <span class="text-emerald-500 font-mono">🛡</span> Як спрацьовує Polyfuse на платі ТЕКО?
+          </h4>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Біля USB-роз'єму плати впаяно золотисто-зелений прямокутник — <strong>самовідновлюваний запобіжник Polyfuse на 500 мА</strong> (PTC-термістор).
+          </p>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            При перевищенні струму понад 500 мА полімер всередині нього миттєво розігрівається, опір зростає до мегаомів і коло <strong>розривається</strong>. Комп'ютер видає звук відключення USB, а світлодіод ON гасне. Щойно дріт КЗ прибрано і деталь охолоне (30–60 с) — плата знову працює!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- РОЗДІЛ 7: Експрес-тест для самоперевірки -->
+    <section id="quiz" class="space-y-6">
+      <div class="border-b border-slate-200 pb-4">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+          <span class="w-8 h-8 rounded-lg bg-teal-100 text-pcb flex items-center justify-center text-sm font-extrabold font-mono">07</span>
+          Експрес-тест: Перевір свої знання з електричних кіл
+        </h3>
+        <p class="text-sm text-slate-500 mt-1">4 запитання, які допоможуть закріпити матеріал перед роботою зі справжнім залізом</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Питання 1 -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <span class="text-xs font-mono font-bold text-pcb">ЗАПИТАННЯ 1 З 4</span>
+          <h5 class="font-bold text-slate-900 text-sm">Якщо напругу збільшити у 2 рази, а опір залишити незмінним, що станеться зі струмом?</h5>
+          <div class="space-y-2 text-xs">
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="1" data-ans="a">
+              A) Струм зменшиться вдвічі
+            </button>
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="1" data-ans="b">
+              B) Струм збільшиться у 2 рази
+            </button>
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="1" data-ans="c">
+              C) Струм не зміниться
+            </button>
+          </div>
+          <div id="q1-fb" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+        </div>
+
+        <!-- Питання 2 -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <span class="text-xs font-mono font-bold text-pcb">ЗАПИТАННЯ 2 З 4</span>
+          <h5 class="font-bold text-slate-900 text-sm">Який номінал резистора має смужки «Червоний · Червоний · Коричневий»?</h5>
+          <div class="space-y-2 text-xs">
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="2" data-ans="a">
+              A) 22 Ом
+            </button>
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="2" data-ans="b">
+              B) 220 Ом
+            </button>
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="2" data-ans="c">
+              C) 2.2 кОм
+            </button>
+          </div>
+          <div id="q2-fb" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+        </div>
+
+        <!-- Питання 3 -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <span class="text-xs font-mono font-bold text-pcb">ЗАПИТАННЯ 3 З 4</span>
+          <h5 class="font-bold text-slate-900 text-sm">Чому червоний світлодіод обов'язково підключають через резистор до піна 5V?</h5>
+          <div class="space-y-2 text-xs">
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="3" data-ans="a">
+              A) Щоб обмежити струм до безпечних 15–20 мА і не спалити кристал
+            </button>
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="3" data-ans="b">
+              B) Щоб підвищити яскравість світіння світлодіода
+            </button>
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="3" data-ans="c">
+              C) Резистор потрібен лише для синіх світлодіодів
+            </button>
+          </div>
+          <div id="q3-fb" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+        </div>
+
+        <!-- Питання 4 -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <span class="text-xs font-mono font-bold text-pcb">ЗАПИТАННЯ 4 З 4</span>
+          <h5 class="font-bold text-slate-900 text-sm">Що робити в першу ж секунду, якщо на платі згас світлодіод ON та почувся звук вимкнення USB?</h5>
+          <div class="space-y-2 text-xs">
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="4" data-ans="a">
+              A) Натиснути кнопку RESET на платі
+            </button>
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="4" data-ans="b">
+              B) Негайно висмикнути USB-кабель з комп'ютера (знеструмити коло)
+            </button>
+            <button type="button" class="quiz-btn w-full text-left p-3 rounded-xl border border-slate-200 hover:border-pcb hover:bg-slate-50 transition" data-q="4" data-ans="c">
+              C) Помацати всі дроти руками
+            </button>
+          </div>
+          <div id="q4-fb" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Підвал -->
+  <footer class="bg-white border-t border-slate-200 py-8 px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto space-y-2">
+      <p>КПКТА імені Бадрі Лолашвілі · Цифрова майстерня: Arduino + 3D CAD + 3D Друк + AI + Maker · 2026</p>
+      <div class="flex justify-center gap-4 text-pcb">
+        <a href="../../index.html" class="hover:underline">Головна карта курсу</a>
+        <a href="lesson-safety.html" class="hover:underline">Урок 0.1: Техніка безпеки</a>
+        <a href="lesson-diag.html" class="hover:underline">Урок 0.2: Вхідна діагностика</a>
+        <a href="../01-arduino-basics/lesson-01.html" class="hover:underline">Урок 1.1: Перший сигнал і маяк SOS</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function() {
+    "use strict";
+
+    // 1. Інтерактивний трикутник Ома
+    var triData = {
+      i: {
+        tag: "Формула сили струму",
+        title: "Як розрахувати силу струму (I):",
+        desc: "Сила струму дорівнює напрузі, поділеній на опір кола. При 5 В та опорі 220 Ом:",
+        example: "I = U / R = 5.0 В / 220 Ом = 0.0227 А (22.7 мА)"
+      },
+      u: {
+        tag: "Формула напруги",
+        title: "Як розрахувати спад напруги (U):",
+        desc: "Напруга на резисторі дорівнює добутку сили струму на його опір. Якщо струм 15 мА (0.015 А), а опір 220 Ом:",
+        example: "U = I × R = 0.015 А × 220 Ом = 3.3 В"
+      },
+      r: {
+        tag: "Формула опору",
+        title: "Як розрахувати опір резистора (R):",
+        desc: "Опір дорівнює напрузі, поділеній на силу струму. Якщо на резисторі має впасти 3 В при струмі 15 мА:",
+        example: "R = U / I = 3.0 В / 0.015 А = 200 Ом (найближчий номінал: 220 Ом)"
+      }
+    };
+
+    function setOhmView(mode) {
+      document.querySelectorAll(".ohm-card").forEach(function(c) {
+        c.classList.toggle("active", c.getAttribute("data-ohm") === mode);
+      });
+      document.querySelectorAll(".finger-rule-item").forEach(function(item) {
+        item.classList.toggle("active-rule", item.getAttribute("data-ohm-rule") === mode);
+      });
+      var data = triData[mode];
+      if (!data) return;
+      document.getElementById("ohm-formula-tag").textContent = data.tag;
+      document.getElementById("ohm-formula-title").textContent = data.title;
+      document.getElementById("ohm-formula-desc").textContent = data.desc;
+      document.getElementById("ohm-formula-example").textContent = data.example;
+    }
+
+    document.querySelectorAll(".ohm-card").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        setOhmView(btn.getAttribute("data-ohm"));
+      });
+    });
+
+    document.querySelectorAll(".finger-rule-item").forEach(function(item) {
+      item.addEventListener("click", function() {
+        setOhmView(item.getAttribute("data-ohm-rule"));
+      });
+    });
+
+    var triU = document.getElementById("tri-u");
+    var triI = document.getElementById("tri-i");
+    var triR = document.getElementById("tri-r");
+    if (triU) triU.addEventListener("click", function() { setOhmView("u"); });
+    if (triI) triI.addEventListener("click", function() { setOhmView("i"); });
+    if (triR) triR.addEventListener("click", function() { setOhmView("r"); });
+
+    // 2. Інтерактивний калькулятор резистора LED
+    var stdResistors = [100, 120, 150, 180, 200, 220, 270, 330, 390, 470, 560, 680, 820, 1000, 1500, 2200, 4700, 10000];
+    var bandColors = {
+      0: { hex: "#1B2226", name: "Чорний" },
+      1: { hex: "#7A4318", name: "Коричневий" },
+      2: { hex: "#D7262A", name: "Червоний" },
+      3: { hex: "#EA580C", name: "Оранжевий" },
+      4: { hex: "#EAB308", name: "Жовтий" },
+      5: { hex: "#16A34A", name: "Зелений" },
+      6: { hex: "#2563EB", name: "Синій" },
+      7: { hex: "#9333EA", name: "Фіолетовий" },
+      8: { hex: "#64748B", name: "Сірий" },
+      9: { hex: "#F8FAFC", name: "Білий" }
+    };
+
+    function updateCalculator() {
+      var vin = parseFloat(document.getElementById("calc-vin").value) || 5.0;
+      var vled = parseFloat(document.getElementById("calc-vled").value) || 2.0;
+      var iled = parseFloat(document.getElementById("calc-iled").value) || 15.0; // в мА
+
+      var vr = Math.max(0, vin - vled);
+      var exactR = (vr / (iled / 1000.0));
+
+      // Найближчий стандартний номінал
+      var closestR = stdResistors[0];
+      var minDiff = Math.abs(exactR - closestR);
+      stdResistors.forEach(function(r) {
+        var diff = Math.abs(exactR - r);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestR = r;
+        }
+      });
+
+      // Потужність розсіювання: P = I^2 * R
+      var actualI = vr / closestR;
+      var pwr = actualI * actualI * closestR;
+
+      document.getElementById("calc-res-exact").textContent = exactR.toFixed(1) + " Ом";
+      document.getElementById("calc-res-vr").textContent = vr.toFixed(2) + " В";
+      document.getElementById("calc-res-std").textContent = (closestR >= 1000 ? (closestR / 1000).toFixed(1) + " кОм" : closestR + " Ом");
+      document.getElementById("calc-res-pwr").textContent = pwr.toFixed(3) + " Вт";
+
+      // Розрахунок кольорів смужок (для 4 смуг: digit1, digit2, multiplier, tolerance)
+      var strR = String(closestR);
+      var d1 = parseInt(strR[0], 10);
+      var d2 = parseInt(strR[1] || "0", 10);
+      var mult = strR.length - 2; // для 220 це 3 - 2 = 1 (10^1)
+      if (closestR < 100) mult = 0;
+
+      var b1 = bandColors[d1] || bandColors[2];
+      var b2 = bandColors[d2] || bandColors[2];
+      var b3 = bandColors[mult] || bandColors[1];
+
+      var prev = document.getElementById("resistor-preview");
+      if (prev) {
+        prev.innerHTML =
+          '<span class="color-band" style="background:' + b1.hex + '" title="' + d1 + ' (' + b1.name + ')"></span>' +
+          '<span class="color-band" style="background:' + b2.hex + '" title="' + d2 + ' (' + b2.name + ')"></span>' +
+          '<span class="color-band" style="background:' + b3.hex + '" title="×10^' + mult + ' (' + b3.name + ')"></span>' +
+          '<span class="color-band" style="background:#C9A23A" title="±5% (Золотий)"></span>';
+      }
+      var namesEl = document.getElementById("resistor-band-names");
+      if (namesEl) {
+        namesEl.textContent = b1.name + " · " + b2.name + " · " + b3.name + " · Золотий (±5%)";
+      }
+    }
+
+    ["calc-vin", "calc-vled", "calc-iled"].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener("change", updateCalculator);
+    });
+    updateCalculator();
+
+    // 3. Експрес-тест
+    var quizAnswers = {
+      1: {
+        correct: "b",
+        ok: "Правильно! За законом Ома I = U / R. Якщо напруга зростає у 2 рази, струм також зростає рівно у 2 рази.",
+        err: "Неправильно. Сила струму прямо пропорційна напрузі. Якщо тиск подвоїти, потік зросте вдвічі: I = 2U / R."
+      },
+      2: {
+        correct: "b",
+        ok: "Правильно! Червоний = 2, Червоний = 2, Коричневий = ×10¹. Отримуємо: 22 × 10 = 220 Ом (найпоширеніший для світлодіодів ТЕКО).",
+        err: "Неправильно. Перші дві смужки дають число 22, а третя коричнева — множник 10^1 (помножити на 10). 22 × 10 = 220 Ом."
+      },
+      3: {
+        correct: "a",
+        ok: "Правильно! Світлодіод має мізерний внутрішній опір після відкриття. Резистор 220 Ом бере на себе зайві 3V і обмежує струм на рівні ~15 мА.",
+        err: "Неправильно. Без резистора струм через кристал перевищить 100 мА, що призведе до миттєвого перегріву та згорання світлодіода."
+      },
+      4: {
+        correct: "b",
+        ok: "Правильно! Перше правило мейкера: висмикнути синій кабель USB за 1 секунду! Потім з'ясовувати причину замикання без напруги.",
+        err: "Неправильно. Кнопка RESET не знеструмлює плату при апаратному замиканні! Потрібно негайно висмикнути кабель USB із комп'ютера."
+      }
+    };
+
+    document.querySelectorAll(".quiz-btn").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var q = btn.getAttribute("data-q");
+        var ans = btn.getAttribute("data-ans");
+        var fb = document.getElementById("q" + q + "-fb");
+        var qInfo = quizAnswers[q];
+        if (!fb || !qInfo) return;
+
+        var isCorrect = (ans === qInfo.correct);
+        fb.classList.remove("hidden", "bg-emerald-50", "text-emerald-800", "border-emerald-200", "bg-rose-50", "text-rose-800", "border-rose-200");
+        fb.classList.add("block", "border");
+
+        if (isCorrect) {
+          fb.classList.add("bg-emerald-50", "text-emerald-800", "border-emerald-200");
+          fb.textContent = "✔ " + qInfo.ok;
+        } else {
+          fb.classList.add("bg-rose-50", "text-rose-800", "border-rose-200");
+          fb.textContent = "✖ " + qInfo.err;
+        }
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
