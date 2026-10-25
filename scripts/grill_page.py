@@ -200,6 +200,13 @@ def grill_file(file_path: Path, course_js_content: str) -> dict:
             else:
                 passed.append(f"Навігаційний блок ({len(links_in_nav)} пунктів, {total_chars} симв.) має коректний адаптивний захист")
 
+            # Перевірка підзаголовка модуля у <header> на захист від переносу (whitespace-nowrap)
+            subtitle_divs = re.findall(r'<div\s+class="([^"]*uppercase[^"]*)"[^>]*>(.*?)</div>', header_html, re.DOTALL)
+            for sub_cls, sub_txt in subtitle_divs:
+                clean_sub = re.sub(r'<[^>]+>', '', sub_txt).strip()
+                if "whitespace-nowrap" not in sub_cls and "truncate" not in sub_cls:
+                    blockers.append(f"Підзаголовок шапки '{clean_sub}' не має класу whitespace-nowrap (ризик розриву в 2-3 рядки та стиснення заголовка)")
+
             # Перевірка на статичні активні класи
             for l_attrs, l_txt in links_in_nav:
                 clean_t = re.sub(r'<[^>]+>', '', l_txt).strip()
