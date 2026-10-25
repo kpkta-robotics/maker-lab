@@ -5,10 +5,13 @@
   var C = window.COURSE;
   var root = document.body.getAttribute("data-root") || "";
 
-  // Режим викладача: ?teacher=1 відкриває всі уроки, ?teacher=0 вимикає
+  // Режим викладача: ?teacher=0111 відкриває всі уроки, ?teacher=0 вимикає
   var q = new URLSearchParams(location.search);
-  if (q.get("teacher") === "1") localStorage.setItem("arduino-teacher", "1");
+  if (q.get("teacher") === "0111" || q.get("teacher") === "1") localStorage.setItem("arduino-teacher", "1");
   if (q.get("teacher") === "0") localStorage.removeItem("arduino-teacher");
+  if (q.has("teacher") && window.history && window.history.replaceState) {
+    history.replaceState(null, "", location.pathname + location.hash);
+  }
   var teacher = localStorage.getItem("arduino-teacher") === "1";
 
   function load() {
@@ -158,15 +161,21 @@
       if (confirm("Скинути весь прогрес у цьому браузері?")) { localStorage.removeItem(KEY); location.reload(); }
     };
 
-    var teacherBtn = document.getElementById("teacher-toggle-btn");
-    if (teacherBtn) {
-      teacherBtn.textContent = teacher ? "🎓 Режим викладача: УВІМКНЕНО" : "🎓 Режим викладача";
-      teacherBtn.classList.toggle("active", teacher);
-      teacherBtn.onclick = function () {
-        if (teacher) { localStorage.removeItem("arduino-teacher"); }
-        else { localStorage.setItem("arduino-teacher", "1"); }
-        location.reload();
-      };
+    // Посилання на режим викладача у футері з перевіркою PIN 0111
+    var teacherLink = document.getElementById("teacher-footer-link");
+    if (teacherLink) {
+      if (teacher) {
+        teacherLink.textContent = "🎓 Режим викладача: УВІМКНЕНО (Вимкнути)";
+        teacherLink.style.color = "var(--pcb)";
+        teacherLink.style.fontWeight = "600";
+      } else {
+        teacherLink.textContent = "🎓 Режим викладача";
+        teacherLink.style.color = "var(--pcb)";
+        teacherLink.style.fontWeight = "normal";
+      }
+      if (window.handleTeacherLogin) {
+        teacherLink.onclick = window.handleTeacherLogin;
+      }
     }
 
     // Плавне підсвічування активного пункту в лівому змісті (.toc) на головній сторінці

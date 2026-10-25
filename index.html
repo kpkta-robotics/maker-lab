@@ -17,9 +17,6 @@
     <span aria-hidden="true">·</span>
     <span>Курс 250 годин</span>
   </div>
-  <div class="topbar-actions">
-    <button class="chip-btn" id="teacher-toggle-btn" type="button">🎓 Режим викладача</button>
-  </div>
 </header>
 
 <section class="hero">
@@ -224,7 +221,8 @@
     <div>КПКТА імені Бадрі Лолашвілі · Курс «Адаптивна цифрова майстерня: Arduino + 3D CAD + 3D Друк + AI + Maker» · 2026</div>
     <div class="footer-links">
       <a href="#modules-sec">Карта модулів</a> ·
-      <a href="#resources-sec">Відео та джерела</a>
+      <a href="#resources-sec">Відео та джерела</a> ·
+      <button type="button" id="teacher-footer-link" onclick="handleTeacherLogin(event)" style="background:none; border:none; padding:0; font:inherit; color:var(--pcb); font-size:13px; cursor:pointer; text-decoration:underline; text-underline-offset:2px;">🎓 Режим викладача</button>
     </div>
   </div>
 </footer>
@@ -307,6 +305,28 @@
   </div>
 </div>
 
+<script>
+window.handleTeacherLogin = function (e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var isTeacher = localStorage.getItem("arduino-teacher") === "1";
+  if (isTeacher) {
+    if (confirm("Вимкнути режим викладача та заблокувати уроки назад?")) {
+      localStorage.removeItem("arduino-teacher");
+      location.reload();
+    }
+    return;
+  }
+  var pin = window.prompt("Введіть PIN-код для входу в режим викладача:");
+  if (pin === null) return;
+  if (pin.trim() === "0111") {
+    localStorage.setItem("arduino-teacher", "1");
+    alert("🎓 Режим викладача успішно активовано!\nУсі 17 уроків та модулів курсу розблоковано.");
+    location.reload();
+  } else {
+    alert("❌ Невірний PIN-код доступу.");
+  }
+};
+</script>
 <script src="assets/course.js"></script>
 <script src="assets/app.js"></script>
 </body>
