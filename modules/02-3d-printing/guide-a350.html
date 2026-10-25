@@ -23,6 +23,18 @@
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     .badge-tag { transition: all 0.2s ease; }
+    .whitespace-nowrap { white-space: nowrap !important; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .shrink-0 { flex-shrink: 0 !important; }
+    .min-w-0 { min-width: 0 !important; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .desktop-nav { display: none; }
+    .mobile-subnav { display: flex; }
+    @media (min-width: 1120px) {
+      .desktop-nav { display: flex !important; }
+      .mobile-subnav { display: none !important; }
+    }
   </style>
 </head>
 <body class="text-slate-800 font-sans antialiased min-h-screen flex flex-col">
@@ -30,35 +42,52 @@
   <!-- Навігаційна панель -->
   <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center space-x-3">
-          <a href="../../index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-pcb hover:text-pcb-deep transition bg-pcb-light px-3 py-1.5 rounded-lg border border-teal-200">
+      <div class="flex items-center justify-between h-14 sm:h-16 gap-3">
+        <!-- Ліва частина: кнопка повернення та заголовок -->
+        <div class="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
+          <a href="../../index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-pcb hover:text-pcb-deep transition bg-pcb-light px-2.5 py-1.5 rounded-lg border border-teal-200 shrink-0 whitespace-nowrap">
             ← Карта курсу
           </a>
-          <div>
-            <div class="text-[11px] uppercase tracking-wider font-bold text-pcb font-mono">Модуль 2 · База знань</div>
-            <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight font-display">Snapmaker A350: Посібник оператора</h1>
+          <div class="min-w-0">
+            <div class="text-[10px] sm:text-[11px] uppercase tracking-wider font-bold text-pcb font-mono leading-none hidden sm:block">Модуль 2 · База знань</div>
+            <h1 class="text-xs sm:text-sm md:text-base font-bold text-slate-900 leading-tight font-display whitespace-nowrap truncate">
+              Snapmaker A350: Посібник оператора
+            </h1>
           </div>
         </div>
 
-        <nav class="hidden md:flex space-x-1 lg:space-x-2 text-sm font-medium">
-          <a href="#overview" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Огляд</a>
-          <a href="#workflow" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Воркфлоу</a>
-          <a href="#profile" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Золотий профіль</a>
-          <a href="#troubleshooting" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition flex items-center gap-1 font-medium whitespace-nowrap">
+        <!-- Центральна частина: тільки для великих екранів (>= 1120px) -->
+        <nav class="desktop-nav items-center space-x-1 lg:space-x-1.5 text-xs lg:text-sm font-medium shrink-0">
+          <a href="#overview" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Огляд</a>
+          <a href="#workflow" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Воркфлоу</a>
+          <a href="#profile" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Золотий профіль</a>
+          <a href="#troubleshooting" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition flex items-center gap-1 whitespace-nowrap">
             🔍 Пошук проблем
           </a>
-          <a href="#calculator" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition font-medium">Калькулятор</a>
-          <a href="#quiz" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition">Тест</a>
+          <a href="#calculator" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Калькулятор</a>
+          <a href="#quiz" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Тест</a>
         </nav>
 
-        <div class="flex items-center space-x-2">
-          <button onclick="window.print()" title="Роздрукувати конспект" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition text-xs flex items-center gap-1">
+        <!-- Права частина: кнопки дій -->
+        <div class="flex items-center space-x-2 shrink-0">
+          <button onclick="window.print()" title="Роздрукувати конспект" class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition text-xs flex items-center gap-1 whitespace-nowrap">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
             <span class="hidden sm:inline">Друк</span>
           </button>
         </div>
       </div>
+    </div>
+
+    <!-- Адаптивна горизонтальна смуга навігації (< 1120px) -->
+    <div class="mobile-subnav border-t border-slate-200/80 bg-slate-50/95 backdrop-blur px-3 py-1.5 overflow-x-auto no-scrollbar">
+      <nav class="flex items-center gap-1 text-xs font-medium min-w-max mx-auto">
+        <a href="#overview" class="nav-link px-2.5 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">Огляд</a>
+        <a href="#workflow" class="nav-link px-2.5 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">Воркфлоу</a>
+        <a href="#profile" class="nav-link px-2.5 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">Золотий профіль</a>
+        <a href="#troubleshooting" class="nav-link px-2.5 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">🔍 Пошук проблем</a>
+        <a href="#calculator" class="nav-link px-2.5 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">Калькулятор</a>
+        <a href="#quiz" class="nav-link px-2.5 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">Тест</a>
+      </nav>
     </div>
   </header>
 

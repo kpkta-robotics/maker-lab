@@ -187,6 +187,40 @@ def audit_html_file(file_path: Path):
         if m:
             warnings.append(f"Порушення гендерної нейтральності: знайдено '{m.group(0)}' ({hint})")
 
+    # 7. Контроль візуального відображення та адаптивності шапок / меню (Visual Layout & Header QA)
+    header_match = re.search(r'<header[^>]*>(.*?)</header>', content, re.DOTALL)
+    if header_match:
+        header_html = header_match.group(1)
+
+        # 7.1 Перевірка кнопок повернення (Карта курсу, Діагностика тощо) на whitespace-nowrap
+        for bl in re.finditer(r'<a([^>]+href=[\'"][^>]+>)(.*?)</a>', header_html, re.DOTALL):
+            tag_attrs = bl.group(1)
+            text_content = re.sub(r'<[^>]+>', '', bl.group(2)).strip()
+            if any(marker in text_content for marker in ["Карта курсу", "Діагностика", "Урок"]):
+                if "whitespace-nowrap" not in tag_attrs and "nowrap" not in tag_attrs:
+                    issues.append(f"Кнопка навігації '{text_content}' у шапці не має 'whitespace-nowrap' (ризик розриву на кілька рядків)")
+                else:
+                    passed.append(f"Кнопка навігації '{text_content}' має захист від розриву (whitespace-nowrap)")
+
+        # 7.2 Перевірка відсутності жорстко закодованих активних кольорів у статичному nav
+        nav_matches = re.findall(r'<nav[^>]*>(.*?)</nav>', header_html, re.DOTALL)
+        for nm in nav_matches:
+            for link_match in re.finditer(r'<a\s+([^>]+)>', nm):
+                link_tag = link_match.group(1)
+                if re.search(r'\b(bg-teal-50|bg-amber-50|border-teal-200|border-amber-200)\b', link_tag):
+                    warnings.append(f"Пункт меню містить жорстко закодований стиль активності: {link_tag[:50]}... (ризик підсвітки у неактивному стані)")
+
+        # 7.3 Перевірка адаптивності заголовка в шапці (h1 truncate)
+        h1_match = re.search(r'<h1([^>]*)>(.*?)</h1>', header_html, re.DOTALL)
+        if h1_match:
+            h1_attrs = h1_match.group(1)
+            h1_text = re.sub(r'<[^>]+>', '', h1_match.group(2)).strip()
+            if "h-16" in header_html or "h-14" in header_html:
+                if "truncate" in h1_attrs or "whitespace-nowrap" in h1_attrs:
+                    passed.append(f"Заголовок шапки '{h1_text[:25]}' захищено від переповнення (truncate/whitespace-nowrap)")
+                else:
+                    warnings.append(f"Заголовок шапки '{h1_text[:25]}' у фіксованій шапці не має truncate/whitespace-nowrap")
+
     return {
         "file": rel_path,
         "issues": issues,

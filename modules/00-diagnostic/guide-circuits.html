@@ -47,6 +47,18 @@
       border-radius: 2px;
       box-shadow: 0 0 2px rgba(0,0,0,0.3);
     }
+    .whitespace-nowrap { white-space: nowrap !important; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .shrink-0 { flex-shrink: 0 !important; }
+    .min-w-0 { min-width: 0 !important; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .desktop-nav { display: none; }
+    .mobile-subnav { display: flex; }
+    @media (min-width: 1120px) {
+      .desktop-nav { display: flex !important; }
+      .mobile-subnav { display: none !important; }
+    }
   </style>
 </head>
 <body class="text-slate-800 font-sans antialiased min-h-screen flex flex-col">
@@ -54,37 +66,59 @@
   <!-- Навігаційна панель -->
   <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center space-x-3">
-          <a href="../../index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-pcb hover:text-pcb-deep transition bg-pcb-light px-3 py-1.5 rounded-lg border border-teal-200">
+      <div class="flex items-center justify-between h-14 sm:h-16 gap-3">
+        <!-- Ліва частина: кнопка повернення та компактний заголовок -->
+        <div class="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
+          <a href="../../index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-pcb hover:text-pcb-deep transition bg-pcb-light px-2.5 py-1.5 rounded-lg border border-teal-200 shrink-0 whitespace-nowrap">
             ← Карта курсу
           </a>
-          <div>
-            <div class="text-[11px] uppercase tracking-wider font-bold text-pcb font-mono">Блок 0 · База знань</div>
-            <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight font-display">Електричні кола та закон Ома</h1>
+          <a href="lesson-diag.html" class="hidden xl:inline-flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-pcb hover:bg-slate-100 px-2 py-1.5 rounded-lg transition shrink-0 whitespace-nowrap">
+            ← Діагностика
+          </a>
+          <div class="min-w-0">
+            <div class="text-[10px] sm:text-[11px] uppercase tracking-wider font-bold text-pcb font-mono leading-none hidden sm:block">Блок 0 · База знань</div>
+            <h1 class="text-xs sm:text-sm md:text-base font-bold text-slate-900 leading-tight font-display whitespace-nowrap truncate">
+              Електричні кола і закон Ома
+            </h1>
           </div>
         </div>
 
-        <nav class="hidden md:flex space-x-1 lg:space-x-2 text-sm font-medium">
-          <a href="lesson-diag.html" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">← Діагностика</a>
-          <a href="#overview" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Огляд</a>
-          <a href="#ohm-law" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Закон Ома</a>
-          <a href="#led-calc" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition flex items-center gap-1 whitespace-nowrap">
+        <!-- Центральна частина: навігація для великих екранів (>= 1120px) -->
+        <nav class="desktop-nav items-center space-x-1 lg:space-x-1.5 text-xs lg:text-sm font-medium shrink-0">
+          <a href="#overview" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Огляд</a>
+          <a href="#ohm-law" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Закон Ома</a>
+          <a href="#led-calc" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition flex items-center gap-1 whitespace-nowrap">
             🧮 Калькулятор LED
           </a>
-          <a href="#circuits" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">З'єднання</a>
-          <a href="#resistors" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Маркування</a>
-          <a href="#safety-kz" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">КЗ та захист</a>
-          <a href="#quiz" class="px-3 py-2 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Тест</a>
+          <a href="#circuits" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">З'єднання</a>
+          <a href="#resistors" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Маркування резисторів</a>
+          <a href="#safety-kz" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">КЗ та захист</a>
+          <a href="#quiz" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-pcb hover:bg-slate-100 transition whitespace-nowrap">Тест</a>
         </nav>
 
-        <div class="flex items-center space-x-2">
-          <button onclick="window.print()" title="Роздрукувати довідник" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition text-xs flex items-center gap-1">
+        <!-- Права частина: кнопки дій -->
+        <div class="flex items-center space-x-2 shrink-0">
+          <button onclick="window.print()" title="Роздрукувати довідник" class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition text-xs flex items-center gap-1 whitespace-nowrap">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
             <span class="hidden sm:inline">Друк</span>
           </button>
         </div>
       </div>
+    </div>
+
+    <!-- Адаптивна горизонтальна смуга навігації (< 1120px) -->
+    <div class="mobile-subnav border-t border-slate-200/80 bg-slate-50/95 backdrop-blur px-3 py-1.5 overflow-x-auto no-scrollbar">
+      <nav class="flex items-center gap-1 text-xs font-medium min-w-max mx-auto">
+        <a href="lesson-diag.html" class="px-2 py-1 rounded-md text-slate-500 hover:text-pcb hover:bg-white transition whitespace-nowrap">← Діагностика</a>
+        <span class="text-slate-300">|</span>
+        <a href="#overview" class="nav-link px-2 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">Огляд</a>
+        <a href="#ohm-law" class="nav-link px-2 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">Закон Ома</a>
+        <a href="#led-calc" class="nav-link px-2 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">🧮 Калькулятор LED</a>
+        <a href="#circuits" class="nav-link px-2 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">З'єднання</a>
+        <a href="#resistors" class="nav-link px-2 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">Маркування резисторів</a>
+        <a href="#safety-kz" class="nav-link px-2 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">КЗ та захист</a>
+        <a href="#quiz" class="nav-link px-2 py-1 rounded-md text-slate-600 hover:text-pcb hover:bg-white transition whitespace-nowrap">Тест</a>
+      </nav>
     </div>
   </header>
 
@@ -456,6 +490,11 @@
             </div>
             <div class="text-[11px] font-mono text-slate-500" id="resistor-band-names">Червоний · Червоний · Коричневий · Золотий</div>
           </div>
+        </div>
+
+        <!-- Попередження при низькій напрузі живлення (3.3 В + Синій/Білий LED) -->
+        <div id="calc-low-voltage-warn" class="hidden p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-slate-700 leading-relaxed">
+          ⚠️ <strong class="text-slate-900">Інженерне зауваження (малий запас напруги):</strong> падіння напруги на цьому світлодіоді (<span id="calc-warn-vf" class="font-mono font-bold text-slate-900">3.0 В</span>) майже дорівнює напрузі живлення <strong>3.3 В</strong>! З найменшим резистором <strong>100 Ом</strong> із набору ТЕКО реальний струм у колі складе лише <strong id="calc-warn-ima" class="font-mono text-pcb">3.0 мА</strong> (світлодіод світитиме тьмяно). Для повної яскравості синіх і білих LED використовуй живлення <strong>5.0 В</strong>.
         </div>
       </div>
     </section>
@@ -891,6 +930,19 @@
       var namesEl = document.getElementById("resistor-band-names");
       if (namesEl) {
         namesEl.textContent = b1.name + " · " + b2.name + " · " + b3.name + " · Золотий (±5%)";
+      }
+
+      var warnEl = document.getElementById("calc-low-voltage-warn");
+      if (warnEl) {
+        if (vin <= 3.3 && vled >= 3.0) {
+          warnEl.classList.remove("hidden");
+          var vfSpan = document.getElementById("calc-warn-vf");
+          var imaSpan = document.getElementById("calc-warn-ima");
+          if (vfSpan) vfSpan.textContent = vled.toFixed(1) + " В";
+          if (imaSpan) imaSpan.textContent = (actualI * 1000).toFixed(1) + " мА";
+        } else {
+          warnEl.classList.add("hidden");
+        }
       }
     }
 
