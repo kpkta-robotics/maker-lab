@@ -14,3 +14,13 @@ desktop.ini
 .vscode/
 *.swp
 *.bak
+
+# Internal development, agent instructions and QA scripts (keep local only, do not expose on public Pages)
+AGENTS.md
+PROJECT_PASSPORT.md
+.agent/
+.gemini/
+scripts/
+sync_course.py
+_template/
+

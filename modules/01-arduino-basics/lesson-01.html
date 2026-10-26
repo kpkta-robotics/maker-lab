@@ -126,9 +126,9 @@ figure.fig .canvas { background: var(--surface); border: 1px solid var(--line); 
   <div>
     <p class="kicker">Модуль 1, урок 1</p>
     <h1>Твій перший сигнал</h1>
-    <p class="promise">Через 30 хвилин маленька плата подасть світлом сигнал SOS, і програму для неї напишеш ти.</p>
+    <p class="promise">За 45 хвилин маленька плата подасть світлом сигнал SOS, і програму для неї напишеш ти.</p>
     <ul class="facts">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>45 хв основа і бонус</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>45 хв (+ бонус з реальною платою)</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>Знати нічого не треба</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Тільки браузер, плата не обов'язкова</li>
     </ul>
@@ -158,7 +158,7 @@ figure.fig .canvas { background: var(--surface); border: 1px solid var(--line); 
 
   <main>
     <div class="prose">
-      <p class="lead">Уяви світну куртку для велосипедиста, яка сама блимає в темряві. Або лампу, що вмикається, коли ти заходиш у кімнату. Або горщик, який сам просить води.</p>
+      <p class="lead">Уяви світну куртку для велосипедиста, яка автоматично блимає в темряві. Або лампу, що вмикається, коли ти заходиш у кімнату. Або горщик, який автоматично нагадує про полив.</p>
       <p class="lead">Усе це роблять <strong>невеликі плати з мозком</strong>, такі як <strong>Arduino</strong>. У них немає екрана, зате вони відчувають світ (світло, дотик, тепло, відстань) і керують світлом, звуком, моторами. Сьогодні ти зробиш перший крок: навчиш плату <strong>говорити світлом</strong>.</p>
     </div>
     <div class="callout safe"><b>Не бійся помилитися</b>Усе, що ми робимо, відбувається у <strong>симуляторі</strong>, тобто у віртуальній майстерні в браузері. Зламати там нічого неможливо. Щось пішло не так? Натисни «Стоп» і спробуй ще раз.</div>
@@ -322,7 +322,7 @@ void loop() {
             <li><strong>C</strong> (катод, коротка ніжка) світлодіода до <strong>GND</strong> плати.</li>
           </ul>
         </li>
-        <li>У коді замість <code>LED_BUILTIN</code> напиши <code>13</code> або встав готовий код нижче.</li>
+        <li>У коді замість <code>LED_BUILTIN</code> напиши <code>13</code> або встав зразок коду нижче.</li>
       </ol>
 
       <div class="code" data-static><div class="bar-top"><span>sketch.ino</span><div><button class="btn-ghost" data-try="play">Спробувати тут</button><button class="btn-ghost" data-copy>Копіювати</button></div></div><pre>const int LED_PIN = 13;        // номер піна, до якого підключений світлодіод
@@ -372,7 +372,7 @@ void loop() {
     <!-- ===== 3 ===== -->
     <section class="step" id="s3">
       <div class="step-head"><span class="step-num">3</span><h2>Пограй із часом</h2></div>
-      <div class="prose"><p><strong>Завдання:</strong> зроби так, щоб світлодіод <strong>світився 2 секунди</strong> і <strong>не світився півсекунди</strong>. Зміни код просто тут. Коли вийде, редактор сам це помітить.</p></div>
+      <div class="prose"><p><strong>Завдання:</strong> зроби так, щоб світлодіод <strong>світився 2 секунди</strong> і <strong>не світився півсекунди</strong>. Зміни код просто тут. Коли вийде, редактор автоматично це зафіксує.</p></div>
 
       <div class="lab" data-lab="time" data-check="time">
         <div class="lab-head"><span class="title">Завдання 3</span><div class="acts">
@@ -570,9 +570,9 @@ void loop() {
       <ul class="checklist">
         <li><label><input type="checkbox" class="check" data-key="builtin"><span>Вдалося змусити блимати вбудований світлодіод<small>Крок 1</small></span></label></li>
         <li><label><input type="checkbox" class="check" data-key="own"><span>Підключено власний світлодіод із резистором, і він блимає<small>Крок 2</small></span></label></li>
-        <li><label><input type="checkbox" class="check" data-key="time"><span>Налаштовано таймінг «2 секунди світиться, півсекунди ні»<small>Крок 3, позначиться сам, коли редактор побачить правильний код</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="time"><span>Налаштовано таймінг «2 секунди світиться, півсекунди ні»<small>Крок 3, позначиться автоматично, коли редактор зафіксує правильний код</small></span></label></li>
         <li><label><input type="checkbox" class="check" data-key="break"><span>Виконано 3 зміни з «Зламай його», є висновок чому<small>Крок 4</small></span></label></li>
-        <li><label><input type="checkbox" class="check" data-key="sos"><span>Сигнал SOS працює на обраному рівні<small>Крок 5, позначиться сам</small></span></label></li>
+        <li><label><input type="checkbox" class="check" data-key="sos"><span>Сигнал SOS працює на обраному рівні<small>Крок 5, позначиться автоматично</small></span></label></li>
       </ul>
       <p><strong>Додатково</strong></p>
       <ul class="checklist">
@@ -670,7 +670,7 @@ function compile(code) {
     if (name === "digitalWrite") { ctx.ev.push({ t: ctx.t, pin: ev(a[0]), v: ev(a[1]) ? 1 : 0 }); return; }
     if (name === "delay") { ctx.t += Math.max(0, ev(a[0])); if (ctx.t > 120000) throw new Error("Один оберт loop() довший за 2 хвилини. Зменш числа в delay()."); return; }
     if (name === "delayMicroseconds") { ctx.t += ev(a[0]) / 1000; return; }
-    if (fns[name] !== undefined) { if (++ctx.calls > 2000) throw new Error("Функція викликає сама себе без кінця."); block(fns[name]); ctx.calls--; return; }
+    if (fns[name] !== undefined) { if (++ctx.calls > 2000) throw new Error("Функція викликає саму себе без зупинки."); block(fns[name]); ctx.calls--; return; }
     throw new Error("Невідома команда «" + name + "». Перевір, чи правильно написано, з великими й малими літерами.");
   }
   function block(s) {
@@ -900,7 +900,24 @@ function Lab(el) {
 
   // sliders rewrite the 1st / 2nd delay() in place, so hand edits survive
   function delays() { var r = [], re = /delay\(\s*(\d+)\s*\)/g, m; while ((m = re.exec(ta.value))) r.push(m); return r; }
-  function syncSliders() { var d = delays(); sliders.forEach(function (s) { var m = d[+s.dataset.n]; s.disabled = !m; if (!m) s.previousElementSibling.textContent = "немає числа"; else { s.value = m[1]; s.previousElementSibling.textContent = m[1] + " мс"; } }); }
+  function syncSliders() {
+    var d = delays();
+    var hasUnit = /const\s+int\s+UNIT\s*=\s*(\d+);/.exec(ta.value);
+    sliders.forEach(function (s) {
+      var m = d[+s.dataset.n];
+      if (m) {
+        s.disabled = false;
+        s.value = m[1];
+        s.previousElementSibling.textContent = m[1] + " мс";
+      } else if (hasUnit) {
+        s.disabled = true;
+        s.previousElementSibling.textContent = "UNIT = " + hasUnit[1] + " мс (див. код)";
+      } else {
+        s.disabled = true;
+        s.previousElementSibling.textContent = "задано у коді";
+      }
+    });
+  }
   sliders.forEach(function (s) {
     s.addEventListener("input", function () {
       var m = delays()[+s.dataset.n]; if (!m) return;

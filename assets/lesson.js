@@ -22,11 +22,12 @@
   function refreshProgress() {
     var n = required.filter(function (c) { return c.checked; }).length;
     var mt = document.getElementById("meter-text"), mb = document.getElementById("meter-bar");
-    if (mt) mt.textContent = n + " з " + required.length;
-    if (mb) mb.style.width = (required.length ? n / required.length * 100 : 0) + "%";
+    var pct = required.length ? Math.round(n / required.length * 100) : 0;
+    if (mt) mt.textContent = n + " з " + required.length + " (" + pct + "%)";
+    if (mb) mb.style.width = pct + "%";
     var s = load(), btn = document.getElementById("done-btn"), hint = document.getElementById("done-hint");
     if (!btn) return;
-    if (s.done[LESSON]) { btn.textContent = "✓ Урок пройдено"; btn.disabled = true; if (hint) hint.textContent = "Прогрес збережено в цьому браузері."; }
+    if (s.done[LESSON]) { btn.textContent = "✓ Урок пройдено"; btn.disabled = true; if (hint) hint.textContent = "Прогрес збережено лише в цьому браузері."; }
     else { btn.disabled = n < required.length; if (hint) hint.textContent = n < required.length ? "Кнопка стане активною, коли всі обов'язкові пункти будуть позначені." : ""; }
   }
   function setCheck(key, val) {

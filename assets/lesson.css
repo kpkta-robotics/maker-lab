@@ -17,6 +17,17 @@
   --signal: #E5383B;
   --copper: #B9761C;
   --ok: #1F8A5B;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-l: 16px;
+  --radius-xl: 24px;
+  --content-max: 720px;
+  --page-max: 1240px;
   --radius-s: 6px;
   --radius-m: 12px;
   --display: "Unbounded", system-ui, sans-serif;
@@ -346,7 +357,44 @@ footer { border-top: 1px solid var(--line); padding: 24px; text-align: center; f
 /* ---------- responsive ---------- */
 @media (max-width: 1000px) {
   .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .toc { display: none; }
+  .toc {
+    position: static;
+    margin-bottom: 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-m);
+    padding: 14px 16px;
+  }
+  .toc ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    border-left: 0;
+    margin-bottom: 12px;
+  }
+  .toc li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    margin: 0;
+    border-left: 0;
+    border-radius: 6px;
+    background: #F1F6F5;
+    font-size: 13.5px;
+    min-height: 38px;
+  }
+  .toc li a.active {
+    background: var(--pcb);
+    color: #fff;
+  }
+  .toc li a.active b {
+    color: #fff;
+  }
+  .toc .meter {
+    margin-top: 10px;
+    padding: 12px;
+  }
   .hero { grid-template-columns: 1fr; gap: 28px; }
 }
 @media (max-width: 760px) {
@@ -364,7 +412,18 @@ footer { border-top: 1px solid var(--line); padding: 24px; text-align: center; f
   .brk .btn-line { grid-column: 2; justify-self: start; }
   .step-num { width: 44px; height: 44px; font-size: 19px; }
   .read-as td:first-child { white-space: normal; }
+
+  /* Touch-цілі >= 44px на мобільних */
+  .btn-ghost, .btn-run, .btn-line, .btn-done, .copy-btn, .btn-copy-lesson-report, .chip-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .levels [role="tab"] { min-height: 44px; }
+  .cards summary { min-height: 44px; display: flex; align-items: center; flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .board-blink, .pulse-glow, .blink-1s, .flow { animation: none !important; }
 }

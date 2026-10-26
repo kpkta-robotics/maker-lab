@@ -51,12 +51,13 @@
     C.modules.forEach(function (m, mIdx) {
       var mReadyCount = m.lessons.filter(function (x) { return x.status === "ready"; }).length;
       var mDoneCount = m.lessons.filter(function (x) { return x.status === "ready" && s.done[x.id]; }).length;
-      var badgeClass = mDoneCount > 0 && mDoneCount === mReadyCount ? "mod-stat done" : (mReadyCount > 0 ? "mod-stat active" : "mod-stat");
+      var isSoon = mReadyCount === 0;
+      var badgeClass = mDoneCount > 0 && mDoneCount === mReadyCount ? "mod-stat done" : (mReadyCount > 0 ? "mod-stat active" : "mod-stat soon");
       var badgeHtml = mReadyCount > 0
         ? '<span class="' + badgeClass + '">' + mDoneCount + " з " + mReadyCount + " пройдено</span>"
-        : '<span class="mod-stat">У розробці</span>';
+        : '<span class="mod-stat soon">Незабаром</span>';
 
-      html += '<article class="module" id="mod-' + m.id + '">' +
+      html += '<article class="module' + (isSoon ? " module-soon" : "") + '" id="mod-' + m.id + '">' +
         '<div class="mod-head">' +
           '<div class="mod-title-wrap"><span class="mod-code">M' + mIdx + '</span><h3>' + m.title + '</h3></div>' +
           badgeHtml +
@@ -66,10 +67,10 @@
       m.lessons.forEach(function (l, n) {
         var num = (mIdx) + "." + (n + 1);
         if (l.status !== "ready") {
-          html += '<div class="lesson-row locked"><span class="st">' + num + '</span><span class="t">' +
-            l.title + '</span>' + (l.time ? '<span class="tm">' + l.time + '</span>' : '') + '<span class="tag soon">Скоро</span></div>';
+          html += '<div class="lesson-row locked" title="Матеріал готується до публікації"><span class="st">' + num + '</span><span class="t">' +
+            l.title + '</span>' + (l.time ? '<span class="tm">' + l.time + '</span>' : '') + '<span class="tag soon">Незабаром</span></div>';
         } else if (!unlocked(l, s)) {
-          html += '<div class="lesson-row locked"><span class="st">' + num + '</span><span class="t">' +
+          html += '<div class="lesson-row locked" title="Урок відкриється після проходження попередніх кроків"><span class="st">' + num + '</span><span class="t">' +
             l.title + '</span><span class="tag lock">🔒 Спочатку попередній урок</span></div>';
         } else {
           var done = s.done[l.id];
@@ -141,10 +142,10 @@
     var shortTxt = document.getElementById("progress-short");
     if (shortTxt) shortTxt.textContent = doneCount + " з " + ready.length + " (" + pct + "%)";
     var txt = document.getElementById("progress-text");
-    if (txt) txt.textContent = (teacher ? "🎓 Режим викладача активний (усі уроки відкрито)" : "Прогрес зберігається у цьому браузері");
+    if (txt) txt.textContent = (teacher ? "🎓 Режим викладача активний (вільний доступ до 7 створених уроків)" : "Прогрес зберігається лише в цьому браузері");
 
     var heroReady = document.getElementById("hero-stat-ready");
-    if (heroReady) heroReady.textContent = "Готових уроків: " + ready.length;
+    if (heroReady) heroReady.textContent = "Відкрито уроків: " + ready.length;
     var heroDone = document.getElementById("hero-stat-done");
     if (heroDone) heroDone.textContent = "Пройдено: " + doneCount + " з " + ready.length + " (" + pct + "%)";
 

@@ -666,6 +666,113 @@
         </p>
       </div>
 
+      <!-- Зведена таблиця міжнародного маркування (4 смужки) -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h4 class="font-bold text-slate-900 text-sm font-display">🎨 Таблиця міжнародного колірного коду резисторів (4 смужки)</h4>
+          <span class="text-xs font-mono text-pcb font-semibold">Стандарт IEC 60062</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-500 font-mono">
+                <th class="py-2 px-2.5">Колір смужки</th>
+                <th class="py-2 px-2.5">1-ша смужка (1-ша цифра)</th>
+                <th class="py-2 px-2.5">2-га смужка (2-га цифра)</th>
+                <th class="py-2 px-2.5">3-тя смужка (множник)</th>
+                <th class="py-2 px-2.5">4-та смужка (допуск/точність)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 font-mono">
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-black inline-block border border-slate-300"></span> Чорний</td>
+                <td class="py-1.5 px-2.5">—</td>
+                <td class="py-1.5 px-2.5">0</td>
+                <td class="py-1.5 px-2.5">× 1 (10⁰)</td>
+                <td class="py-1.5 px-2.5">—</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#7A4318"></span> Коричневий</td>
+                <td class="py-1.5 px-2.5">1</td>
+                <td class="py-1.5 px-2.5">1</td>
+                <td class="py-1.5 px-2.5">× 10 (10¹)</td>
+                <td class="py-1.5 px-2.5">± 1%</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#D7262A"></span> Червоний</td>
+                <td class="py-1.5 px-2.5">2</td>
+                <td class="py-1.5 px-2.5">2</td>
+                <td class="py-1.5 px-2.5">× 100 (10²)</td>
+                <td class="py-1.5 px-2.5">± 2%</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#EA580C"></span> Помаранчевий</td>
+                <td class="py-1.5 px-2.5">3</td>
+                <td class="py-1.5 px-2.5">3</td>
+                <td class="py-1.5 px-2.5">× 1 000 (10³)</td>
+                <td class="py-1.5 px-2.5">—</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#EAB308"></span> Жовтий</td>
+                <td class="py-1.5 px-2.5">4</td>
+                <td class="py-1.5 px-2.5">4</td>
+                <td class="py-1.5 px-2.5">× 10 000 (10⁴)</td>
+                <td class="py-1.5 px-2.5">—</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#16A34A"></span> Зелений</td>
+                <td class="py-1.5 px-2.5">5</td>
+                <td class="py-1.5 px-2.5">5</td>
+                <td class="py-1.5 px-2.5">× 100 000 (10⁵)</td>
+                <td class="py-1.5 px-2.5">± 0.5%</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#2563EB"></span> Синій</td>
+                <td class="py-1.5 px-2.5">6</td>
+                <td class="py-1.5 px-2.5">6</td>
+                <td class="py-1.5 px-2.5">× 1 000 000 (10⁶)</td>
+                <td class="py-1.5 px-2.5">± 0.25%</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#9333EA"></span> Фіолетовий</td>
+                <td class="py-1.5 px-2.5">7</td>
+                <td class="py-1.5 px-2.5">7</td>
+                <td class="py-1.5 px-2.5">× 10 000 000 (10⁷)</td>
+                <td class="py-1.5 px-2.5">± 0.1%</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#64748B"></span> Сірий</td>
+                <td class="py-1.5 px-2.5">8</td>
+                <td class="py-1.5 px-2.5">8</td>
+                <td class="py-1.5 px-2.5">—</td>
+                <td class="py-1.5 px-2.5">—</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block bg-white border border-slate-300"></span> Білий</td>
+                <td class="py-1.5 px-2.5">9</td>
+                <td class="py-1.5 px-2.5">9</td>
+                <td class="py-1.5 px-2.5">—</td>
+                <td class="py-1.5 px-2.5">—</td>
+              </tr>
+              <tr class="bg-amber-50/60">
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#C9A23A"></span> Золотий</td>
+                <td class="py-1.5 px-2.5">—</td>
+                <td class="py-1.5 px-2.5">—</td>
+                <td class="py-1.5 px-2.5">× 0.1</td>
+                <td class="py-1.5 px-2.5 text-amber-700 font-bold">± 5% (стандарт набору ТЕКО)</td>
+              </tr>
+              <tr class="bg-slate-50/60">
+                <td class="py-1.5 px-2.5 flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#CBD5E1"></span> Срібний</td>
+                <td class="py-1.5 px-2.5">—</td>
+                <td class="py-1.5 px-2.5">—</td>
+                <td class="py-1.5 px-2.5">× 0.01</td>
+                <td class="py-1.5 px-2.5 text-slate-600 font-bold">± 10%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- 220 Ом -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">

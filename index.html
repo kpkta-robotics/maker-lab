@@ -15,21 +15,21 @@
   <div class="crumbs">
     <span>Київський професійний коледж «ТЕХНО-АРТ» імені Бадрі Лолашвілі</span>
     <span aria-hidden="true">·</span>
-    <span>Курс 250 годин</span>
+    <span>Програма курсу ~250 год (відкрито 7 уроків)</span>
   </div>
 </header>
 
 <section class="hero">
   <div>
-    <p class="kicker">Arduino · 3D CAD · 3D-друк · AI-ментор · Maker</p>
+    <p class="kicker">Програма ~250 год · Зараз відкрито 7 стартових уроків і 2 довідники</p>
     <h1>Адаптивна цифрова майстерня</h1>
     <p class="promise">Від першого сигналу на мікроконтролері — до калібрування Snapmaker A350, 3D-моделювання корпусів і створення власного працюючого пристрою.</p>
     <div class="hero-cta">
-      <a class="btn-primary" id="continue-btn" href="modules/01-arduino-basics/lesson-01.html">Почати навчання →</a>
+      <a class="btn-primary" id="continue-btn" href="modules/00-diagnostic/lesson-safety.html">Почати навчання: Безпека →</a>
       <a class="btn-ghost" href="#resources-sec">🎬 Відео та джерела</a>
     </div>
     <ul class="facts">
-      <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3.5 2"/></svg>250 навчальних годин</li>
+      <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3.5 2"/></svg>~250 год за програмою (7 уроків відкрито)</li>
       <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M7 8h6M7 12h4"/></svg>Набори ТЕКО + Wokwi</li>
       <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 16h12M6 16V8l4-4 4 4v8"/><circle cx="10" cy="11" r="1.5"/></svg>3D-принтер Snapmaker A350</li>
       <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2v4M10 14v4M2 10h4M14 10h4"/><circle cx="10" cy="10" r="3"/></svg>Працює з комп'ютера і телефона</li>
@@ -37,7 +37,7 @@
   </div>
 
   <figure class="hero-board">
-    <svg class="board-map" viewBox="0 0 540 340" role="img" aria-label="Схема інженерного шляху: Електроніка Arduino, 3D-друк Snapmaker A350, 3D CAD моделювання та готовий Maker-проєкт">
+    <svg class="board-map" viewBox="0 0 540 340" role="img" aria-label="Схема інженерного шляху: Електроніка Arduino, 3D-друк Snapmaker A350, 3D CAD моделювання та фінальний Maker-проєкт">
       <defs>
         <pattern id="pcbGrid" width="20" height="20" patternUnits="userSpaceOnUse">
           <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#184C57" stroke-width="0.7"/>
@@ -117,8 +117,8 @@
       <text x="270" y="320" text-anchor="middle" fill="#68959C" font-family="JetBrains Mono, monospace" font-size="10">KPKTA MAKER-LAB REV 2.4 · ADAPTIVE CURRICULUM BOARD</text>
     </svg>
     <div class="board-telemetry">
-      <span id="hero-stat-ready">Готових уроків: 6</span>
-      <span id="hero-stat-done" class="badge-ok">Твій прогрес: 0%</span>
+      <span id="hero-stat-ready">Відкрито уроків: 7</span>
+      <span id="hero-stat-done" class="badge-ok">Пройдено: 0 з 7 (0%)</span>
     </div>
   </figure>
 </section>
@@ -155,9 +155,39 @@
   </aside>
 
   <main>
+    <!-- Шлях перших кроків -->
+    <div class="onboarding-path">
+      <div class="onboarding-head">
+        <span class="onboarding-badge">🚀 З чого почати</span>
+        <h4>Маршрут перших кроків: від техніки безпеки до першого пристрою</h4>
+      </div>
+      <div class="onboarding-steps">
+        <a href="modules/00-diagnostic/lesson-safety.html" class="onboarding-step-card highlight">
+          <span class="step-badge">Крок 1 · 25 хв</span>
+          <strong>0.1 Безпека мейкера</strong>
+          <span>Захист плати ТЕКО, очей і робочого місця</span>
+        </a>
+        <a href="modules/00-diagnostic/lesson-diag.html" class="onboarding-step-card">
+          <span class="step-badge">Крок 2 · 40 хв</span>
+          <strong>0.2 Вхідна діагностика</strong>
+          <span>Оцінка 6 ключових навичок</span>
+        </a>
+        <a href="modules/00-diagnostic/lesson-setup.html" class="onboarding-step-card">
+          <span class="step-badge">Крок 3 · 30 хв</span>
+          <strong>0.3 Налаштування IDE</strong>
+          <span>Arduino IDE 2.x та драйвер CH340</span>
+        </a>
+        <a href="modules/01-arduino-basics/lesson-01.html" class="onboarding-step-card">
+          <span class="step-badge">Крок 4 · 45 хв</span>
+          <strong>1.1 Перший сигнал</strong>
+          <span>Сигнал SOS, симулятор Wokwi і пін 13</span>
+        </a>
+      </div>
+    </div>
+
     <div class="callout safe" style="max-width:100%;margin-top:0">
       <b>🎯 Головна інженерна мета курсу</b>
-      <p>Не просто «прочитати про електроніку чи 3D-принтер», а <strong>навчитися створювати працюючий пристрій під ключ</strong>: проблема → ідея → схема у Wokwi → код Arduino → обмір штангенциркулем → 3D-друк деталі на Snapmaker A350 → готовий виріб у портфоліо.</p>
+      <p>Не просто «прочитати про електроніку чи 3D-принтер», а <strong>навчитися створювати працюючий пристрій під ключ</strong>: проблема → ідея → схема у Wokwi → код Arduino → обмір штангенциркулем → 3D-друк деталі на Snapmaker A350 → реальний виріб у портфоліо.</p>
     </div>
 
     <section class="step" id="modules-sec">
@@ -193,7 +223,7 @@
         <div class="card">
           <span class="card-step">КРОК 03</span>
           <h4>Працюй з AI як інженер</h4>
-          <p>Використовуй готові шаблони запитів до ШІ: описуй симптом і свою гіпотезу замість прохання «напиши код за мене».</p>
+          <p>Використовуй підготовлені шаблони запитів до ШІ: описуй симптом і свою гіпотезу замість прохання «напиши код за мене».</p>
         </div>
         <div class="card">
           <span class="card-step">КРОК 04</span>
@@ -320,7 +350,7 @@ window.handleTeacherLogin = function (e) {
   if (pin === null) return;
   if (pin.trim() === "0111") {
     localStorage.setItem("arduino-teacher", "1");
-    alert("🎓 Режим викладача успішно активовано!\nУсі 17 уроків та модулів курсу розблоковано.");
+    alert("🎓 Режим викладача успішно активовано!\nВідкрито вільний доступ до всіх 7 створених уроків курсу (ще 10 уроків — у розробці). Заблоковані стани знято.");
     location.reload();
   } else {
     alert("❌ Невірний PIN-код доступу.");

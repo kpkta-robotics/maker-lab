@@ -36,7 +36,7 @@ window.COURSE = {
       title: "Модуль 1. Основи Arduino",
       desc: "Від першого світлодіода до сенсорів і приводів. Симулятор Wokwi + реальний набір ТЕКО.",
       lessons: [
-        { id: "m1-l01", title: "Привіт, Arduino! Перший сигнал і маяк SOS", time: "60–80 хв", status: "ready",
+        { id: "m1-l01", title: "Привіт, Arduino! Перший сигнал і маяк SOS", time: "45 хв (+ бонус)", status: "ready",
           path: "modules/01-arduino-basics/lesson-01.html" },
         { id: "m1-l02", title: "Кнопка та INPUT_PULLUP: керування світлом", time: "50 хв", status: "ready",
           path: "modules/01-arduino-basics/lesson-02.html" },
