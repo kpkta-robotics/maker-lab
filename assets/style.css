@@ -42,7 +42,11 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+  overflow-x: hidden;
+}
 body {
   margin: 0;
   color: var(--ink);
@@ -52,6 +56,8 @@ body {
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 24px 24px;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 a { color: var(--pcb); text-underline-offset: 3px; }
@@ -741,17 +747,122 @@ footer {
 /* ---------- Адаптивність ---------- */
 @media (max-width: 960px) {
   .hero { grid-template-columns: 1fr; gap: 28px; padding-bottom: 32px; }
-  .layout { grid-template-columns: 1fr; gap: 24px; }
-  .toc { position: static; }
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  main {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .toc {
+    position: static;
+    min-width: 0;
+    max-width: 100%;
+  }
   .toc ol { display: flex; flex-wrap: wrap; gap: 8px; border-left: 0; margin-bottom: 12px; }
-  .toc li a { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 6px 14px; margin: 0; }
+  .toc li a {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 99px;
+    padding: 8px 14px;
+    margin: 0;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
   .toc li a.active { border-color: var(--pcb); background: #E6F2F1; }
 }
 @media (max-width: 600px) {
-  .topbar { padding: 12px 16px; }
-  .hero { padding: 18px 16px 28px; }
-  .layout { padding: 0 16px 56px; }
+  .topbar { padding: 12px 14px; }
+  .hero { padding: 18px 14px 28px; }
+  .layout { padding: 0 14px 56px; }
+  .module { padding: 16px 14px; }
+  .mod-head { gap: 8px; }
+  .mod-title-wrap { min-width: 0; flex: 1 1 auto; }
+  .mod-title-wrap h3 { font-size: 17px; word-break: break-word; }
+  .lesson-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 12px 14px;
+    min-width: 0;
+  }
+  .lesson-row .st {
+    grid-row: 1;
+    grid-column: 1;
+    align-self: start;
+    margin-top: 1px;
+    min-width: 32px;
+    height: 26px;
+  }
+  .lesson-row .t {
+    grid-row: 1;
+    grid-column: 2;
+    min-width: 0;
+    font-size: 15px;
+    line-height: 1.35;
+    word-break: normal;
+  }
   .lesson-row .tm, .lesson-row .go-arrow { display: none; }
+  .lesson-row .tag {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: start;
+    margin: 2px 0 0 0;
+    font-size: 11px;
+    white-space: normal;
+  }
+  .res-chip {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    padding: 8px 14px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 13.5px;
+    line-height: 1.4;
+    border-radius: 10px;
+  }
+  .onboarding-steps {
+    grid-template-columns: 1fr;
+  }
+  .showcase-grid {
+    grid-template-columns: 1fr;
+  }
+  .footer-inner {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
+
+/* Touch-цілі >= 44px */
+.passport-btn {
+  min-height: 44px;
+}
+.sync-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.link-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+}
+.footer-inner a, .footer-inner button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 
 /* ==========================================================================

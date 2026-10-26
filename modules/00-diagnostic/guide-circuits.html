@@ -53,8 +53,61 @@
     .min-w-0 { min-width: 0 !important; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+    body {
+      min-width: 0 !important;
+      width: 100% !important;
+    }
+    main {
+      min-width: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      overflow-x: hidden !important;
+    }
+    section {
+      min-width: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    .grid {
+      min-width: 0 !important;
+    }
+    .grid > * {
+      min-width: 0 !important;
+    }
+    .mobile-subnav {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .overflow-x-auto {
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav-link {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-touch {
+      min-height: 44px !important;
+      min-width: 44px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    @media (min-width: 640px) {
+      .sm\\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    }
     .desktop-nav { display: none; }
-    .mobile-subnav { display: flex; }
     @media (min-width: 1180px) {
       .desktop-nav { display: flex !important; }
       .mobile-subnav { display: none !important; }
@@ -69,7 +122,7 @@
       <div class="flex items-center justify-between h-14 sm:h-16 gap-3">
         <!-- Ліва частина: кнопка повернення та компактний заголовок -->
         <div class="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
-          <a href="../../index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-pcb hover:text-pcb-deep transition bg-pcb-light px-2.5 py-1.5 rounded-lg border border-teal-200 shrink-0 whitespace-nowrap">
+          <a href="../../index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-pcb hover:text-pcb-deep transition bg-pcb-light px-3 py-2 rounded-lg border border-teal-200 shrink-0 whitespace-nowrap btn-touch">
             ← Карта курсу
           </a>
           <div class="min-w-0">
@@ -95,7 +148,7 @@
 
         <!-- Права частина: кнопки дій -->
         <div class="flex items-center space-x-2 shrink-0">
-          <button onclick="window.print()" title="Роздрукувати довідник" class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition text-xs flex items-center gap-1 whitespace-nowrap">
+          <button onclick="window.print()" title="Роздрукувати довідник" class="p-2 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition text-xs flex items-center justify-center gap-1 whitespace-nowrap btn-touch">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
             <span class="hidden sm:inline">Друк</span>
           </button>
@@ -132,7 +185,7 @@
           Навчишся розрізняти напругу, струм і опір, порахувати резистор для світлодіода та прочитати кольорові смужки на деталі з набору.
         </p>
         <div class="flex flex-wrap gap-3 pt-2">
-          <a href="#led-calc" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold transition shadow-lg shadow-amber-500/20 text-sm">
+          <a href="#led-calc" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold transition shadow-lg shadow-amber-500/20 text-sm min-h-[44px]">
             🧮 Калькулятор резистора
           </a>
           <a href="#ohm-law" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-pcb hover:bg-pcb-hover text-white font-medium transition border border-teal-500/40 text-sm">
@@ -485,11 +538,11 @@
       </div>
 
       <!-- Інтерактивний калькулятор -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-8 space-y-6">
         <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <div>
             <span class="text-xs font-mono font-bold text-pcb uppercase">Інженерний інструмент</span>
-            <h4 class="text-xl font-bold text-slate-900 font-display">Калькулятор струмообмежувального резистора (E24)</h4>
+            <h4 class="text-xl font-bold text-slate-900 font-display break-words" style="word-break: break-word;">Калькулятор струмообмежувального резистора (E24)</h4>
           </div>
           <span class="px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-pcb font-mono text-xs font-semibold">
             R = (Uживл − Vf) / I
@@ -500,7 +553,7 @@
           <!-- Поле 1: Напруга живлення -->
           <div class="space-y-2">
             <label for="calc-vin" class="block text-xs font-mono font-bold text-slate-500 uppercase">1. Напруга живлення (Uживл)</label>
-            <select id="calc-vin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pcb">
+            <select id="calc-vin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pcb min-h-[44px]">
               <option value="5.0" selected>5.0 В (Плата ТЕКО / Arduino Uno USB)</option>
               <option value="3.3">3.3 В (ESP32 / Raspberry Pi Pico / 3.3V)</option>
             </select>
@@ -510,7 +563,7 @@
           <!-- Поле 2: Колір світлодіода -->
           <div class="space-y-2">
             <label for="calc-vled" class="block text-xs font-mono font-bold text-slate-500 uppercase">2. Колір LED (Падіння Vf)</label>
-            <select id="calc-vled" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pcb">
+            <select id="calc-vled" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pcb min-h-[44px]">
               <option value="2.0" selected>🔴 Червоний (Vf ≈ 2.0 В)</option>
               <option value="2.1">🟡 Жовтий / Оранжевий (Vf ≈ 2.1 В)</option>
               <option value="2.2">🟢 Зелений стандартний (Vf ≈ 2.2 В)</option>
@@ -523,7 +576,7 @@
           <!-- Поле 3: Бажаний струм -->
           <div class="space-y-2">
             <label for="calc-iled" class="block text-xs font-mono font-bold text-slate-500 uppercase">3. Бажаний струм (I)</label>
-            <select id="calc-iled" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pcb">
+            <select id="calc-iled" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-pcb min-h-[44px]">
               <option value="10">10 мА (Енергоощадний, м'яке світло)</option>
               <option value="15" selected>15 мА (Оптимальний, безпечно для піна)</option>
               <option value="20">20 мА (Максимальна безпечна яскравість)</option>
@@ -668,7 +721,7 @@
 
       <!-- Зведена таблиця міжнародного маркування (4 смужки) -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
           <h4 class="font-bold text-slate-900 text-sm font-display">🎨 Таблиця міжнародного колірного коду резисторів (4 смужки)</h4>
           <span class="text-xs font-mono text-pcb font-semibold">Стандарт IEC 60062</span>
         </div>
@@ -797,7 +850,7 @@
 
         <!-- 1 кОм -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="text-lg font-bold font-mono text-pcb">1 кОм (1000 Ом)</span>
             <span class="text-[11px] font-mono uppercase px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-bold">Часто з транзистором (пізніше)</span>
           </div>
